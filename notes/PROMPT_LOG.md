@@ -6,48 +6,21 @@ Below please log the exact prompts I give you, numbered, with timestamps.
 Determine the latest version of the JWST pipeline:
 https://github.com/spacetelescope/jwst
 
-Based on the version, report back the micromamba commands we'll need to install that environment. For example, for version 1.19.1:
+[... previous numbered prompts 1-8 ...]
 
-micromamba create -n jwst_1.19.1 python=3.13
-micromamba activate jwst_1.19.1
-pip install jwst==1.19.1
+9. 2026-03-27 3:42PM
+Next in the IMPLEMENTATION_PLAN.md is determining the coefficients. Please have a go at this using the JWST 1492 extractions you made of the M grating data: G140M, G235M, G395M. Follow @INSTRUCTIONS.md
 
-Check for micromamba environments I already have installed and tell me which is most recent and whether I already have that version of the JWST pipeline installed.
+10. 2026-03-27 3:43PM
+Please use the local micromamba environment jwst_1.20.2 as noted in the INSTRUCTIONS. Also you'll need to set CRDS_CACHE ~/crds_cash and CRDS_SERVER https://jwst-crds.stsci.edu/
 
-2. 2026-03-26 8:26PM 
-Thanks! Were there any gotchas we should add to my instructions for next time? You didn't find an environment jwst_1.19.1? I thought I'd created that...
+11. 2026-03-27 (continued)
+Next in the IMPLEMENTATION_PLAN.md is determining the coefficients. Please have a go at this using the JWST 1492 extractions you made of the M grating data: G140M, G235M, G395M. Follow @INSTRUCTIONS.md
 
-3. 2026-03-26 8:30PM 
-Yes, please create a new file ~/NIRSpec/wavext/nirspec_wavext_work/notes/PIPELINE_INSTALLATION.md with good instructions for next time. Then go ahead and create that environment.
-
-4. 2026-03-26 8:36PM 
-Excellent thank you! Please also keep a complete prompt log including time stamps like this:
-
-~/NIRSpec/wavext/nirspec_wavext_work/notes/
-PROMPT_LOG.md
-...
-
-5. 2026-03-26 8:40PM 
-Thanks now read this file:
-https://github.com/spacetelescope/jwst/blob/main/CONTRIBUTING.md
-and create a distilled version with the key points we'll need in:
-~/NIRSpec/wavext/nirspec_wavext_work/notes/CONTRIBUTING.md
-
-I am planning to work on NIRSpec wavelength extension updates. Should we make the fork now?
-
-Continue adding to the PROMPT_LOG.md
-Add instructions to the beginning of PROMPT_LOG.md explaining what to do, as you can see.
-
-6. 2026-03-26 8:41PM 
-Thanks! But for PROMPT_LOG.md I just want you to record the exact prompts I give you, numbered, and the timestamps; nothing else please.
-
-7. 2026-03-26 8:46PM 
-Great thank you! Now go ahead and fork. Let's call it feature/nirspec_wavelength_extension
-Provide details in a new file FORK.md alongside the other notes/
-Where will this fork live on my machine? And/or will I be pushing to my Github?
-
-8. 2026-03-26 9:09PM 
-Thanks! I'd like to do a lot of work locally before we even think about pushing to the official repository. That being said, pushing to my Github will be useful to track changes as we go. I'm logged into Github in the browser, and I believe I also have the keys in my local environment.
+I've reorganized these plots into plots/Parlanti/cal/
+Please refer to plots/Parlanti/pre-cal/FS_1492_pre-cal.png
+Generate an updated similar plot cal/FS_1492_cal.png that shows the spectra after calibration, similar to references/Parlanti/Parlanti Fig5.png
+Take notes on this plan in notes/CALIBRATION.md
 
 9. 2026-03-26 9:12PM 
 Thanks I went ahead and created the fork in my browser:

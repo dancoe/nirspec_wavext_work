@@ -89,12 +89,51 @@ $S(\lambda) \approx k(\lambda) f(\lambda) + a(\lambda) f(\lambda/2) + b(\lambda)
 ### Current Phase (March 27, 2026)
 - **Goal:** Download, reduce, analyze, compare, and plot data for G140M, G235M, G395M, and PRISM.
 - **Tasks:**
-    - Download all remaining M-grating and PRISM Level 2 (`_rate.fits`) and Level 3 (`_s2d.fits` / `_x1d.fits`) data for PID 1492.
+    - ✓ Download all remaining M-grating and PRISM Level 2 (`_rate.fits`) and Level 3 (`_s2d.fits` / `_x1d.fits`) data for PID 1492.
     - Run extended WCS assignment on all Level 2 files.
     - Run extended 2D and 1D extraction.
     - Compare extended extractions with nominal extractions to verify wavelength alignment and overlap.
-    - Implement/Refine the Parlanti flux correction model using the extracted data.
+    - ✓ **Implement Parlanti flux correction model coefficient fitting** (Initial analysis complete)
     - Generate comparison plots showing nominal vs. extended spectra with overlap regions highlighted.
+
+### Parlanti Model Coefficient Determination (March 27, 2026)
+
+**Completed v1:** Initial polynomial fit (cubic order) — numerically unstable.
+
+**Completed v2 (March 27, 2026 evening):** Improved fit using Legendre polynomials + Tikhonov regularisation.
+
+**Key Finding (Units):** Extended NRS2 extractions are in **DN/s** (no photom step applied), while nominal Level 3 products are in **Jy**. This 100–200× discrepancy is bridged using a boundary-matching scale factor derived from comparing the extended spectrum to the PRISM at the nominal–extended transition (where k≈1 and contamination is minimal).
+
+**Data Used:**
+- PRISM baseline (obs001 Level 3): 411 points, λ=[0.597, 5.300] µm, Jy
+- G140M extended (obs003 NRS2): 1,095 points, λ=[1.981, 3.268] µm, DN/s → scaled to Jy
+- G235M extended (obs003 NRS2): 1,272 points, λ=[3.308, 5.310] µm, DN/s → scaled to Jy
+- G395M extended (obs003 NRS2): 68 points, λ=[5.496, 5.617] µm — too few, PRISM doesn't extend here
+
+**v2 Fit Results:**
+
+| Grating | λ Range (µm) | RMS | k range | a range | b |
+|---------|-------------|-----|---------|---------|---|
+| G140M | 1.98–3.27 | 50% | 0.01–0.47 | 0–13% | 5% (clamped) |
+| G235M | 3.31–5.31 | 54% | 0.10–0.96 | 5–20% | 0–5% |
+
+**Calibrated Plot:** `plots/Parlanti/cal/FS_1492_cal.png` — 2-panel Parlanti Fig. 5 style
+
+**Script:** `analysis/calibrate_parlanti.py`
+
+**Next Actions:**
+
+- [ ] Run photom step on NRS2 extended extractions to get proper Jy units (remove boundary-scale approximation)
+- [ ] Increase b(λ) upper bound to ~10% — the 3rd-order contamination may be higher than 5%
+- [ ] Use multiple sources at different redshifts (as Parlanti does) for instrument-level coefficient determination
+- [ ] Compare with Parlanti et al. 2025 published values when available
+
+**Outputs:**
+- `plots/Parlanti/cal/FS_1492_cal.png` — calibrated spectra comparison plot
+- `plots/Parlanti/cal/parlanti_coefficients_v2.txt` — coefficient summary
+- `plots/Parlanti/cal/parlanti_coefficients_v2_diagnostic.png` — coefficient profile plots
+- `plots/Parlanti/cal/PARLANTI_ANALYSIS_REPORT.md` — v1 analysis report (superseded by v2)
+- Notes: `notes/CALIBRATION.md`
 
 ---
 [IMPLEMENTATION_PLAN.md ends here]

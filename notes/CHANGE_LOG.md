@@ -2,6 +2,63 @@
 
 Add new entries to the top (most recent first). Don't delete anything.
 
+## 2026-03-27 (evening)
+- **Parlanti Calibration v2 — Improved Coefficient Determination:**
+  - **Root cause found:** Extended NRS2 extractions (`jw01492003001_…`) were processed through `assign_wcs` + `extract_2d` + `extract_1d` but NOT the `photom` step. `FLUX` column is in DN/s (not Jy). Nominal Level 3 products (obs001) are in Jy. This unit mismatch caused the 100–200× flux discrepancy seen in the pre-cal plot.
+  - **New script:** `analysis/calibrate_parlanti.py` implements:
+    1. **Boundary-matching scale factor**: sigma-clipped median of `f_PRISM(λ) / S_raw(λ)` over the first 80 pts of each extended extraction, giving C = 8.04×10⁻⁴ Jy/(DN/s) for G140M and 1.35×10⁻³ Jy/(DN/s) for G235M.
+    2. **Legendre polynomial fit (deg=4) with Tikhonov regularisation**: avoids the ill-conditioning of raw polynomial powers; uses normalised wavelength ξ∈[-1,1].
+    3. **Iterative 3σ-clip** on fit residuals (3 iterations) to reject emission-line spikes.
+    4. **Physical bounds**: k∈[0.01,2.0], a∈[0,0.20], b∈[0,0.05].
+    5. **High-resolution contamination reference**: for the calibration APPLICATION step, uses the nominal G140M/G235M/G395M stitch (falling back to PRISM) rather than the low-res PRISM alone.
+  - **Results:**
+    - G140M fit RMS: 50% | k drops 0.47→0.01 (2.0→3.0 µm) | a peaks at 13% near boundary | b clamped at 5%
+    - G235M fit RMS: 54% | k starts near 1.0, drops to ~0.1 at 4.5 µm | a large (5–20%) | b 0–5%
+  - **Plots generated:**
+    - `plots/Parlanti/cal/FS_1492_cal.png` — 2-panel calibration plot (cf. Parlanti Fig. 5), linear scale, contrasting nominal (black), uncalibrated (green), calibrated (red) spectra
+    - `plots/Parlanti/cal/parlanti_coefficients_v2_diagnostic.png` — coefficient profiles k(λ), a(λ), b(λ)
+    - `plots/Parlanti/cal/parlanti_coefficients_v2.txt` — coefficient summary table
+  - **Documentation:** Updated `notes/CALIBRATION.md` with full methodology, data table, interpretation, and known limitations.
+
+## 2026-03-27 3:50 PM
+- **Parlanti Model Coefficient Determination (Initial Analysis):**
+  - Created `analysis/determine_parlanti_coefficients.py` script to fit Parlanti et al. 2025 flux correction model coefficients from M-grating spectral data.
+  - **Model:** $S(\lambda) = k(\lambda) \cdot f(\lambda) + a(\lambda) \cdot f(\lambda/2) + b(\lambda) \cdot f(\lambda/3)$, where $f(\lambda)$ is PRISM baseline and $k, a, b$ are polynomial throughput functions.
+  - **Data Used:**
+    - PRISM baseline (411 points): λ=[0.597, 5.300] µm
+    - G140M extended (1,095 points): λ=[1.981, 3.268] µm
+    - G235M extended (1,272 points): λ=[3.308, 5.310] µm  
+    - G395M extended (68 points): λ=[5.496, 5.617] µm
+  - **Fit Results:**
+    - **G140M** (λ=1.8-3.3 µm): RMS error 8.37 Jy (429%) – ⚠️ POOR; polynomial overfitting detected
+    - **G235M** (λ=3.0-5.3 µm): RMS error 0.854 Jy (63%) – ✓ OK; reasonable fit quality
+    - **G395M** (λ=4.2-5.6 µm): RMS error 0.548 Jy (11%) – ✓ GOOD but limited data (58 pts)
+  - **Issues Identified:**
+    1. Polynomial (cubic) basis is numerically unstable → switch to B-splines
+    2. G140M shows extreme noise/systematics → investigate flat-field artifacts
+    3. G395M has too few points → enforce physical constraints
+    4. No bounds on throughput functions → implement $0 \leq k(\lambda) \leq 1.1$, $a(\lambda), b(\lambda) \geq 0$
+  - **Diagnostic Plots Generated:**
+    - `plots/parlanti_fit_G140M.png` – 4-panel diagnostic (spectrum, residuals, coefficients, components)
+    - `plots/parlanti_fit_G235M.png` – 4-panel diagnostic
+    - `plots/parlanti_fit_G395M.png` – 4-panel diagnostic
+  - **Output Files:**
+    - `plots/parlanti_coefficients.txt` – Raw polynomial coefficients (⚠️ NOT YET VALIDATED)
+    - `plots/PARLANTI_ANALYSIS_REPORT.md` – Detailed analysis report with recommendations
+  - **Documentation:**
+    - Updated `IMPLEMENTATION_PLAN.md` with Parlanti analysis results and next steps
+    - Added prompts 9-10 to `PROMPT_LOG.md`
+  - **Next Actions:**
+    - [ ] Refit with B-spline basis (improved numerical stability)
+    - [ ] Inspect G140M 2D extraction for systematics
+    - [ ] Implement physical bounds on coefficients
+    - [ ] Validate against published Parlanti values
+
+## 2026-03-27 11:45 AM
+- **Flat Field Documentation Fix**:
+  - Corrected image embedding syntax in `FLATS.md` by removing the `file:///` prefix to ensure proper rendering across different markdown viewers.
+  - Added vertical separation between mode-specific plots for improved readability.
+
 ## 2026-03-27 11:15 AM
 - **Flat Field Extension Implementation:**
   - **`jwst/flatfield/flat_field.py` Modifications**: 
