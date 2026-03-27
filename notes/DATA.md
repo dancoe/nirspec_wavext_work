@@ -162,4 +162,30 @@
 | jw01492003001_03106_00006_nrs2 | F290LP;G395M | 46.74 | 2 |
 | jw01492003001_03106_00001_nrs2 | F290LP;G395M | 46.74 | 2 |
 | jw01492003001_03106_00004_nrs2 | F290LP;G395M | 46.74 | 2 |
-| jw01492003001_03106_00005_nrs2 | F290LP;G395M | 46.74 | 2 |
+| jw01492003001_03106_00005_nrs2 | F290LP;G395M | 467.40000000000015 | 2 |
+
+---
+
+# DATA.md - Calibration Programs 1537 & 1538
+
+## Program 1537 (G191-B2B)
+**Target:** G191-B2B (White Dwarf)
+**Status:** Downloaded & Reduced (Extended Range)
+
+| Grating | Filter | Files |
+| --- | --- | --- |
+| PRISM | CLEAR | jw01537009001_03102_00004_nrs2_rate.fits |
+| G140M | F100LP | jw01537007001_07101_00003_nrs2_rate.fits |
+| G235M | F170LP | jw01537007001_09101_00003_nrs2_rate.fits |
+| G395M | F290LP | jw01537007001_11101_00002_nrs2_rate.fits |
+
+## Program 1538 (P330E)
+**Target:** P330E (G-type Star)
+**Status:** Downloaded & Reduced (Extended Range)
+
+| Grating | Filter | Files |
+| --- | --- | --- |
+| PRISM | CLEAR | jw01538107001_04101_00003_nrs2_rate.fits |
+| G140M | F100LP | jw01538160001_06101_00005_nrs2_rate.fits |
+| G235M | F170LP | jw01538160001_08101_00004_nrs2_rate.fits |
+| G395M | F290LP | jw01538160001_10101_00002_nrs2_rate.fits |

@@ -25,7 +25,7 @@ export PYTHONPATH=/Users/dcoe/NIRSpec/wavext/jwst_nirspec_wavext
 ```
 
 ## Processing Workflow
-1.  **Preparation:** Download Level 3 (f(λ)) and Level 2 (obs) data for the target (e.g., PID 1492).
+1.  **Preparation:** Download Level 3 (f(λ)) and Level 2 (obs) data for the target (e.g., PID 1492, 1537, 1538).
 2.  **Assignment:** Run `assign_wcs` with the `wavelengthrange_extended.asdf` override.
-3.  **Extraction:** Run `extract_2d` to generate the extended 2D spectral cutouts.
-4.  **Analysis:** Use the baseline f(λ) from nominal extractions to solve for the throughput functions.
+3.  **Extraction:** Run `extract_2d` and `extract_1d` (to generate extended spectral cutouts).
+4.  **Analysis:** Use the baseline f(λ) from nominal extractions (or PRISM) to solve for the throughput functions k(λ), α̃(λ), β̃(λ) using the multi-source Parlanti model.

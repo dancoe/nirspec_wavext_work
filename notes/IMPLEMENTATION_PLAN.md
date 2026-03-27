@@ -137,5 +137,13 @@ $S(\lambda) \approx k(\lambda) f(\lambda) + a(\lambda) f(\lambda/2) + b(\lambda)
 - `plots/Parlanti/cal/PARLANTI_ANALYSIS_REPORT.md` — v1 analysis report (superseded by v2)
 - Notes: `notes/CALIBRATION.md`, `notes/PARLANTI.md`
 
+### Current Phase (March 27, 2026 - Evening)
+- **Goal:** Direct 3x3 Solver for Parlanti Coefficients (k, α̃, β̃).
+- **Tasks:**
+    - ✓ Download and Reduce PIDs 1537 (G191-B2B) and 1538 (P330E) FS data.
+    - [ ] Create `solve_parlanti_direct.py` to solve the 3x3 system using 1492, 1537, and 1538.
+    - [ ] Derive $k(\lambda)$, $\tilde\alpha(\lambda)$, and $\tilde\beta(\lambda)$ directly without polynomial priors.
+    - [ ] Compare derived coefficients across the three sources to ensure stability.
+
 ---
 [IMPLEMENTATION_PLAN.md ends here]

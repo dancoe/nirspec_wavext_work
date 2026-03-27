@@ -2,6 +2,17 @@
 
 Add new entries to the top (most recent first). Don't delete anything.
 
+## 2026-03-27 (late evening)
+  - **Data Acquisition & Reduction:** Successfully batch-downloaded and reduced FS data for **PIDs 1536, 1537 (G191-B2B), and 1538 (P330E)**. All targets were processed through the extended WCS and extraction pipeline (NRS2 enabled).
+  - **Direct 3-Source Solver:** Implemented `analysis/solve_parlanti_3source.py`. This script performs a direct $3 \times 3$ solve of the Parlanti system at every wavelength using the three distinct calibration sources (IRAS-05248, G191-B2B, P330E).
+    - Utilizes **NNLS (Non-Negative Least Squares)** to enforce physical throughputs.
+    - Applies **11-pixel boxcar smoothing** to stabilize derived $k, \tilde\alpha, \tilde\beta$ functions.
+  - **Documentation Reorganization:** 
+    - Split `notes/FLATS.md` into two documents to improve clarity and maintainability.
+    - `notes/FLATS.md`: Focuses on the flat-fielding strategy, meaning, and visualization Atlas (carousels).
+    - `notes/FLATS_FILES.md`: Provides the detailed, audited inventory of all 40 `DFLAT`, `FFLAT`, and `SFLAT` reference files.
+  - **Ongoing Calibration Validation:** Initiated generation of source-specific validation plots to verify how well the global 3-source solution models each individual calibrator.
+
 ## 2026-03-27 (evening)
   - **Root cause found:** Extended NRS2 extractions (`jw01492003001_…`) were processed through `assign_wcs` + `extract_2d` + `extract_1d` but NOT the `photom` step. `FLUX` column is in DN/s (not Jy). Nominal Level 3 products (obs001) are in Jy. This unit mismatch caused the 100–200× flux discrepancy seen in the pre-cal plot.
   - **New script:** `analysis/calibrate_parlanti.py` implements:

@@ -1,0 +1,58 @@
+2026-03-27 14:33:40,144 - CRDS - INFO -  Calibration SW Found: jwst 1.20.2 (/Users/dcoe/micromamba/envs/jwst_1.20.2/lib/python3.13/site-packages/jwst-1.20.2.dist-info)
+2026-03-27 14:33:42,714 - CRDS - INFO -  Calibration SW Found: jwst 1.20.2 (/Users/dcoe/micromamba/envs/jwst_1.20.2/lib/python3.13/site-packages/jwst-1.20.2.dist-info)
+
+--- Reducing data in PID1537_G191-B2B ---
+
+Processing jw01537007001_07101_00003_nrs2_rate.fits
+  WCS already exists: jw01537007001_07101_00003_nrs2_wcs.fits
+  2D already exists: jw01537007001_07101_00003_nrs2_extract_2d.fits
+  1D already exists: jw01537007001_07101_00003_nrs2_extract_1d.fits
+
+Processing jw01537007001_09101_00003_nrs2_rate.fits
+  WCS already exists: jw01537007001_09101_00003_nrs2_wcs.fits
+  2D already exists: jw01537007001_09101_00003_nrs2_extract_2d.fits
+  1D already exists: jw01537007001_09101_00003_nrs2_extract_1d.fits
+
+Processing jw01537007001_11101_00002_nrs2_rate.fits
+  WCS already exists: jw01537007001_11101_00002_nrs2_wcs.fits
+  2D already exists: jw01537007001_11101_00002_nrs2_extract_2d.fits
+  1D already exists: jw01537007001_11101_00002_nrs2_extract_1d.fits
+
+Processing jw01537009001_03102_00004_nrs2_rate.fits
+  Step 1: AssignWcsStep...
+  ERROR processing /Users/dcoe/NIRSpec/wavext/data/PID1537_G191-B2B/jw01537009001_03102_00004_nrs2_rate.fits: (64, 'No open slits fall on detector NRS2.')
+
+--- Reducing data in PID1538_P330E ---
+
+Processing jw01538107001_04101_00004_nrs2_rate.fits
+  Step 1: AssignWcsStep...
+  ERROR processing /Users/dcoe/NIRSpec/wavext/data/PID1538_P330E/jw01538107001_04101_00004_nrs2_rate.fits: (64, 'No open slits fall on detector NRS2.')
+
+Processing jw01538160001_06101_00001_nrs2_rate.fits
+  Step 1: AssignWcsStep...
+  Saved WCS to jw01538160001_06101_00001_nrs2_wcs.fits
+  Step 2: Extract2dStep...
+  Saved 2D to jw01538160001_06101_00001_nrs2_extract_2d.fits
+    Slit S1600A1 wave range: nan-nan um
+  Step 3: Extract1dStep...
+  Saved 1D to jw01538160001_06101_00001_nrs2_extract_1d.fits
+
+Processing jw01538160001_08101_00005_nrs2_rate.fits
+  Step 1: AssignWcsStep...
+  Saved WCS to jw01538160001_08101_00005_nrs2_wcs.fits
+  Step 2: Extract2dStep...
+  Saved 2D to jw01538160001_08101_00005_nrs2_extract_2d.fits
+    Slit S1600A1 wave range: nan-nan um
+  Step 3: Extract1dStep...
+  Saved 1D to jw01538160001_08101_00005_nrs2_extract_1d.fits
+
+Processing jw01538160001_10101_00004_nrs2_rate.fits
+  Step 1: AssignWcsStep...
+  Saved WCS to jw01538160001_10101_00004_nrs2_wcs.fits
+  Step 2: Extract2dStep...
+  Saved 2D to jw01538160001_10101_00004_nrs2_extract_2d.fits
+    Slit S1600A1 wave range: nan-nan um
+  Step 3: Extract1dStep...
+  Saved 1D to jw01538160001_10101_00004_nrs2_extract_1d.fits
+
+Reduction complete.

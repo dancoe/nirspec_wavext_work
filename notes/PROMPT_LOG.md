@@ -196,3 +196,14 @@ Also follow @[nirspec_wavext_work/notes/INSTRUCTIONS.md]
 
 46. 2026-03-27 14:10
 Excellent thank you! Please commit to Github, following @INSTRUCTIONS.md
+
+47. 2026-03-27 15:30
+Please read the updated plans in notes/PARLANTI.md and IMPLEMENTATION_PLAN.md. We've analyzed data in JWST PID 1492. Now please also download, reduce, and analyze data from programs 1536, 1537, 1538. Update the docs and instructions as needed. Focus on Fixed Slit (FS) data in PRISM, G140M, G235M, G395M. Follow INSTRUCTIONS.md.
+
+48. 2026-03-27 15:35
+If a program has PRISM, G140M, G235M, and G395M all for the same star (or pointlike object), that's perfect, and we should prioritize that data.
+
+49. 2026-03-27 18:40
+Excellent thank you! If you can generate new plots like plots/Parlanti/cal/FS_1492_cal.png but for your new solutions that would be amazing!
+I think we've already updated the flats as needed. Check FLATS.md... actually, split FLATS.md up, extracting all the detailed info about files and putting that into a separate file FLATS_FILES.md. That way FLATS.md can focus on their meaning and the plan for extending them.
+Also follow INSTRUCTIONS.md including logging prompts PROMPT_LOG.md, changes CHANGE_LOG.md and committing to Github.

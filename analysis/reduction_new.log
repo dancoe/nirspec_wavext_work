@@ -1,0 +1,45 @@
+2026-03-27 14:31:06,690 - CRDS - INFO -  Calibration SW Found: jwst 1.20.2 (/Users/dcoe/micromamba/envs/jwst_1.20.2/lib/python3.13/site-packages/jwst-1.20.2.dist-info)
+
+--- Reducing data in PID1537_G191-B2B ---
+
+Processing jw01537007001_07101_00003_nrs2_rate.fits
+  WCS already exists: jw01537007001_07101_00003_nrs2_wcs.fits
+  2D already exists: jw01537007001_07101_00003_nrs2_extract_2d.fits
+  1D already exists: jw01537007001_07101_00003_nrs2_extract_1d.fits
+
+Processing jw01537007001_09101_00003_nrs2_rate.fits
+  WCS already exists: jw01537007001_09101_00003_nrs2_wcs.fits
+  2D already exists: jw01537007001_09101_00003_nrs2_extract_2d.fits
+  1D already exists: jw01537007001_09101_00003_nrs2_extract_1d.fits
+
+Processing jw01537007001_11101_00002_nrs2_rate.fits
+  WCS already exists: jw01537007001_11101_00002_nrs2_wcs.fits
+  2D already exists: jw01537007001_11101_00002_nrs2_extract_2d.fits
+  1D already exists: jw01537007001_11101_00002_nrs2_extract_1d.fits
+
+Processing jw01537009001_03102_00004_nrs2_rate.fits
+  Step 1: AssignWcsStep...
+Traceback (most recent call last):
+  File "/Users/dcoe/NIRSpec/wavext/nirspec_wavext_work/analysis/reduce_new_data.py", line 36, in <module>
+    res_wcs = step_wcs.run(model)
+  File "/Users/dcoe/NIRSpec/wavext/jwst_nirspec_wavext/jwst/stpipe/core.py", line 299, in run
+    result = super().run(*args, **kwargs)
+  File "/Users/dcoe/micromamba/envs/jwst_1.20.2/lib/python3.13/site-packages/stpipe/step.py", line 594, in run
+    step_result = self.process(*args)
+  File "/Users/dcoe/NIRSpec/wavext/jwst_nirspec_wavext/jwst/assign_wcs/assign_wcs_step.py", line 124, in process
+    result = load_wcs(
+        input_model,
+    ...<2 lines>...
+        nrs_ifu_slice_wcs=self.nrs_ifu_slice_wcs,
+    )
+  File "/Users/dcoe/NIRSpec/wavext/jwst_nirspec_wavext/jwst/assign_wcs/assign_wcs.py", line 72, in load_wcs
+    pipeline = mod.create_pipeline(input_model, reference_files, slit_y_range=nrs_slit_y_range)
+  File "/Users/dcoe/NIRSpec/wavext/jwst_nirspec_wavext/jwst/assign_wcs/nirspec.py", line 103, in create_pipeline
+    pipeline = exp_type2transform[exp_type](
+        input_model, reference_files, slit_y_range=slit_y_range
+    )
+  File "/Users/dcoe/NIRSpec/wavext/jwst_nirspec_wavext/jwst/assign_wcs/nirspec.py", line 419, in slits_wcs
+    open_slits_id = get_open_slits(input_model, reference_files, slit_y_range)
+  File "/Users/dcoe/NIRSpec/wavext/jwst_nirspec_wavext/jwst/assign_wcs/nirspec.py", line 626, in get_open_slits
+    raise NoDataOnDetectorError(log_message)
+jwst.assign_wcs.util.NoDataOnDetectorError: (64, 'No open slits fall on detector NRS2.')
