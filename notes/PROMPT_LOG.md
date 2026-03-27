@@ -203,3 +203,20 @@ Refer to @[nirspec_wavext_work/analysis/plot_parlanti_flux.py]. Note we'd done o
 
 44. 2026-03-27 09:54 AM
 Awesome thank you please continue following @[nirspec_wavext_work/notes/INSTRUCTIONS.md]including committing to git
+
+45. 2026-03-27 09:56 AM
+Please generate a file notes/FLATS.md and explain the various flats S-flats, F-flats, D-flats for the various observing modes FS, MOS, IFU, BOTS and how you've had to extend / modify them for wavext.
+
+Refer to references/Parlanti Fig A1.png for example to see how they extended the S-flat for the IFU. Generate similar plots as warranted.
+
+The Parlanti IFU plan was basically:
+S-flats (S2.1.1)
+Spectroscopic flat = aperture –> disperser
+Fig. A.1 extensions:
+Slow variation (x, y, λ) = 1
+Fast variation (λ) =  value at reddest wavelength
+F-flats (S2.1.2)
+Fore-optics flat = telescope + NIRSpec fore optics
+Fast variations (λ): concatenated (e.g., G140M = G140M + G235M + G395M)
+
+Also follow @[nirspec_wavext_work/notes/INSTRUCTIONS.md]

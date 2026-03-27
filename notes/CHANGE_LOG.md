@@ -2,6 +2,16 @@
 
 Add new entries to the top (most recent first). Don't delete anything.
 
+## 2026-03-27 11:15 AM
+- **Flat Field Extension Implementation:**
+  - **`jwst/flatfield/flat_field.py` Modifications**: 
+    - **`combine_fast_slow`**: Replaced `right=np.nan` with `right=tab_flat[-1]` and `right=tab_flat_error[-1]` in `np.interp` calls. This enables red-end extrapolation of "fast" (table-based) flat variations using the value at the reddest available wavelength, as per Parlanti et al. 2025.
+    - **`interpolate_flat`**: Modified range-checking logic to allow extrapolation to the right (red end). For wavelengths exceeding the reference range, the "slow" (image-based) variation is now explicitly set to **1.0** (constant) and pixels are **not** flagged as `DO_NOT_USE`, ensuring processing continues for `wavext`.
+- **Documentation**:
+  - Created `notes/FLATS.md` explaining the D-flat, S-flat, and F-flat roles in NIRSpec and the newly implemented extension strategies for wavext.
+  - Linked `references/Parlanti Fig A1.png` as the conceptual basis for the IFU flat extension.
+- **Git Commit**: Committed all changes to the `feature/nirspec_wavelength_extension` branch of `jwst_nirspec_wavext` and updated `nirspec_wavext_work`.
+
 ## 2026-03-27 10:00 AM
 - **Plotting Refinement (Combined M-Gratings):**
   - **Front-Layering**: Configured PRISM baseline to be plotted on top (`zorder=20`) of the M-gratings for better visibility as a reference baseline.
