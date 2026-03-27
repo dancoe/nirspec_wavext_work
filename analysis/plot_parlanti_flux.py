@@ -36,12 +36,13 @@ def plot_grating(grating_name, nominal_wav, nominal_flux, extended_wav, extended
     # Nominal
     if nominal_wav is not None:
         idx = np.argsort(nominal_wav)
-        plt.plot(nominal_wav[idx], nominal_flux[idx], label=f'{grating_name} (Nominal)', color='green', alpha=0.8, linewidth=1)
+        color = 'red' if '140M' in grating_name else 'blue'
+        plt.plot(nominal_wav[idx], nominal_flux[idx], label=f'{grating_name} (Nominal)', color=color, alpha=1.0, linewidth=1)
         
     # Extended
     if extended_wav is not None:
         idx = np.argsort(extended_wav)
-        color = 'red' if '140M' in grating_name else 'blue'
+        color = 'lightcoral' if '140M' in grating_name else 'cornflowerblue'
         plt.plot(extended_wav[idx], extended_flux[idx], label=f'{grating_name} (Extended S(λ))', color=color, alpha=0.6, linewidth=0.5)
 
     if order_shade_range:
@@ -52,9 +53,11 @@ def plot_grating(grating_name, nominal_wav, nominal_flux, extended_wav, extended
     plt.yscale('log')
     plt.xlim(0.6, 5.6)
     # Autoscale Y based on data
-    plt.grid(True, which='both', linestyle='--', alpha=0.5)
+    # Remove interior grid lines
+    plt.grid(False) 
     plt.legend(loc='lower right')
     plt.title(f'NIRSpec NIRSpec/FS {grating_name} Analysis (PID 1492)')
+
     
     os.makedirs(os.path.dirname(plot_filename), exist_ok=True)
     plt.savefig(plot_filename)
