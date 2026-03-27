@@ -8,9 +8,13 @@ from stdatamodels.jwst import datamodels
 logging.basicConfig(level=logging.INFO, format='%(levelname)s: %(message)s')
 log = logging.getLogger("jwst.extract_2d")
 log.setLevel(logging.DEBUG)
-
-input_path = os.path.abspath('/Users/dcoe/NIRSpec/wavext/data/PID1492/jw01492001001_0310a_00007_nrs2_g235h_wcs.fits')
-output_path = os.path.abspath('/Users/dcoe/NIRSpec/wavext/data/PID1492/jw01492001001_0310a_00007_nrs2_g235h_extract_2d.fits')
+# Setup paths
+if len(sys.argv) > 2:
+    input_path = os.path.abspath(sys.argv[1])
+    output_path = os.path.abspath(sys.argv[2])
+else:
+    input_path = os.path.abspath('/Users/dcoe/NIRSpec/wavext/data/PID1492/jw01492001001_0310a_00007_nrs2_g235h_wcs.fits')
+    output_path = os.path.abspath('/Users/dcoe/NIRSpec/wavext/data/PID1492/jw01492001001_0310a_00007_nrs2_g235h_extract_2d.fits')
 # Use the override if needed, though wcs should already have it
 override_path = os.path.abspath('/Users/dcoe/NIRSpec/wavext/nirspec_wavext_work/reference_files/wavelengthrange_extended.asdf')
 

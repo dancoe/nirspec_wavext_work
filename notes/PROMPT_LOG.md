@@ -180,3 +180,8 @@ Nice! But the extended wavelengths aren't plotted in @[nirspec_wavext_work/plots
 
 37. 2026-03-27 01:10 AM
 Please take over. And follow @[nirspec_wavext_work/notes/INSTRUCTIONS.md]
+
+38. 2026-03-27 07:45 AM
+I'm looking forward to seeing plots like these from Parlanti+:
+resources/Parlanti Fig*.png
+Please proceed.
