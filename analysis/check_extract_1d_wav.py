@@ -1,8 +1,14 @@
+import sys
 import os
 from stdatamodels.jwst import datamodels
 import numpy as np
 
-f = '/Users/dcoe/NIRSpec/wavext/data/PID1492/jw01492001001_17101_00006_nrs2_g395h_extract_1d.fits'
+if len(sys.argv) > 1:
+    f = os.path.abspath(sys.argv[1])
+else:
+    f = '/Users/dcoe/NIRSpec/wavext/data/PID1492/jw01492001001_17101_00006_nrs2_g395h_extract_1d.fits'
+
+print(f"Checking {f}...")
 model = datamodels.open(f)
 for spec in model.spec:
     wav = spec.spec_table['wavelength']

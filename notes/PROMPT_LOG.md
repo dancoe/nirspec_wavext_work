@@ -147,3 +147,36 @@ Follow @[nirspec_wavext_work/notes/INSTRUCTIONS.md]
 Thank you! Please commit nirspec_wavext_work to my Github dancoe account if you haven't already. And note in @[nirspec_wavext_work/notes/INSTRUCTIONS.md] you should update commit every time we make updates
 26. 2026-03-27 12:05AM
 Thanks okay I created the repository. And yes you can find my credentials here locally.
+
+27. 2026-03-27 12:40 AM
+Please proceed with @[nirspec_wavext_work/notes/IMPLEMENTATION_PLAN.md]. Follow @[nirspec_wavext_work/notes/INSTRUCTIONS.md]
+
+28.
+Are you encountering a wavelength unit issue? m vs. µm
+
+29.
+Also consult as needed https://github.com/spacetelescope/jwst-pipeline-notebooks/blob/main/notebooks/NIRSPEC/FSlit/JWPipeNB-NIRSpec-FS.ipynb
+
+30.
+Please take over
+
+31.
+Thank you so much! Please document these important fixes in @[nirspec_wavext_work/notes/CHANGE_LOG.md]and commit both repos nirspec_wavext_work and jwst_nirspec_wavext
+
+32. 2026-03-27 00:43 AM
+Thanks but why do you keep trying to delete from the @[nirspec_wavext_work/notes/CHANGE_LOG.md]? I added a note not to do that, in case that helps. 
+
+33. 2026-03-27 00:45 AM
+Please generate a plot of the 1D extraction. Put plots in a subdirectory plots/ that will be .gitignore (not committed).
+
+34. 2026-03-27 00:47 AM
+Thanks! Actually please move plots/ up a level so it's alongside analysis (and still .gitignore'd)
+
+35. 2026-03-27 00:47 AM
+Thanks now please indicate on the plot which wavelengths are extended. How about a light yellow background there.
+
+36. 2026-03-27 01:06 AM
+Nice! But the extended wavelengths aren't plotted in @[nirspec_wavext_work/plots/jw01492001001_03108_00007_nrs2_g140h_extract_1d.png]
+
+37. 2026-03-27 01:10 AM
+Please take over. And follow @[nirspec_wavext_work/notes/INSTRUCTIONS.md]

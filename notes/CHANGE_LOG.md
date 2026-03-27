@@ -2,6 +2,13 @@
 
 Add new entries to the top (most recent first). Don't delete anything.
 
+## 2026-03-27 01:25 AM
+- **Wavelength Extension Investigation:** Checked why extended wavelengths are not plotted for G140H and G235H on the `NRS2` detector.
+  - Investigated `assign_wcs` bounding box logic in `jwst_nirspec_wavext/jwst/assign_wcs/nirspec.py`. Found that the WCS models the physical detector boundaries, capping extraction at `x=2047`.
+  - For `S200A1` on `NRS2`, `G140H` physically terminates at 1.819 µm (well within the nominal 1.89 µm cutoff), and `G235H` terminates at 3.050 µm (within the nominal 3.17 µm cutoff).
+  - Thus, there is zero flux beyond the nominal cutoff for these combinations because the light physically falls off the detector edge. Plotted output correctly shows no yellow extended shading because all available data is already within the nominal ranges.
+  - Successfully updated and executed the `run_assign_wcs.py`, `run_extract_2d.py`, and `run_extract_1d.py` scripts to verify these limits on G235H data (`jw01492001001_0310a_00007_nrs2_rate.fits`).
+
 ## 2026-03-27 12:40 AM
 - **Extract1dStep Success:** Successfully executed `AssignWcsStep`, `Extract2dStep`, and `Extract1dStep` for G395H PID 1492 Fixed Slit data using the custom `wavelengthrange_extended.asdf` reference file.
   - **Unit Verification:** Confirmed that while the ASDF reference uses meters (1e-6), the pipeline correctly scales the resulting spectra into **microns**.

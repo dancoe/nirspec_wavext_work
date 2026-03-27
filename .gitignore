@@ -1,0 +1,4 @@
+# Local analysis plots
+plots/
+__pycache__/
+*.pyc
