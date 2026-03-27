@@ -13,6 +13,17 @@ Add new entries to the top (most recent first). Don't delete anything.
     - `notes/FLATS_FILES.md`: Provides the detailed, audited inventory of all 40 `DFLAT`, `FFLAT`, and `SFLAT` reference files.
   - **Ongoing Calibration Validation:** Initiated generation of source-specific validation plots to verify how well the global 3-source solution models each individual calibrator.
 
+## [Unreleased] - 2026-03-27
+
+### Added
+- Created `plots/Parlanti/cal/3source/FS_3source_cal.png`: Summary plot for the 3-source calibration, showing global coefficients and a representative calibrated spectrum (P330E) compared to ground truth (PRISM).
+- Created `plots/Parlanti/cal/3source/CAL_3SOURCE.md`: Comprehensive report for the multi-source direct solve, summarizing methodology (NNLS), stability improvements over single-source polynomial fits, and next steps for G395M.
+- Created `analysis/plot_3source_summary.py`: Script to generate the summary calibration performance figure.
+
+### Fixed
+- Fixed G140M file paths in parity with the 3-source solver for all targets (IRAS-05248, G191-B2B, P330E).
+- Robustified `load_spec` in analysis scripts by using `astropy.io.fits` to handle Level 3 files with legacy ASDF metadata issues.
+
 ## 2026-03-27 (evening)
   - **Root cause found:** Extended NRS2 extractions (`jw01492003001_…`) were processed through `assign_wcs` + `extract_2d` + `extract_1d` but NOT the `photom` step. `FLUX` column is in DN/s (not Jy). Nominal Level 3 products (obs001) are in Jy. This unit mismatch caused the 100–200× flux discrepancy seen in the pre-cal plot.
   - **New script:** `analysis/calibrate_parlanti.py` implements:

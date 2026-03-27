@@ -207,3 +207,9 @@ If a program has PRISM, G140M, G235M, and G395M all for the same star (or pointl
 Excellent thank you! If you can generate new plots like plots/Parlanti/cal/FS_1492_cal.png but for your new solutions that would be amazing!
 I think we've already updated the flats as needed. Check FLATS.md... actually, split FLATS.md up, extracting all the detailed info about files and putting that into a separate file FLATS_FILES.md. That way FLATS.md can focus on their meaning and the plan for extending them.
 Also follow INSTRUCTIONS.md including logging prompts PROMPT_LOG.md, changes CHANGE_LOG.md and committing to Github.
+
+50. 2026-03-27 19:15
+Thanks! I split the cal/ results into 2 subdirectories: the earlier 1492/ and newer 3source/
+I'm looking for a new 3source plot like plots/Parlanti/cal/1492/FS_1492_cal.png. Can you make one like that? Or am I missing it?
+Please generate 3source/CAL_3SOURCE.md similar to 1492/PARLANTI_ANALYSIS_REPORT.md
+
