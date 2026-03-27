@@ -32,10 +32,10 @@ def plot_grating(grating_name, nominal_wav, nominal_flux, extended_wav, extended
     if order_shade_range:
         plt.axvspan(order_shade_range[0], order_shade_range[1], alpha=0.1, color='palegreen', label='Overlap Region', zorder=-10)
 
-    # 1. PRISM baseline
+    # 1. PRISM baseline (Front)
     if prism_wav is not None:
         idx = np.argsort(prism_wav)
-        plt.plot(prism_wav[idx], prism_flux[idx], label='PRISM (Reference f(λ))', color='black', alpha=0.3, linewidth=1, zorder=1)
+        plt.plot(prism_wav[idx], prism_flux[idx], label='PRISM (Reference f(λ))', color='black', alpha=0.6, linewidth=1, zorder=20)
         
     # Determine grating colors
     if '140' in grating_name:
@@ -43,7 +43,7 @@ def plot_grating(grating_name, nominal_wav, nominal_flux, extended_wav, extended
         ext_color = 'cornflowerblue'
     elif '235' in grating_name:
         main_color = 'darkgoldenrod'
-        ext_color = 'khaki'
+        ext_color = 'goldenrod'
     elif '395' in grating_name:
         main_color = 'red'
         ext_color = 'lightcoral'
@@ -54,12 +54,13 @@ def plot_grating(grating_name, nominal_wav, nominal_flux, extended_wav, extended
     # 2. Nominal
     if nominal_wav is not None:
         idx = np.argsort(nominal_wav)
-        plt.plot(nominal_wav[idx], nominal_flux[idx], label=f'{grating_name} (Nominal)', color=main_color, alpha=0.7, linewidth=1, zorder=5)
+        plt.plot(nominal_wav[idx], nominal_flux[idx], label=f'{grating_name} (Nominal)', color=main_color, alpha=0.6, linewidth=1, zorder=5)
         
     # 3. Extended
     if extended_wav is not None:
         idx = np.argsort(extended_wav)
         plt.plot(extended_wav[idx], extended_flux[idx], label=f'{grating_name} (Extended S(λ))', color=ext_color, alpha=0.6, linewidth=0.5, zorder=10)
+
 
     plt.xlabel(r'Wavelength ($\mu$m)')
     plt.ylabel('Flux (Jy)')
