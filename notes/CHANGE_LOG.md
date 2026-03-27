@@ -2,6 +2,20 @@
 
 Add new entries to the top (most recent first). Don't delete anything.
 
+## 2026-03-27 (late night)
+  - **V3 Multi-Source Bootstrap Solver (Kappa Fixed):**
+    - Refined `analysis/solver/solve_parlanti_bootstrap_v3.py` to strictly implement the **Parlanti et al. (2025)** "North Star" model ($k \approx 1.0$ prior).
+    - **Multi-Truth Integration**: Engineered a dynamic truth-merger in `solve_parlanti_bootstrap_v3.py` that combines G235M, G395M, and PRISM spectra to provide reference flux across the entire extended range (0.6–5.6 µm).
+    - **Robust Scaling**: Implemented a dynamic overlap-finding scaling algorithm in both solver and plotting scripts. This handles the wavelength gaps between NRS1 and NRS2 detectors by searching for the first valid data window.
+    - **Stabilized Solves**: Increased the $k=1$ weight ($w=5.0$) and implemented 40-channel smoothing to prevent non-physical zero-crossings in high-contamination regions (like the G191-B2B spikes).
+  - **Validation & Visualization V3**:
+    - Generated `plots/Parlanti/cal/153678_v3/SUMMARY_V3_{P330E,G191-B2B}.png` following the Parlanti style (Log scale, multi-color traces, extension arrows).
+    - **Contamination Stress Test**: Confirmed successful ghost subtraction in the hot-star (G191-B2B) case, where 2nd-order contamination is orders of magnitude higher than the 1st-order signal.
+    - Created `plots/Parlanti/cal/153678_v3/FINAL_COEFFS_V3.png` showing smoothed $k, \tilde\alpha, \tilde\beta$ functions.
+  - **Documentation**:
+    - Finalized `plots/Parlanti/cal/153678_v3/CAL_153678_V3.md` as the primary calibration artifact.
+    - Audited and updated `notes/FLATS_FILES.md` and `notes/FLATS.md`.
+
 ## 2026-03-27 (late evening)
   - **Data Acquisition & Reduction:** Successfully batch-downloaded and reduced FS data for **PIDs 1536, 1537 (G191-B2B), and 1538 (P330E)**. All targets were processed through the extended WCS and extraction pipeline (NRS2 enabled).
   - **Direct 3-Source Solver:** Implemented `analysis/solve_parlanti_3source.py`. This script performs a direct $3 \times 3$ solve of the Parlanti system at every wavelength using the three distinct calibration sources (IRAS-05248, G191-B2B, P330E).
@@ -111,7 +125,7 @@ Add new entries to the top (most recent first). Don't delete anything.
   - **G395M Success:** Processed NRS2 file `jw01492003001_03106_00002_nrs2_rate.fits`.
 - **Comparison Visualization:** Generated comparison plots (`plots/*_comparison.png`) showing $f(\lambda)$ (Nominal) vs $S(\lambda)$ (Extended) with yellow shading highlighting the extension/overlap regions.
 - **PRISM NRS2 Investigation:** Attempted PRISM processing on NRS2 file `jw01492005001_17101_00006_nrs2_rate.fits` but encountered `NoDataOnDetectorError`.
-  - **Findings:** Corrected `wavelengthrange_extended.asdf` for PRISM CLEAR to [0.5, 5.6] µm, but `assign_wcs` still removes the `S1600A1` slit on NRS2. 
+  - **Findings:** Corrected `wavelengthrange_extended.asdf` for PRISM CLEAR to [0.5, 5.6] µm, but `assign_wcs` still removes the `S1600A1` slit on NRS2.
   - **Next Step:** Verify if PRISM `S200A1` projects onto NRS2 or if the existing Level 3 products already cover the desired range.
 - **Documentation Updates:**
   - Logged latest prompt in `PROMPT_LOG.md`.
@@ -129,6 +143,12 @@ Add new entries to the top (most recent first). Don't delete anything.
 - **Extract1dStep Success:** Successfully executed `AssignWcsStep`, `Extract2dStep`, and `Extract1dStep` for G395H PID 1492 Fixed Slit data using the custom `wavelengthrange_extended.asdf` reference file.
   - **Unit Verification:** Confirmed that while the ASDF reference uses meters (1e-6), the pipeline correctly scales the resulting spectra into **microns**.
   - **Detector Edge Constraints:** Verified that the extraction is limited physically by the NRS2 detector edge (e.g., ~5.144 µm for S200A1).
+## 2026-03-27
+- **V2 Multi-Source Bootstrap Solver**: Implemented `solve_parlanti_bootstrap.py` (V4 logic) with physical priors (1st-order dominance) and NNLS.
+- **Combined PID Analysis**: Successfully integrated PIDs 1492, 1537, and 1538 into a single calibration run.
+- **Project Reorganization**: Moved all analysis scripts into subdirectories: `acquisition/`, `reduction/`, `solver/`, `plotting/`, `utils/`.
+- **Validation**: Applied V2 coefficients to P330E and G191-B2B, matching ground truth in overlap regions.
+- **Final Plotting**: Generated `FS_P330E_cal_V2.png` and `FS_IRAS-05248_cal_V2.png` matching the requested format.
 - **Pipeline Branch Rebase (jwst_1.20.2):** Resolved a critical `AttributeError: No attribute 'get_dtype'` that occurred during `Extract1dStep`.
     - **Root Cause:** The `feature/nirspec_wavelength_extension` branch was based on an outdated `jwst` pipeline codebase that used deprecated `stdatamodels` methods.
     - **Fix:** Rebased the local fork onto the official `1.20.2` tag to align the pipeline with the current environment's `stdatamodels` and `stpipe` dependencies.

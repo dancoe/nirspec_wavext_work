@@ -4,6 +4,7 @@ import numpy as np
 
 # We focus on targets that have PRISM, G140M, G235M, G395M
 targets_to_fetch = {
+    '1536': 'J1743045',
     '1537': 'G191-B2B',
     '1538': 'P330E'
 }

@@ -56,6 +56,34 @@ Then yes, please go ahead and update code and generate new local reference files
 
 Outside of the pipeline updates, please also plan to download and analyze the JWST 1492 FS data so we can begin calibrating.
 
+216. 2026-03-27 7:45 PM
+Thank you! In @[nirspec_wavext_work/plots/Parlanti/cal/3source/CAL_3SOURCE.md], update the Data section to just have 3 columns:
+Program Target Gratings
+1492 IRAS-05248 G140M, G235M
+etc.
+Please explain the key plot validation_results_G235M.png. It still doesn't look like FS_1492_cal.png or Parlanti's Fig A1. Instead of fitting to PRISM, fit extended G140M -> observed G235M, and extended G235M -> observed G395M.
+Also, please use data from 1536, 1537, 1538, without 1492 for now to see how those results are. Save the results in a new subdirectory: 153678/ alongside 3source/
+
+217. 2026-03-27 8:00 PM
+Also when generating plots like FS_3source_cal.png, refer to PARLANTI_PLOTS.md for formatting.
+
+218. 2026-03-27 8:15 PM
+Thanks. Now please refer to this figure again from Parlanti. Also read @[nirspec_wavext_work/notes/PARLANTI.md] again. The 1st order should be much higher than the rest. Note the plot is on log scale. In your results instead, the 1st order k trails off to zero and the 2nd order dictates the spectrum! Please try again with this understanding in a new 153658_v2/ subdirectory. Probably makes sense to reorganize the analysis/ scripts into subdirectories too.
+
+219. 2026-03-27 8:30 PM
+Thanks for reorganizing analysis/ You just missed a few at root level. Again when plotting refer to @[nirspec_wavext_work/notes/PARLANTI_PLOTS.md]for colors including G140 blue, G235M yellow.
+
+220. 2026-03-27 8:35 PM
+Thanks but I don't see the recalibrated spectra on the plots:
+* extended G140M –> observed G235M
+* extended G235M –> observed G395M
+And it looks like the coefficients (1st order) go above 1. Kappa should be ~1 in the nominal range and different by tens of percent in the extended wavelengths. Use Parlanti Fig A1 as your North star and work towards that. Also their Fig 3.
+
+221. 2026-03-27 8:42 PM
+Thanks! But what's going on in @[nirspec_wavext_work/plots/Parlanti/cal/153678_v3/SUMMARY_V3_G191-B2B.png]for example? I don't see the green and red lines for the recalibrated data! That's the most important thing. Is it just a zorder thing? Or is there not data?
+
+222. 2026-03-27 8:45 PM
+Thanks please update documentation and commit everything so far according to @[nirspec_wavext_work/notes/INSTRUCTIONS.md]
 16. 2026-03-26 11:25PM 
 Thanks! Please generate a new file notes/CALIBRATION.md
 Refer to Parlanti et al. (arXiv:2512.14844)
