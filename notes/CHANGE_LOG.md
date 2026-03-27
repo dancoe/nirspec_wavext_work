@@ -2,6 +2,17 @@
 
 Add new entries to the top (most recent first). Don't delete anything.
 
+## 2026-03-27 10:00 AM
+- **Plotting Refinement (Combined M-Gratings):**
+  - **Front-Layering**: Configured PRISM baseline to be plotted on top (`zorder=20`) of the M-gratings for better visibility as a reference baseline.
+  - **Styling Alignment**: Adopted standard styles from `plot_parlanti_flux.py`, including `alpha=0.6` for all traces, `lw=1.0` (Nominal), and `lw=0.8` (Extended).
+  - **Dynamic Range Optimization**: Switched y-axis scaling logic to use a **0.1%–99.9% percentile range** to capture the full essential dynamic range of the contamination signal while excluding extreme noise/spikes.
+  - **Data Cleaning**: Implemented strict masking of non-finite (NaN) and non-positive flux values (≤ 1e-6) to eliminate vertical line artifacts in log-scale view.
+- **Documentation Migration**:
+  - Moved `PARLANTI_PLOTS.md` from `notes/` to `plots/` to align with the generated outputs.
+  - Created `plots/Parlanti_gratings.md` as a dedicated explainer for the `FS-1492_pre-cal.png` summary plot.
+- **Git Commit**: Successfully committed and pushed the final set of analysis scripts and documentation to `nirspec_wavext_work`.
+
 ## 2026-03-27 09:50 AM
 - **Batch Processing of M-Gratings:** Successfully automated the download, WCS assignment, 2D extraction, and 1D extraction for G140M, G235M, and G395M (NRS2) using the custom `wavelengthrange_extended.asdf`.
   - **G140M Success:** Extracted spectrum up to ~3.3 µm on NRS2 (nominal cutoff is ~1.9 µm), capturing significant 2nd order light for calibration.

@@ -188,3 +188,18 @@ Please proceed.
 
 39. 2026-03-27 09:29 AM
 Next steps are to download, reduce, analyze, compare, and plot data for G140M, G235M, G395M, PRISM. You have a decent start with PRISM and G140M. Please refer to and update @[nirspec_wavext_work/notes/IMPLEMENTATION_PLAN.md]and follow @[nirspec_wavext_work/notes/INSTRUCTIONS.md]including adding this to the @[nirspec_wavext_work/notes/PROMPT_LOG.md]
+
+40. 2026-03-27 09:42 AM
+Thank you! Yes please commit nirspec_wavext_work if you haven't already. Okay now I think we're getting somewhere that we can compare G140M, G235M, G395M and PRISM. Please plot them all on a single plot, following the color scheme we decided on before...
+
+41. 2026-03-27 09:48 AM
+Thanks! But look at @[nirspec_wavext_work/plots/nirspec_m_gratings_combined.png]. Note one of the data points went super high so you can't see anything. Return to log scale and also do some simple analysis to avoid outliers dominating the axes. Rename this plot file FS-1492_pre-cal.png. Generate a new plots/Parlanti_gratings.md explaining it.
+
+42. 2026-03-27 09:50 AM
+Okay again we need to clip the data that extends super low (to nan?) so the vertical lines don't dominate the plot. Please do so and update @[nirspec_wavext_work/notes/PARLANTI_PLOTS.md]as warranted. And actually move that file from notes/ into plots/
+
+43. 2026-03-27 09:52 AM
+Refer to @[nirspec_wavext_work/analysis/plot_parlanti_flux.py]. Note we'd done other things like removed the internal grid lines, moved the PRISM lines in front, set alpha=0.6... Please mimic that plotting, and update PARLANTI_PLOTS.md accordingly. Also your y axis clipping is too aggressive, clipping off some data we need to see.
+
+44. 2026-03-27 09:54 AM
+Awesome thank you please continue following @[nirspec_wavext_work/notes/INSTRUCTIONS.md]including committing to git
