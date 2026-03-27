@@ -28,25 +28,38 @@ def get_level3_flux(file_path):
 def plot_grating(grating_name, nominal_wav, nominal_flux, extended_wav, extended_flux, prism_wav, prism_flux, plot_filename, order_shade_range=None):
     plt.figure(figsize=(10, 6))
     
-    # PRISM baseline
+    # 0. Background Shading (zorder=-10)
+    if order_shade_range:
+        plt.axvspan(order_shade_range[0], order_shade_range[1], alpha=0.1, color='palegreen', label='Overlap Region', zorder=-10)
+
+    # 1. PRISM baseline
     if prism_wav is not None:
         idx = np.argsort(prism_wav)
-        plt.plot(prism_wav[idx], prism_flux[idx], label='PRISM (Reference f(λ))', color='black', alpha=0.3, linewidth=1)
+        plt.plot(prism_wav[idx], prism_flux[idx], label='PRISM (Reference f(λ))', color='black', alpha=0.3, linewidth=1, zorder=1)
         
-    # Nominal
+    # Determine grating colors
+    if '140' in grating_name:
+        main_color = 'blue'
+        ext_color = 'cornflowerblue'
+    elif '235' in grating_name:
+        main_color = 'darkgoldenrod'
+        ext_color = 'khaki'
+    elif '395' in grating_name:
+        main_color = 'red'
+        ext_color = 'lightcoral'
+    else:
+        main_color = 'gray'
+        ext_color = 'lightgray'
+
+    # 2. Nominal
     if nominal_wav is not None:
         idx = np.argsort(nominal_wav)
-        color = 'red' if '140M' in grating_name else 'blue'
-        plt.plot(nominal_wav[idx], nominal_flux[idx], label=f'{grating_name} (Nominal)', color=color, alpha=1.0, linewidth=1)
+        plt.plot(nominal_wav[idx], nominal_flux[idx], label=f'{grating_name} (Nominal)', color=main_color, alpha=0.7, linewidth=1, zorder=5)
         
-    # Extended
+    # 3. Extended
     if extended_wav is not None:
         idx = np.argsort(extended_wav)
-        color = 'lightcoral' if '140M' in grating_name else 'cornflowerblue'
-        plt.plot(extended_wav[idx], extended_flux[idx], label=f'{grating_name} (Extended S(λ))', color=color, alpha=0.6, linewidth=0.5)
-
-    if order_shade_range:
-        plt.axvspan(order_shade_range[0], order_shade_range[1], alpha=0.1, color='gray', label='Overlap Region')
+        plt.plot(extended_wav[idx], extended_flux[idx], label=f'{grating_name} (Extended S(λ))', color=ext_color, alpha=0.6, linewidth=0.5, zorder=10)
 
     plt.xlabel(r'Wavelength ($\mu$m)')
     plt.ylabel('Flux (Jy)')
@@ -57,6 +70,7 @@ def plot_grating(grating_name, nominal_wav, nominal_flux, extended_wav, extended
     plt.grid(False) 
     plt.legend(loc='lower right')
     plt.title(f'NIRSpec NIRSpec/FS {grating_name} Analysis (PID 1492)')
+
 
     
     os.makedirs(os.path.dirname(plot_filename), exist_ok=True)
