@@ -11,7 +11,7 @@ Please follow these instructions:
 - **Log all prompts:** Record every user request numerically with a timestamp in [PROMPT_LOG.md](PROMPT_LOG.md).
 - **Log all changes:** Detail every modification to the codebase in [CHANGE_LOG.md](CHANGE_LOG.md) (newest on top).
 - **Maintain documentation:** Keep these instructions and other notes up to date.
-- **Commit changes:** After making updates, commit and push changes to the repository (`nirspec_wavext_work`).
+- **Commit changes:** After making updates, commit and push changes to the repositories (`nirspec_wavext_work`) and/or (`jwst_nirspec_wavext`) as warranted.
 - **Don't operate the browser** unless I ask you to. The terminal should suffice.
 ## Pipeline Environment
 All wavelength extension processing MUST be performed in the `jwst_1.20.2` environment. This version is confirmed compatible with the current codebase and supports the necessary `stdatamodels` and `asdf` schema resolutions.

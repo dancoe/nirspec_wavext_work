@@ -59,7 +59,7 @@ Refer to [PIPELINE_RUNNING.md](PIPELINE_RUNNING.md) for CRDS server URLs, local 
 - **WCS Verification:** Run `assign_wcs` on NRS2 data with the override and verify the `wcs` object contains the extended range.
 
 ### Manual Verification
-- **PID 1492 Data:** Process Fixed Slit data from PID 1492 through `assign_wcs` and `extract_2d` using the custom [wavelengthrange_extended.asdf](file:///Users/dcoe/NIRSpec/wavext/nirspec_wavext_work/reference_files/wavelengthrange_extended.asdf) file.
+- **PID 1492 Data:** Process Fixed Slit data from PID 1492 through `assign_wcs`, `extract_2d`, and `extract_1d` using the custom [wavelengthrange_extended.asdf](file:///Users/dcoe/NIRSpec/wavext/nirspec_wavext_work/reference_files/wavelengthrange_extended.asdf) file.
 - **FS/MOS/BOTS:** Fully enabled via the `wavelengthrange` reference file override. These modes rely on `get_spectral_order_wrange` to define the extraction bounding box. By extending the ranges in the reference file, the WCS objects will automatically cover the extended detector regions.
 - **IFU:** Requires both the code fix (to allow NRS2 processing) and the `wavelengthrange` override.
 
@@ -75,3 +75,5 @@ The current priority is **Fixed Slit (FS)** data. Once FS is calibrated and veri
             - Using `memmap=False`: Fails because `memmap` no longer affects current `asdf` schema loading in these versions.
             - Using `with datamodels.open(...)`: The handle is still closed prematurely within the `AssignWcsStep` internal deep-copy logic.
     - **Future Workaround:** Investigate a "force-load" of all SLIT/IMAGE meta arrays into memory before passing to the step.
+- **`extract_1d` Failure (`AttributeError: No attribute 'get_dtype'`)**: Encountered due to a version mismatch where the `jwst_nirspec_wavext` fork was based on an older `jwst` version that called a deprecated `stdatamodels` method.
+    - **Fix Applied:** Rebased the `jwst_nirspec_wavext` branch onto the `1.20.2` tag to align the pipeline code with the installed `jwst_1.20.2` environment. `extract_1d` now runs successfully and produces extended 1D spectra up to 5.144 µm for S200A1 (limited physically by the detector edge).

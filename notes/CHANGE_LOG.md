@@ -1,11 +1,15 @@
 # CHANGE_LOG.md
 
-## 2026-03-27 12:05AM
-- **Directory Reorganization:** Separated the project into two main repositories:
-  - `jwst_nirspec_wavext`: The local fork of the JWST pipeline.
-  - `nirspec_wavext_work`: Contains project `notes`, `analysis`, and `reference_files`.
-- **Reference Files:** Created `nirspec_wavext_work/reference_files/` and moved `wavelengthrange_extended.asdf` into it.
-- **Documentation:** Updated all absolute and relative file paths in the `notes/` directory to reflect the new repository structure.
+## 2026-03-27 12:40 AM
+- **Extract1dStep Success:** Successfully executed `AssignWcsStep`, `Extract2dStep`, and `Extract1dStep` for G395H PID 1492 Fixed Slit data using the custom `wavelengthrange_extended.asdf` reference file.
+  - **Unit Verification:** Confirmed that while the ASDF reference uses meters (1e-6), the pipeline correctly scales the resulting spectra into **microns**.
+  - **Detector Edge Constraints:** Verified that the extraction is limited physically by the NRS2 detector edge (e.g., ~5.144 µm for S200A1).
+- **Pipeline Branch Rebase (jwst_1.20.2):** Resolved a critical `AttributeError: No attribute 'get_dtype'` that occurred during `Extract1dStep`.
+    - **Root Cause:** The `feature/nirspec_wavelength_extension` branch was based on an outdated `jwst` pipeline codebase that used deprecated `stdatamodels` methods.
+    - **Fix:** Rebased the local fork onto the official `1.20.2` tag to align the pipeline with the current environment's `stdatamodels` and `stpipe` dependencies.
+- **Repository Setup:** Finalized the separation of `jwst_nirspec_wavext` and `nirspec_wavext_work` with correct SSH key mapping and GitHub remotes.
+- **Next Steps:** Proceed with the throughput ($k$, $a$, $b$) function derivation (Parlanti et al. model) by comparing nominal regions with extended extraction results.
+
 
 ## 2026-03-26 11:56PM
 - **Bug Fix:** [nirspec.py](file:///Users/dcoe/NIRSpec/wavext/jwst_nirspec_wavext/jwst/assign_wcs/nirspec.py) — `get_spectral_order_wrange()` (lines ~1231–1260)

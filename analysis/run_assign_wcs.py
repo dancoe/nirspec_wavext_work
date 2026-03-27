@@ -1,12 +1,18 @@
 import sys
 import os
+import logging
 from jwst.assign_wcs import AssignWcsStep
-from jwst import datamodels
+from stdatamodels.jwst import datamodels
 
-input_path = os.path.abspath('/Users/dcoe/NIRSpec/wavext/data/PID1492/jw01492001001_03108_00007_nrs2_rate.fits')
-output_path = os.path.abspath('/Users/dcoe/NIRSpec/wavext/data/PID1492/jw01492001001_17101_00006_nrs2_wcs.fits')
+# Setup logging
+logging.basicConfig(level=logging.INFO, format='%(levelname)s: %(message)s')
+log = logging.getLogger("jwst.assign_wcs")
+log.setLevel(logging.DEBUG)
+
+input_path = os.path.abspath('/Users/dcoe/NIRSpec/wavext/data/PID1492/jw01492001001_0310c_00011_nrs2_rate.fits')
+output_path = os.path.abspath('/Users/dcoe/NIRSpec/wavext/data/PID1492/jw01492001001_17101_00006_nrs2_g395h_wcs.fits')
 # Point to actual PRISM NRS2 file I downloaded? No, use the nrs2_rate.fits
-override_path = os.path.abspath('/Users/dcoe/NIRSpec/wavext/pipeline/wavelengthrange_extended.asdf')
+override_path = os.path.abspath('/Users/dcoe/NIRSpec/wavext/nirspec_wavext_work/reference_files/wavelengthrange_extended.asdf')
 
 print(f"Assigning WCS to {input_path}")
 print(f"Override: {override_path}")
