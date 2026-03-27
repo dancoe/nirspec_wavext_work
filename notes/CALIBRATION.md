@@ -19,17 +19,35 @@ Where:
 
 ### Calibration Strategy
 
-To determine the unknown throughput functions $k$, $a$, and $b$, we require a minimum of three sources with known intrinsic spectra:
+To determine the unknown throughput functions $k$, $\tilde\alpha$, and $\tilde\beta$, we require a minimum of **three sources** with known intrinsic spectra (Parlanti et al. 2025, Sec. 2.2).
 
-1.  **Requirement:** At least 3 target sources where we have:
-    *   **$f(\lambda)$:** Intrinsic flux obtained from the standard nominal extraction (where contamination is negligible or well-calibrated).
-    *   **$S(\lambda)$:** Measured flux from the extended extraction (including contaminated wavelengths).
-2.  **Step 1 (Preprocessing):** Extract the data using the custom `wavelengthrange` reference file to extended wavelengths.
-3.  **Step 2 (Analysis):** Measure the discrepancies between the nominal and extended regions to isolate $S(\lambda)$.
-4.  **Step 3 (Solving):** Solve the system of equations across the target samples to calculate $k(\lambda)$, $a(\lambda)$, and $b(\lambda)$ for each grating/filter combination.
+**Why 3 sources minimum?** At each wavelength $\bar\lambda$, we have exactly 3 unknowns: $k(\bar\lambda)$, $\tilde\alpha(\bar\lambda)$, $\tilde\beta(\bar\lambda)$. Each source provides one equation (since $r_2 = f(\lambda/2)/f(\lambda)$ and $r_3 = f(\lambda/3)/f(\lambda)$ differ between sources with different spectral shapes). Three sources → 3 independent equations → unique solution at each wavelength.
+
+**Formal statement (Parlanti et al.):**
+> "At a fixed wavelength $\bar\lambda$, there are three unknown variables: $k(\bar\lambda)$, $\tilde\alpha(\bar\lambda)$, and $\tilde\beta(\bar\lambda)$. Therefore, if both $S_\lambda(\lambda)$ and $f_\lambda(\lambda)$ are known for at least three independent sources, a system of equations at each wavelength can be solved for $k(\lambda)$, $\tilde\alpha(\lambda)$, and $\tilde\beta(\lambda)$."
+
+**Source selection criteria (Parlanti et al.):**
+1. Have observations with **at least two consecutive medium resolution gratings** (G140M+G235M or G235M+G395M)
+2. Bright enough to have **continuum detection with S/N > 5** across all wavelength ranges covered
+
+**Solution procedure (Parlanti et al.):**
+1. Gather all N qualifying sources
+2. For each combination of 3 sources, solve the 3×3 linear system at each wavelength
+3. Average all C(N,3) solutions and **smooth over a 40-channel window** to reject bad pixels/spikes
+
+**Pipeline steps:**
+1. **Preprocessing:** Extract data using custom `wavelengthrange` reference file to extended wavelengths
+2. **Reference file modification:** Extend S-flat (SCI→1, DQ flags removed) and F-flat (concatenate FAST_VARIATION tables from consecutive gratings)
+3. **Analysis:** Assemble S(λ) from extended extraction and f(λ) from nominal grating at overlapping wavelengths
+4. **Solving:** Solve 3×3 system (or use regularised polynomial fit if N < 3) for $k$, $\tilde\alpha$, $\tilde\beta$
+5. **Applying:** Use Eq. 2 to recover calibrated flux in extended region
+
+### Important Note: Single-Source Limitation
+
+With **only 1 source** (as in our PID 1492 single-target work), the 3-unknown system is under-constrained. The v2 polynomial fitting approach (Legendre + Tikhonov regularisation) compensates by imposing smoothness priors on k, α̃, β̃. This produces an *approximate* calibration but **cannot independently separate** the three functions — the solution is non-unique and depends on the regularisation strength. This is why our v2 RMS is ~50%, far worse than Parlanti's ~5–10%.
 
 ### Priority
-The initial calibration efforts will focus on **Fixed Slit (FS)** data from Program ID 1492.
+The initial calibration efforts will focus on **Fixed Slit (FS)** data from Program ID 1492, using the single-source approximate approach. A proper multi-source calibration requires identifying additional archival FS observations (see "Path Forward" below and PARLANTI.md).
 
 ---
 
@@ -121,11 +139,28 @@ The 2-panel plot (modelled on Parlanti et al. Fig. 5) shows:
 
 ### Known Limitations & Next Steps
 
-1. **Single source calibration:** With one source we are fitting and validating against the same data — this is a circularity. Multiple sources at different redshifts are required to robustly determine instrument-level $k$, $a$, $b$ (as Parlanti et al. do).
-2. **Missing photom step:** The extended extractions lack absolute flux calibration. The boundary-scaling is an approximation. Next step: run the `photom` step on the NRS2 extractions, even if only approximate, to obtain Jy units directly.
-3. **b(λ) clamped:** The 3rd-order model may be under-constrained with one source. Consider setting the upper bound to 10% or using a stronger regularisation for $b$.
-4. **PRISM resolution limitation:** The PRISM f(λ) is low-resolution; using it to subtract emission-line contamination leaves residuals. The v2 script uses the high-resolution nominal M-grating spectra for the subtraction step, which partially addresses this.
-5. **G395M:** Only 68 points at 5.5–5.6 µm and no PRISM baseline available — calibration not yet possible.
-6. **Obs001 vs Obs003:** The coefficients were derived using obs001 PRISM/nominals as f(λ) and obs003 NRS2 as S(λ). Both are of IRAS 05248-7007 — but different epochs/dithers. Any pointing offset or pointing-dependent slit losses could introduce systematic errors.
+1. **Single source calibration:** With one source we are fitting and validating against the same data — this is a circularity. **Parlanti et al. require ≥3 sources with diverse spectral shapes** to solve the 3-unknown system independently at each wavelength (see "Calibration Strategy" above). Our v2 polynomial approach is an approximation that works only because we impose strong smoothness priors — it cannot robustly separate k from α̃, β̃.
+2. **Missing F-flat modification:** Parlanti et al. concatenate the F-flat FAST_VARIATION tables from consecutive gratings (G140M F-flat extended with G235M and G395M entries up to 5.5 µm). This step has **not yet been performed** for our FS work. Without it, the extended region is missing the fore-optics flat-field correction.
+3. **Missing photom step:** The extended extractions lack absolute flux calibration. The boundary-scaling is an approximation. Next step: run the `photom` step on the NRS2 extractions, even if only approximate, to obtain Jy units directly.
+4. **b(λ) clamped:** The 3rd-order model may be under-constrained with one source. Consider setting the upper bound to 10% or using a stronger regularisation for $b$.
+5. **PRISM resolution limitation:** The PRISM f(λ) is low-resolution; using it to subtract emission-line contamination leaves residuals. The v2 script uses the high-resolution nominal M-grating spectra for the subtraction step, which partially addresses this.
+6. **G395M:** Only 68 points at 5.5–5.6 µm and no PRISM baseline available — calibration not yet possible.
+7. **Obs001 vs Obs003:** The coefficients were derived using obs001 PRISM/nominals as f(λ) and obs003 NRS2 as S(λ). Both are of IRAS 05248-7007 — but different epochs/dithers. Any pointing offset or pointing-dependent slit losses could introduce systematic errors.
+
+### Path Forward: Multi-Source Calibration
+
+To replicate Parlanti et al.'s approach for FS mode, we need to identify additional archival JWST/NIRSpec FS targets observed in consecutive grating pairs:
+
+**For G140M extended cal (1.88–3.55 µm):**
+- Need ≥2 additional FS sources observed with **both G140M/F100LP and G235M/F170LP**
+- Ideal: JWST flux calibration standard star programs (PIDs 1537, 1538) which observed standard stars in all FS grating configs
+
+**For G235M extended cal (3.15–5.27 µm):**
+- Need ≥2 additional FS sources observed with **both G235M/F170LP and G395M/F290LP**
+- Same standard star programs apply
+
+**Source quality requirement:** S/N > 5 in continuum across all wavelengths covered (Parlanti et al. criterion)
+
+See [PARLANTI.md](PARLANTI.md) for comprehensive analysis of their methodology and detailed comparison with our approach.
 
 See also: `plots/Parlanti/cal/PARLANTI_ANALYSIS_REPORT.md` (v1 analysis) and `plots/Parlanti/cal/parlanti_coefficients_v2.txt`.

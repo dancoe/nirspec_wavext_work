@@ -123,17 +123,19 @@ $S(\lambda) \approx k(\lambda) f(\lambda) + a(\lambda) f(\lambda/2) + b(\lambda)
 
 **Next Actions:**
 
+- [ ] **[CRITICAL] Identify multi-source calibration dataset** — Parlanti et al. require ≥3 independent sources per grating pair to directly solve for k, α̃, β̃ without polynomial regularisation. Search MAST for archival JWST/NIRSpec FS observations with G140M+G235M (or G235M+G395M) of bright, continuum-detected sources (S/N > 5). Standard star programs PIDs 1537, 1538 (white dwarf P177D, G-star P330-E) observed FS in all grating configs and are the prime candidates.
+- [ ] **[CRITICAL] Implement F-flat modification** — Parlanti et al. concatenate the F-flat FAST_VARIATION Binary table from consecutive gratings (G140M F-flat extended with G235M and G395M entries up to 5.5 µm). This has not yet been done for our FS work and is required for proper flux calibration in the extended region.
 - [ ] Run photom step on NRS2 extended extractions to get proper Jy units (remove boundary-scale approximation)
-- [ ] Increase b(λ) upper bound to ~10% — the 3rd-order contamination may be higher than 5%
-- [ ] Use multiple sources at different redshifts (as Parlanti does) for instrument-level coefficient determination
-- [ ] Compare with Parlanti et al. 2025 published values when available
+- [ ] Increase b(λ) upper bound to ~10% — the 3rd-order contamination may be higher than 5% (Parlanti find 1–5% for IFU; FS may differ)
+- [ ] Once ≥3 sources assembled: replace polynomial fitting with direct Parlanti 3×3 system solve at each wavelength, averaged over all C(N,3) combinations, smoothed over 40-channel window
+- [ ] Compare final k(λ), α̃(λ), β̃(λ) with Parlanti et al. 2025 IFU values (mode difference expected but trends should agree)
 
 **Outputs:**
 - `plots/Parlanti/cal/FS_1492_cal.png` — calibrated spectra comparison plot
 - `plots/Parlanti/cal/parlanti_coefficients_v2.txt` — coefficient summary
 - `plots/Parlanti/cal/parlanti_coefficients_v2_diagnostic.png` — coefficient profile plots
 - `plots/Parlanti/cal/PARLANTI_ANALYSIS_REPORT.md` — v1 analysis report (superseded by v2)
-- Notes: `notes/CALIBRATION.md`
+- Notes: `notes/CALIBRATION.md`, `notes/PARLANTI.md`
 
 ---
 [IMPLEMENTATION_PLAN.md ends here]
