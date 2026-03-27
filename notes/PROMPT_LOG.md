@@ -142,3 +142,6 @@ along with@[pipeline/wavelengthrange_extended.asdf] (moved to nirspec_wavext_wor
 which can go in a subdirectory reference_files/
 
 Follow @[nirspec_wavext_work/notes/INSTRUCTIONS.md]
+
+25. 2026-03-27 12:03AM
+Thank you! Please commit nirspec_wavext_work to my Github dancoe account if you haven't already. And note in @[nirspec_wavext_work/notes/INSTRUCTIONS.md] you should update commit every time we make updates
