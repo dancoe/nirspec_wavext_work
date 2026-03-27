@@ -42,7 +42,7 @@ def plot_grating(grating_name, nominal_wav, nominal_flux, extended_wav, extended
     if extended_wav is not None:
         idx = np.argsort(extended_wav)
         color = 'red' if '140M' in grating_name else 'blue'
-        plt.plot(extended_wav[idx], extended_flux[idx], label=f'{grating_name} (Extended S(λ))', color=color, alpha=0.2, linewidth=1)
+        plt.plot(extended_wav[idx], extended_flux[idx], label=f'{grating_name} (Extended S(λ))', color=color, alpha=0.6, linewidth=0.5)
 
     if order_shade_range:
         plt.axvspan(order_shade_range[0], order_shade_range[1], alpha=0.1, color='gray', label='Overlap Region')
