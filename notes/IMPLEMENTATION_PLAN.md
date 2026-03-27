@@ -75,5 +75,16 @@ The current priority is **Fixed Slit (FS)** data. Once FS is calibrated and veri
             - Using `memmap=False`: Fails because `memmap` no longer affects current `asdf` schema loading in these versions.
             - Using `with datamodels.open(...)`: The handle is still closed prematurely within the `AssignWcsStep` internal deep-copy logic.
     - **Future Workaround:** Investigate a "force-load" of all SLIT/IMAGE meta arrays into memory before passing to the step.
-- **`extract_1d` Failure (`AttributeError: No attribute 'get_dtype'`)**: Encountered due to a version mismatch where the `jwst_nirspec_wavext` fork was based on an older `jwst` version that called a deprecated `stdatamodels` method.
-    - **Fix Applied:** Rebased the `jwst_nirspec_wavext` branch onto the `1.20.2` tag to align the pipeline code with the installed `jwst_1.20.2` environment. `extract_1d` now runs successfully and produces extended 1D spectra up to 5.144 µm for S200A1 (limited physically by the detector edge).
+### 4. Calibration & Overlap Modeling (Parlanti et al. 2025)
+
+The wavelength extension strategy relies on modeling the spectral overlap between 1st, 2nd, and 3rd order light. Using the model from **Parlanti et al. 2025**, we solve for the throughput functions $k, a, b$ where:
+$S(\lambda) \approx k(\lambda) f(\lambda) + a(\lambda) f(\lambda/2) + b(\lambda) f(\lambda/3)$
+
+- **Strategy:** Use PRISM data as the intrinsic baseline $f(\lambda)$.
+- **Status (March 2026):**
+    - **Medium (M) Gratings (Priority):** G140M/G235M are the primary targets for calibration. These stay on the NRS2 detector long enough to capture significant 2nd-order overlap.
+    - **High (H) Gratings (Finding):** Due to high dispersion, wavelengths above ~1.8 µm (G140H) or ~3.0 µm (G235H) physically roll off the detector edge (`x=2047`) for the central fixed slit (`S200A1`). Consequently, H-gratings do not experience the same level of spectral contamination as M-gratings in FS mode.
+    - **Verification:** Custom 1D extractions for G140M show successful mapping up to ~3.3 µm on NRS2, compared to the ~1.9 µm nominal cutoff.
+
+---
+[IMPLEMENTATION_PLAN.md ends here]
