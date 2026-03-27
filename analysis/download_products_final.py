@@ -13,8 +13,8 @@ output_dir = '/Users/dcoe/NIRSpec/wavext/data/PID1492'
 if not os.path.exists(output_dir):
     os.makedirs(output_dir)
 
-# Gratings found in DATA.md: G140H, G235H, G395H, PRISM
-gratings = ['G140H', 'G235H', 'G395H', 'PRISM']
+# Gratings found in DATA.md: G140H, G235H, G395H, PRISM, G140M, G235M, G395M
+gratings = ['G140H', 'G235H', 'G395H', 'PRISM', 'G140M', 'G235M', 'G395M']
 selected_obs = []
 
 for g in gratings:
@@ -38,8 +38,7 @@ for obs in selected_obs:
          if obs['calib_level'] == 3:
               x1d_p = [p for p in products if p['productFilename'].endswith('x1d.fits')]
               if x1d_p:
-                   print(f"  Downloading Level 3 x1d.fits: {x1d_p[0]['productFilename']}")
-                   Observations.download_products(x1d_p[0:1], download_dir=output_dir)
+                   Observations.download_products(x1d_p[0:1], download_dir=output_dir, flat=True)
          
          # 2. ALSO DOWNLOAD the rate.fits for corresponding exposures
          # This might be in a different obs entry since obs_table rows vary by level
@@ -47,8 +46,8 @@ for obs in selected_obs:
          rate_p = [p for p in products if p['productFilename'].endswith('rate.fits')]
          if rate_p:
               # Download only first 2 rate files (NRS1, NRS2)
-              print(f"  Downloading Level 2 rate.fits: {[rp['productFilename'] for rp in rate_p[:2]]}")
-              Observations.download_products(rate_p[:2], download_dir=output_dir)
+               print(f"  Downloading Level 2 rate.fits: {[rp['productFilename'] for rp in rate_p[:2]]}")
+               Observations.download_products(rate_p[:2], download_dir=output_dir, flat=True)
               
     except Exception as e:
          print(f"  Error handling {obs['obs_id']}: {e}")

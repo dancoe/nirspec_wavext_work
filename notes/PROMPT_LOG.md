@@ -185,3 +185,6 @@ Please take over. And follow @[nirspec_wavext_work/notes/INSTRUCTIONS.md]
 I'm looking forward to seeing plots like these from Parlanti+:
 resources/Parlanti Fig*.png
 Please proceed.
+
+39. 2026-03-27 09:29 AM
+Next steps are to download, reduce, analyze, compare, and plot data for G140M, G235M, G395M, PRISM. You have a decent start with PRISM and G140M. Please refer to and update @[nirspec_wavext_work/notes/IMPLEMENTATION_PLAN.md]and follow @[nirspec_wavext_work/notes/INSTRUCTIONS.md]including adding this to the @[nirspec_wavext_work/notes/PROMPT_LOG.md]

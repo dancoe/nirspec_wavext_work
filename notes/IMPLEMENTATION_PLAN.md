@@ -86,5 +86,15 @@ $S(\lambda) \approx k(\lambda) f(\lambda) + a(\lambda) f(\lambda/2) + b(\lambda)
     - **High (H) Gratings (Finding):** Due to high dispersion, wavelengths above ~1.8 µm (G140H) or ~3.0 µm (G235H) physically roll off the detector edge (`x=2047`) for the central fixed slit (`S200A1`). Consequently, H-gratings do not experience the same level of spectral contamination as M-gratings in FS mode.
     - **Verification:** Custom 1D extractions for G140M show successful mapping up to ~3.3 µm on NRS2, compared to the ~1.9 µm nominal cutoff.
 
+### Current Phase (March 27, 2026)
+- **Goal:** Download, reduce, analyze, compare, and plot data for G140M, G235M, G395M, and PRISM.
+- **Tasks:**
+    - Download all remaining M-grating and PRISM Level 2 (`_rate.fits`) and Level 3 (`_s2d.fits` / `_x1d.fits`) data for PID 1492.
+    - Run extended WCS assignment on all Level 2 files.
+    - Run extended 2D and 1D extraction.
+    - Compare extended extractions with nominal extractions to verify wavelength alignment and overlap.
+    - Implement/Refine the Parlanti flux correction model using the extracted data.
+    - Generate comparison plots showing nominal vs. extended spectra with overlap regions highlighted.
+
 ---
 [IMPLEMENTATION_PLAN.md ends here]

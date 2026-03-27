@@ -2,6 +2,20 @@
 
 Add new entries to the top (most recent first). Don't delete anything.
 
+## 2026-03-27 09:50 AM
+- **Batch Processing of M-Gratings:** Successfully automated the download, WCS assignment, 2D extraction, and 1D extraction for G140M, G235M, and G395M (NRS2) using the custom `wavelengthrange_extended.asdf`.
+  - **G140M Success:** Extracted spectrum up to ~3.3 µm on NRS2 (nominal cutoff is ~1.9 µm), capturing significant 2nd order light for calibration.
+  - **G235M Success:** Processed NRS2 file `jw01492003001_03104_00004_nrs2_rate.fits`, extending coverage into the red end.
+  - **G395M Success:** Processed NRS2 file `jw01492003001_03106_00002_nrs2_rate.fits`.
+- **Comparison Visualization:** Generated comparison plots (`plots/*_comparison.png`) showing $f(\lambda)$ (Nominal) vs $S(\lambda)$ (Extended) with yellow shading highlighting the extension/overlap regions.
+- **PRISM NRS2 Investigation:** Attempted PRISM processing on NRS2 file `jw01492005001_17101_00006_nrs2_rate.fits` but encountered `NoDataOnDetectorError`.
+  - **Findings:** Corrected `wavelengthrange_extended.asdf` for PRISM CLEAR to [0.5, 5.6] µm, but `assign_wcs` still removes the `S1600A1` slit on NRS2. 
+  - **Next Step:** Verify if PRISM `S200A1` projects onto NRS2 or if the existing Level 3 products already cover the desired range.
+- **Documentation Updates:**
+  - Logged latest prompt in `PROMPT_LOG.md`.
+  - Updated `IMPLEMENTATION_PLAN.md` with the "Current Phase" (March 27, 2026) tasks and goals.
+  - Created a new analysis script `process_selected_gratings.py` for batch processing and plotting.
+
 ## 2026-03-27 01:25 AM
 - **Wavelength Extension Investigation:** Checked why extended wavelengths are not plotted for G140H and G235H on the `NRS2` detector.
   - Investigated `assign_wcs` bounding box logic in `jwst_nirspec_wavext/jwst/assign_wcs/nirspec.py`. Found that the WCS models the physical detector boundaries, capping extraction at `x=2047`.
