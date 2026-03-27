@@ -2,16 +2,18 @@
 
 These plots demonstrate the spectral extraction performance for **PID 1492 FS** using the custom `wavelengthrange_extended.asdf` reference file.
 
+## G140M (Medium Resolution)
+
 ![G140M Overlap](g140m_parlanti_overlap.png)
 
-### G140M (Medium Resolution)
 *   **Contamination Window**: The region from **1.9 µm to 3.3 µm** clearly shows the extended G140M spectrum ($S(\lambda)$) rising above the noise floor.
 *   **Model Fit**: The extended red line (`alpha=0.6`, `lw=0.5`) tracking above the PRISM baseline indicates the captured 2nd order light, which is the primary focus for our throughput calibration.
 
-![G235H Overlap](g235h_parlanti_overlap.png)
+## G235H (High Resolution)
 
-### G235H (High Resolution)
-*   **Physical Cutoff**: Note that the extended spectrum (blue line) terminates abruptly and does not show significant contamination. This confirms that for high-resolution gratings, the first-order light at the red end physically misses the NRS2 detector, effectively gating the spectral overlap in this specific slit configuration.
+![G235H Overlap](g235h_parlanti_overlap.png)
+*   **What is G235H Extended?**: It is the same observation, but re-extracted using our custom `wavelengthrange_extended.asdf` reference file. While the "Nominal" extraction (dark blue) is constrained by standard MAST boundaries, the "Extended" extraction (light blue) attempts to pull data from the entire 0.6–5.6 µm range modeled in our WCS.
+*   **Physical Cutoff**: Note that the extended spectrum (light blue line) terminates abruptly and does not show significant contamination. This confirms that for high-resolution gratings, the first-order light at the red end physically misses the NRS2 detector, effectively gating the spectral overlap in this specific slit configuration.
 
 ## Equations for Throughput Derivation
 
