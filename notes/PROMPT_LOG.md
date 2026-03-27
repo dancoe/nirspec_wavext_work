@@ -162,8 +162,8 @@ Please proceed.
 39. 2026-03-27 09:29 AM
 Next steps are to download, reduce, analyze, compare, and plot data for G140M, G235M, G395M, PRISM. You have a decent start with PRISM and G140M. Please refer to and update @[nirspec_wavext_work/notes/IMPLEMENTATION_PLAN.md]and follow @[nirspec_wavext_work/notes/INSTRUCTIONS.md]including adding this to the @[nirspec_wavext_work/notes/PROMPT_LOG.md]
 
-40. 2026-03-27 09:42 AM
-Thank you! Yes please commit nirspec_wavext_work if you haven't already. Okay now I think we're getting somewhere that we can compare G140M, G235M, G395M and PRISM. Please plot them all on a single plot, following the color scheme we decided on before...
+ 45. 2026-03-27 09:56 AM
+ **Please generate a file notes/FLATS.md and explain the various flats S-flats, F-flats, D-flats for the various observing modes FS, MOS, IFU, BOTS and how you've had to extend / modify them for wavext.**
 
 41. 2026-03-27 09:48 AM
 Thanks! But look at @[nirspec_wavext_work/plots/nirspec_m_gratings_combined.png]. Note one of the data points went super high so you can't see anything. Return to log scale and also do some simple analysis to avoid outliers dominating the axes. Rename this plot file FS-1492_pre-cal.png. Generate a new plots/Parlanti_gratings.md explaining it.
@@ -193,3 +193,6 @@ Fore-optics flat = telescope + NIRSpec fore optics
 Fast variations (λ): concatenated (e.g., G140M = G140M + G235M + G395M)
 
 Also follow @[nirspec_wavext_work/notes/INSTRUCTIONS.md]
+
+46. 2026-03-27 14:10
+Excellent thank you! Please commit to Github, following @INSTRUCTIONS.md

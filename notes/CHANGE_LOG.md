@@ -3,7 +3,6 @@
 Add new entries to the top (most recent first). Don't delete anything.
 
 ## 2026-03-27 (evening)
-- **Parlanti Calibration v2 — Improved Coefficient Determination:**
   - **Root cause found:** Extended NRS2 extractions (`jw01492003001_…`) were processed through `assign_wcs` + `extract_2d` + `extract_1d` but NOT the `photom` step. `FLUX` column is in DN/s (not Jy). Nominal Level 3 products (obs001) are in Jy. This unit mismatch caused the 100–200× flux discrepancy seen in the pre-cal plot.
   - **New script:** `analysis/calibrate_parlanti.py` implements:
     1. **Boundary-matching scale factor**: sigma-clipped median of `f_PRISM(λ) / S_raw(λ)` over the first 80 pts of each extended extraction, giving C = 8.04×10⁻⁴ Jy/(DN/s) for G140M and 1.35×10⁻³ Jy/(DN/s) for G235M.
@@ -19,6 +18,9 @@ Add new entries to the top (most recent first). Don't delete anything.
     - `plots/Parlanti/cal/parlanti_coefficients_v2_diagnostic.png` — coefficient profiles k(λ), a(λ), b(λ)
     - `plots/Parlanti/cal/parlanti_coefficients_v2.txt` — coefficient summary table
   - **Documentation:** Updated `notes/CALIBRATION.md` with full methodology, data table, interpretation, and known limitations.
+
+## 2026-03-27 14:10
+- **Docs & Parlanti notes committed:** Created `notes/PARLANTI.md` and updated `notes/CALIBRATION.md` and `notes/IMPLEMENTATION_PLAN.md` with detailed Parlanti (arXiv:2512.14844) Section 2 interpretation, the 3-source minimum requirement, and a multi-source path-forward. Committed and pushed `notes/PARLANTI.md`, `notes/CALIBRATION.md`, and `notes/IMPLEMENTATION_PLAN.md` to `nirspec_wavext_work` (main). See commit abbe3a2. Added PROMPT_LOG entry for this request.
 
 ## 2026-03-27 3:50 PM
 - **Parlanti Model Coefficient Determination (Initial Analysis):**
