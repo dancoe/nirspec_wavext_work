@@ -241,3 +241,11 @@ Thanks! I split the cal/ results into 2 subdirectories: the earlier 1492/ and ne
 I'm looking for a new 3source plot like plots/Parlanti/cal/1492/FS_1492_cal.png. Can you make one like that? Or am I missing it?
 Please generate 3source/CAL_3SOURCE.md similar to 1492/PARLANTI_ANALYSIS_REPORT.md
 
+245. 2026-03-27 8:48 PM
+I've added @[nirspec_wavext_work/analysis/util_mos]
+Please use mos.py show_MOS_rate_files
+to make plots of the rate files 
+and the extraction regions
+and how you've extracted extended wavelength data.
+Put the plots in plots/
+Follow @[nirspec_wavext_work/notes/INSTRUCTIONS.md]

@@ -1,6 +1,9 @@
-# CHANGE_LOG.md
-
-Add new entries to the top (most recent first). Don't delete anything.
+## 2026-03-27 (night)
+- **MOS Extraction Plotting**:
+  - Created `analysis/plotting/plot_mos_extraction_regions.py` to leverage the `mos.py` utility for side-by-side visualization of count rate data and 2D extraction regions.
+  - **Environment Fixes**: Implemented mocks for `tqdm` and `astroquery` in the plotting script to facilitate running in the `jwst_1.20.2` environment where these non-core packages were missing.
+  - **Visualized NRS2 Extension**: Generated `plots/extraction/MOS_rate_extractions_NRS2.png`, confirming the successful definition of extraction bounding boxes for G140M, G235M, and G395M on the NRS2 detector.
+  - **Documentation**: Summarized the extraction methodology and results in `plots/MOS_EXTRACTIONS.md`.
 
 ## 2026-03-27 (late night)
   - **V3 Multi-Source Bootstrap Solver (Kappa Fixed):**
