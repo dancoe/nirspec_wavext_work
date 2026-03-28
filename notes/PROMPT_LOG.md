@@ -2,6 +2,11 @@
 
 Below please log the exact prompts I give you, numbered, with timestamps.
 
+246. 2026-03-27 9:00 PM
+Please develop a new analysis of the IFU data analyzed by @PARLANTI.md. Please reduce that data as warranted following the IFU reduction notebook mentioned in PIPELINE_RUNNING.md:
+https://github.com/spacetelescope/jwst-pipeline-notebooks/blob/main/notebooks/NIRSPEC/IFU/JWPipeNB-NIRSpec-IFU.ipynb
+Follow INSTRUCTIONS.md
+
 1. 2026-03-26 8:23PM 
 Determine the latest version of the JWST pipeline:
 https://github.com/spacetelescope/jwst

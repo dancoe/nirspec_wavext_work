@@ -1,3 +1,29 @@
+## 2026-03-27 (very late night) — IFU Analysis Branch
+- **New IFU Analysis Branch**: Initiated IFU-mode wavelength extension analysis following Parlanti et al. (2025) methodology, paralleling the existing Fixed Slit work.
+- **Calibration Sources Selected**: Identified 4 calibration standard star programs matching exactly those used by Parlanti et al.:
+  - PID 1536: J1743045 (G140M + G235M + G395M IFU)
+  - PID 1537: G191-B2B (white dwarf; G140M + G235M)
+  - PID 1538: P330E (gray star Cycle 1; G140M + G235M)
+  - PID 6645: P330-E Cycle 3 (gray star; G140M + G235M)
+  - Minimum 3 sources satisfies the 3×3 linear system for k(λ), α̃(λ), β̃(λ)
+- **MAST Data Acquisition**: Downloaded IFU rate files using `astroquery.mast`:
+  - PID 1537: 16 files (G140M+G235M, 4 dithers × NRS1+NRS2)
+  - PID 1538: 16 files (G140M+G235M, 4 dithers × NRS1+NRS2)
+  - PID 1536: 24 files (G140M+G235M+G395M, 4 dithers × NRS1+NRS2)
+  - PID 6645: ~84 files downloading (P330-E many visits)
+  - Fixed truncated-download bug: added size check + 3-attempt retry to `download_ifu_rates.py`
+- **Standard Reduction Completed (PIDs 1537 + 1538)**:
+  - Ran `Spec2Pipeline` + `Spec3Pipeline` via `run_ifu_pipeline.py`
+  - Outputs: `f100lp_g140m_s3d/x1d.fits` and `f170lp_g235m_s3d/x1d.fits` for each PID
+  - NRS1-only (standard range); NRS2 correctly skipped — "No IFU slices" on NRS2 for nominal G140M/G235M is expected
+- **PID 1536 Pipeline Running**: Stage 2+3 in progress for J1743045
+- **Scripts Created**:
+  - `analysis/acquisition/query_ifu_mast.py`: MAST discovery
+  - `analysis/acquisition/download_ifu_rates.py`: Robust download with retry
+  - `analysis/reduction/reduce_ifu.py`: Full 3-stage IFU pipeline
+  - `analysis/reduction/run_ifu_pipeline.py`: Streamlined Stage 2+3 runner
+- **Notes**: Created `notes/PARLANTI_IFU.md` documenting the full IFU analysis workflow, pipeline details, calibration strategy, and roadmap for reference file modification
+
 ## 2026-03-27 (night)
 - **MOS Extraction Plotting**:
   - Created `analysis/plotting/plot_mos_extraction_regions.py` to leverage the `mos.py` utility for side-by-side visualization of count rate data and 2D extraction regions.
