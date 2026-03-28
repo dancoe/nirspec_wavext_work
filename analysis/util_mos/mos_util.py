@@ -659,7 +659,7 @@ class SlitSpectrum:
                 self.ax_1d.axvline(line_x, c=color, zorder=-10)
 
                 line_label = ' ' + line_name
-                lam_str = '%d' % roundint(float(line_lam)) + '${\\rm \AA}$\n'
+                lam_str = '%d' % roundint(float(line_lam)) + r'${\rm \AA}$' + '\n'
                 line_label += '\n ' + lam_str
                 
                 # Start with the default y position
