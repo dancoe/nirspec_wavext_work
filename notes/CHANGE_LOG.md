@@ -1,3 +1,57 @@
+## 2026-03-29 ~01:00 — FS v1 Coefficient Derivation (NRS2 Pipeline Fixed)
+
+### Root Cause of FS NRS2 All-Null Pixels Identified
+The fflat/sflat default CRDS references (`fflat_0154.fits`, `sflat_0154.fits`) have
+`FAST_VARIATION` wavelength tables covering only 0.97–1.89 µm (NRS1 G140M range).
+All NRS2 wavelengths (1.97–3.16 µm for G140M, 3.15–5.27 µm for G235M) fall outside
+this range → pipeline flags all NRS2 pixels `DO_NOT_USE`.
+
+**Fix**: Use Parlanti extended flat references (`fflat_0105.fits`, `fflat_0091.fits`,
+`sflat_0191.fits`, `sflat_0192.fits`) from `data/parlanti_repo/CRDS_1364/`.
+These have `FAST_VARIATION` extending to 5.5 µm with `slit_name=ANY`.
+
+### Additional Fix: Skip `resample_spec`
+Even with valid flat correction, `extract_1d` from s2d produced NPIXELS=0.
+Fix: skip `resample_spec` and extract from cal (MultiSlit) directly.
+
+### Updated Pipeline Script: `analysis/reduction/run_fs_nrs2_spec2.py`
+- Added grating-specific flat override constants (FFLAT_G140M/G235M, SFLAT_G140M/G235M)
+- Added FLAT_OVERRIDES dict selecting correct reference by (grating, filter)
+- Added `resample_spec: skip: True`, `wavecorr: skip: True`
+- Added custom `override_photom` for extended NRS2 wavelength coverage
+
+### NRS2 x1d Products Generated (6 files, Jy)
+- `data/PID1536_J1743045/nrs2_spec2_cal/jw01536002001_03104_00003_nrs2_x1d.fits` (G140M)
+- `data/PID1536_J1743045/nrs2_spec2_cal/jw01536002001_03106_00001_nrs2_x1d.fits` (G235M)
+- `data/PID1537_G191-B2B/nrs2_spec2_cal/jw01537007001_07101_00003_nrs2_x1d.fits` (G140M)
+- `data/PID1537_G191-B2B/nrs2_spec2_cal/jw01537007001_09101_00003_nrs2_x1d.fits` (G235M)
+- `data/PID1538_P330E/nrs2_spec2_cal/jw01538160001_06101_00001_nrs2_x1d.fits` (G140M)
+- `data/PID1538_P330E/nrs2_spec2_cal/jw01538160001_08101_00005_nrs2_x1d.fits` (G235M)
+
+### New Solver: `analysis/solver/solve_parlanti_fs_v1.py`
+Updated SOURCES dict to use Jy-calibrated x1d files. Ran NNLS solver:
+
+| Grating | k median | k range | α̃ max |
+|:--------|:--------|:--------|:------|
+| G140M NRS2 | **0.846** | 0.706–1.093 | 0.390 |
+| G235M NRS2 | **0.976** | 0.834–1.041 | 0.308 |
+
+**FS vs IFU comparison:**
+- G140M: FS k=0.846, IFU k=0.833 → agree within 2%
+- G235M: FS k=0.976, IFU k=0.899 → ~8% offset, partly attributable to IFU flat bias at 3.3–3.8 µm
+
+### Output Plots/CSVs
+- `plots/Parlanti/cal/fs_v1/coeffs_fs_v1_G140M.csv`
+- `plots/Parlanti/cal/fs_v1/coeffs_fs_v1_G235M.csv`
+- `plots/Parlanti/cal/fs_v1/fs_v1_g140m_coeffs.png`
+- `plots/Parlanti/cal/fs_v1/fs_v1_g235m_coeffs.png`
+- `plots/Parlanti/cal/fs_v1/fs_vs_ifu_k_comparison.png`
+
+### Session Log Added
+- `notes/logs/2026-03-29-0100.md`
+
+---
+
 ## 2026-03-28 23:30 — IFU v1 Coefficient Derivation
 
 ### New Solver: `analysis/solver/solve_parlanti_ifu_v1.py`
