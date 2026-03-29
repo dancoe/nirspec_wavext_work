@@ -8,6 +8,7 @@ And we're adding NIRSpec a wavelength extension feature:
 
 Please follow these instructions:
 
+- **Current Status:** Refer to [LATEST_WORK.md](LATEST_WORK.md) for our most recent progress and upcoming plans; for more details on the long-term project goals and technical implementation, see [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md).
 - **Log all prompts:** Record every user request numerically with a timestamp in [PROMPT_LOG.md](PROMPT_LOG.md).
 - **Log all changes:** Detail every modification to the codebase in [CHANGE_LOG.md](CHANGE_LOG.md) (newest on top).
 - **Maintain documentation:** Keep these instructions and other notes up to date.
