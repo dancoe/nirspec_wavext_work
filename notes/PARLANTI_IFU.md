@@ -376,3 +376,10 @@ show whether pipeline version 1.20.2 and CRDS context differences change the cal
 - **G395M for PID 1536:** J1743045 was observed with G395M/F290LP in addition to G140M and G235M.
   This lets us independently verify the G235M extended range using the G395M nominal coverage
   (2.87–5.27 µm) as a cross-check on the CALSPEC model over 3–5 µm.
+
+- **Flux Unit Discrepancy (Jy vs. ADU/s):** The raw NRS2 extension outputs (pre-Stage 3) often
+  lack the `BUNIT` and `PHOTMJSR` keywords in their headers. This results in a flux scale
+  that is approximately ~800 times higher (e.g., 25 Jy median vs. 0.03 Jy truth for P330E) 
+  than the calibrated reference. For the Parlanti solve, a manual anchoring factor 
+  $k_{raw} \approx 0.0013$ for P330E is required to bring these into physical alignment before 
+  ghost subtraction. Artifacts/spikes in the raw data can reach $10^4$ or higher.
