@@ -1,3 +1,21 @@
+## 2026-03-28 23:30 — IFU v1 Coefficient Derivation
+
+### New Solver: `analysis/solver/solve_parlanti_ifu_v1.py`
+Created a new solver using IFU `stage3_ext` products (Jy) as the data source for the Parlanti k/α/β derivation:
+- **Method**: NNLS, point-wise on 200-channel grids, 40-channel box smoothing, 3 standard stars
+- **G140M NRS2 result**: k(λ) median = 0.833, range 0.712–1.003; α = β ≈ 0
+- **G235M NRS2 result**: k(λ) median = 0.899, range 0.817–1.001; α = β ≈ 0
+- k(λ) starts near 1.0 at the NRS2 cutoff and declines toward longer wavelengths
+- No second/third-order contamination detectable (requires cool calibrator to break k/α degeneracy)
+
+### Session Log Files Added
+- `notes/logs/2026-03-28-2300.md` — IFU data-source diagnostic and coefficient re-derivation plan
+- `notes/logs/2026-03-28-2330.md` — IFU v1 solver results, interpretation, and caveats
+
+### INSTRUCTIONS.md Updated
+Added session log convention: timestamped files in `notes/logs/` for each significant work session.
+
+---
 ## 2026-03-28 — IFU Calibration Diagnostic Overhaul
 
 ### Root Cause of Scaling Mismatch

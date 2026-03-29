@@ -11,6 +11,7 @@ Please follow these instructions:
 - **Current Status:** Refer to [LATEST_WORK.md](LATEST_WORK.md) for our most recent progress and upcoming plans; for more details on the long-term project goals and technical implementation, see [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md).
 - **Log all prompts:** Record every user request numerically with a timestamp in [PROMPT_LOG.md](PROMPT_LOG.md).
 - **Log all changes:** Detail every modification to the codebase in [CHANGE_LOG.md](CHANGE_LOG.md) (newest on top).
+- **Session notes:** For each significant work session, create a timestamped log file in [notes/logs/](logs/) named `YYYY-MM-DD-HHMM.md`. Record the topic, findings, decisions made, and open action items. Link from LATEST_WORK.md when relevant.
 - **Maintain documentation:** Keep these instructions and other notes up to date.
 - **Commit changes:** After making updates, commit and push changes to the repositories (`nirspec_wavext_work`) and/or (`jwst_nirspec_wavext`) as warranted.
 - **Don't operate the browser** unless I ask you to. The terminal should suffice.

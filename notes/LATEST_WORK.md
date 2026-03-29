@@ -1,29 +1,42 @@
 # Latest Work: NIRSpec Wavelength Extension
 
-## 2026-03-28 Update: IFU Calibration Diagnostic — Data-Source Correction
+## 2026-03-28 Update: IFU v1 Coefficient Derivation
 
-### Problem Identified
-The `plot_parlanti_components_multi.py` diagnostic was comparing the wrong datasets:
-- **Old (wrong)**: Used per-exposure `nrs2_extract_1d.fits` files (in **DN/s**) from `data/PID*/` versus nominal FS x1d products (in **Jy**). The G140M NOM and EXT had **zero wavelength overlap** (NOM: 0.97–1.87 µm, EXT: 1.96–3.16 µm), so the overlap-based scale factor always returned NaN.
-- **New (correct)**: Uses **IFU stage3_ext x1d** products (in **Jy**, from `data/IFU/*/stage3_ext/`) which contain BOTH NRS1 and NRS2 in a single flux-calibrated file. These are compared against the IFU stage3 nominal of the *next* grating as ground truth.
+See session logs: [2026-03-28-2300](logs/2026-03-28-2300.md) · [2026-03-28-2330](logs/2026-03-28-2330.md)
 
-### Key Findings from Revised Diagnostic
-The new comparison (`CAL_COMPONENTS_*.png` for all three standards) reveals:
-- **G140M stage3_ext NRS2** (1.87–3.60 µm): ~**2x too faint** relative to the G235M stage3 nominal in the overlap region (1.87–3.17 µm). The throughput factor k(λ) rises from 1.0 at 1.87 µm to ~2.0 at 3.0 µm — consistent across P330E, G191-B2B, and J1743045.
-- **G235M stage3_ext NRS2** (3.15–5.50 µm): ~**1.5x too faint** relative to the G395M FS nominal in the overlap region. k(λ) is near 1.0–1.7 with wavelength dependence.
-- **V3 coefficients** (k≈0.89 from FS DN/s solver) are **not applicable** to the IFU stage3_ext products — they were derived from per-exposure FS NRS2 extractions that needed their own unit conversion and boundary scaling.
+### IFU v1 Solver Results (`solve_parlanti_ifu_v1.py`)
 
-### Comparison geometry (both in Jy, same calibration system):
-| Extended data | Ground-truth reference | Overlap region |
+Using IFU `stage3_ext` products (Jy) and CALSPEC models as the reference:
+
+| Grating | k(λ) median | k(λ) range | α | β |
+|:--------|:-----------|:-----------|:--|:--|
+| G140M NRS2 | **0.833** | 0.712–1.003 | ≈ 0 | ≈ 0 |
+| G235M NRS2 | **0.899** | 0.817–1.001 | ≈ 0 | ≈ 0 |
+
+- k(λ) starts near 1.0 at the NRS2 cutoff and decreases toward longer wavelengths
+- No second/third-order contamination detected (α = β = 0)
+- **Caveat**: k/α degeneracy cannot be broken with only 3 hot stars of similar spectral shape
+  (f(λ/2)/f(λ) is source-independent for power-law continua; need a cool calibrator to separate)
+- After applying k correction, ~15–25% residual offset from truth likely reflects G235M/G395M IFU
+  nominal calibration accuracy at wavelengths > 2.2 µm, not uncorrected contamination
+
+### Diagnostic (root cause, fixed in previous session)
+The `plot_parlanti_components_multi.py` diagnostic was comparing wrong datasets:
+- **Old (wrong)**: Per-exposure `nrs2_extract_1d.fits` in **DN/s** vs stage3 FS in **Jy** → 10³× offset
+- **New (correct)**: IFU `stage3_ext` x1d in **Jy** vs IFU `stage3` of the *next* grating as truth
+
+### Comparison geometry (both in Jy)
+| Extended data | Truth reference | Overlap |
 |:---|:---|:---|
-| G140M stage3_ext NRS2 | G235M stage3 nominal (IFU) | 1.87–3.17 µm |
+| G140M stage3_ext NRS2 | G235M stage3 IFU nominal | 1.87–3.17 µm |
 | G235M stage3_ext NRS2 | G395M FS nominal | 3.15–5.14 µm |
 
 ### Next Steps
-1. **Re-derive k/α/β from IFU stage3_ext data**: Update `solve_parlanti_bootstrap_v3.py` to use IFU stage3_ext products instead of per-exposure FS extractions. The new k(λ) for G140M NRS2 is ~1.5–2.0 (not 0.89 from V3).
-2. **Complex Source Validation**: Apply the corrected solution to `IRAS-05248` (PID 1492).
-3. **ASDF Integration**: Export the derived coefficients into `wavelengthrange_extended.asdf`.
-4. **F-Flat Normalization**: Complete flux calibration by merging `FAST_VARIATION` tables.
+1. **Break k/α degeneracy**: add a cool calibrator or adopt Parlanti+25 published α directly
+2. **Validation**: Apply IFU v1 k(λ) to IRAS-05248 (PID 1492)
+3. **ASDF Integration**: Export coefficients to `wavelengthrange_extended.asdf`
+4. **Investigate G235M NOM calibration**: understand the 15–25% residual at λ > 2.2 µm
+5. **F-Flat normalization**: merge `FAST_VARIATION` tables for full flux calibration
 
 ---
 For more details on the long-term project plan, see [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md). To see general project instructions and setup, see [INSTRUCTIONS.md](INSTRUCTIONS.md).
