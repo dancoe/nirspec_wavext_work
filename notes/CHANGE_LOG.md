@@ -1,3 +1,29 @@
+## 2026-03-28 — IFU Calibration Diagnostic Overhaul
+
+### Root Cause of Scaling Mismatch
+Diagnosed why the extended-wavelength observations appeared incorrectly scaled:
+- The old `plot_parlanti_components_multi.py` used per-exposure `nrs2_extract_1d.fits` (in **DN/s**) for "EXT" data vs stage3 x1d (in **Jy**) for "NOM" data — a unit mismatch of ~10³.
+- Additionally, same-grating NOM and EXT had **zero wavelength overlap** (G140M NOM ends at 1.87 µm; EXT starts at 1.96 µm), so the overlap-based scaling always returned NaN.
+
+### Script Rewrite: `analysis/plotting/plot_parlanti_components_multi.py`
+Complete rewrite to use the correct data sources and comparisons:
+- **Data**: IFU `stage3_ext/f100lp_g140m-f100lp_x1d.fits` and `stage3_ext/f170lp_g235m-f170lp_x1d.fits` (Jy, all JWST pipeline stages complete) for all three standards (P330E, G191-B2B, J1743045).
+- **Reference**: CALSPEC models (replacing the PRISM FS file as reference).
+- **Comparison geometry**: G140M NRS2 (1.87–3.60 µm) vs G235M stage3 nominal (ground truth); G235M NRS2 (3.15–5.50 µm) vs G395M FS nominal.
+- **Layout**: 3-panel figure — top: full spectra (log), bottom-left: k(λ) for G140M NRS2, bottom-right: k(λ) for G235M NRS2.
+- **k(λ) overlay**: Shows both the directly-measured k = (higher-grating NOM) / (stage3_ext NRS2) and the V3 coefficients for comparison.
+- Supports `--source all | 1538_P330E | 1537_G191B2B | 1536_J1743` argument.
+
+### Key New Finding
+The IFU stage3_ext NRS2 is **~2x under-calibrated** relative to the next-grating nominal (k = G235M NOM / G140M EXT ≈ 1.5–2.0 across the overlap). The V3 coefficients (k≈0.89) were derived from different data and are not applicable to the IFU stage3_ext products. New calibration coefficients must be derived from the IFU data.
+
+### Output Plots Updated
+- `plots/Parlanti/cal/153678_v3/CAL_COMPONENTS_P330E.png`
+- `plots/Parlanti/cal/153678_v3/CAL_COMPONENTS_G191-B2B.png`
+- `plots/Parlanti/cal/153678_v3/CAL_COMPONENTS_J1743045.png`
+
+---
+
 ## 2026-03-28 (late night) — Documentation & Workflow Optimization
 - **Documentation Consolidation**: Created `notes/LATEST_WORK.md` to track the most recent progress (V3 Calibration) and provide a clear roadmap for upcoming tasks (Complex Source Validation, ASDF Export, F-Flat Concatenation).
 - **Instruction Cross-Referencing**: Updated `notes/INSTRUCTIONS.md` to include high-level pointers to `LATEST_WORK.md` and `IMPLEMENTATION_PLAN.md`, streamlining the navigation between current status and long-term goals.

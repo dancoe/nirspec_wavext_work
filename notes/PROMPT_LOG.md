@@ -2,6 +2,9 @@
 
 Below please log the exact prompts I give you, numbered, with timestamps.
 
+260. 2026-03-28
+Please refer to INSTRUCTIONS.md and LATEST_WORK.md. Also CAL_COMPONENTS_P330E.png. It appears the extended wavelength observations aren't scaled the same as the nominal extractions? Please revisit how these were reduced and extracted for the Parlanti IFU exercise we're doing. The goal is to get the extended wavelength G140M data to match the observed nominal G235M data, etc.
+
 246. 2026-03-27 9:00 PM
 Please develop a new analysis of the IFU data analyzed by @PARLANTI.md. Please reduce that data as warranted following the IFU reduction notebook mentioned in PIPELINE_RUNNING.md:
 https://github.com/spacetelescope/jwst-pipeline-notebooks/blob/main/notebooks/NIRSPEC/IFU/JWPipeNB-NIRSpec-IFU.ipynb

@@ -1,20 +1,29 @@
 # Latest Work: NIRSpec Wavelength Extension
 
-## 2026-03-28 Update: V3 Calibration (Kappa Fixed)
+## 2026-03-28 Update: IFU Calibration Diagnostic — Data-Source Correction
 
-We have successfully completed the **V3 Calibration** following the **Parlanti et al. (2025)** methodology. This version enforces a physical 1st-order throughput ($k \approx 1.0$) while solving for 2nd and 3rd order ghost contamination ($\tilde\alpha, \tilde\beta$) using a multi-source NNLS bootstrap solver.
+### Problem Identified
+The `plot_parlanti_components_multi.py` diagnostic was comparing the wrong datasets:
+- **Old (wrong)**: Used per-exposure `nrs2_extract_1d.fits` files (in **DN/s**) from `data/PID*/` versus nominal FS x1d products (in **Jy**). The G140M NOM and EXT had **zero wavelength overlap** (NOM: 0.97–1.87 µm, EXT: 1.96–3.16 µm), so the overlap-based scale factor always returned NaN.
+- **New (correct)**: Uses **IFU stage3_ext x1d** products (in **Jy**, from `data/IFU/*/stage3_ext/`) which contain BOTH NRS1 and NRS2 in a single flux-calibrated file. These are compared against the IFU stage3 nominal of the *next* grating as ground truth.
 
-### Key Achievements
-- **Alignment**: The recalibrated extended spectra (NRS2) now precisely match nominal higher-dispersion extractions (ground truth) across overlapping regions.
-- **Coefficient Analysis**: Tested alternative parameterizations (constant vs. polynomial) for ghost coefficients. Confirmed that point-wise bootstrap solvers are superior for capturing non-polynomial grating structures.
-- **Spectral Decomposition**: Implemented high-visibility diagnostic plots ([CAL_COMPONENTS_P330E.png](../plots/Parlanti/cal/153678_v3/CAL_COMPONENTS_P330E.png)) that show raw, scaled, and ghost-corrected components. These plots revealed a significant unit mismatch ($~10^3$ factor) between the uncalibrated raw extension (ADU/s) and the flux-calibrated baseline (Jy).
-- **Stability**: Derived coefficients are physically consistent, staying positive and avoiding non-physical corrections.
+### Key Findings from Revised Diagnostic
+The new comparison (`CAL_COMPONENTS_*.png` for all three standards) reveals:
+- **G140M stage3_ext NRS2** (1.87–3.60 µm): ~**2x too faint** relative to the G235M stage3 nominal in the overlap region (1.87–3.17 µm). The throughput factor k(λ) rises from 1.0 at 1.87 µm to ~2.0 at 3.0 µm — consistent across P330E, G191-B2B, and J1743045.
+- **G235M stage3_ext NRS2** (3.15–5.50 µm): ~**1.5x too faint** relative to the G395M FS nominal in the overlap region. k(λ) is near 1.0–1.7 with wavelength dependence.
+- **V3 coefficients** (k≈0.89 from FS DN/s solver) are **not applicable** to the IFU stage3_ext products — they were derived from per-exposure FS NRS2 extractions that needed their own unit conversion and boundary scaling.
 
-## Plan Going Forward
+### Comparison geometry (both in Jy, same calibration system):
+| Extended data | Ground-truth reference | Overlap region |
+|:---|:---|:---|
+| G140M stage3_ext NRS2 | G235M stage3 nominal (IFU) | 1.87–3.17 µm |
+| G235M stage3_ext NRS2 | G395M FS nominal | 3.15–5.14 µm |
 
-1.  **Complex Source Validation**: Apply the V3 solution to `IRAS-05248` (PID 1492) to verify accuracy in the presence of strong absorption features.
-2.  **ASDF Integration**: Export the derived coefficients into the custom `wavelengthrange_extended.asdf` for use in the standard pipeline workflow.
-3.  **F-Flat Normalization**: Complete the flux calibration pipeline by merging `FAST_VARIATION` tables for concatenated flat-field correction.
-4.  **MOS Visualization**: Fix pixel-to-wavelength mapping in MOS diagnostic plots by ensuring consistent detector-specific WCS model usage.
+### Next Steps
+1. **Re-derive k/α/β from IFU stage3_ext data**: Update `solve_parlanti_bootstrap_v3.py` to use IFU stage3_ext products instead of per-exposure FS extractions. The new k(λ) for G140M NRS2 is ~1.5–2.0 (not 0.89 from V3).
+2. **Complex Source Validation**: Apply the corrected solution to `IRAS-05248` (PID 1492).
+3. **ASDF Integration**: Export the derived coefficients into `wavelengthrange_extended.asdf`.
+4. **F-Flat Normalization**: Complete flux calibration by merging `FAST_VARIATION` tables.
+
 ---
 For more details on the long-term project plan, see [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md). To see general project instructions and setup, see [INSTRUCTIONS.md](INSTRUCTIONS.md).
