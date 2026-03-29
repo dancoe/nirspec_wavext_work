@@ -254,3 +254,6 @@ and the extraction regions
 and how you've extracted extended wavelength data.
 Put the plots in plots/
 Follow @[nirspec_wavext_work/notes/INSTRUCTIONS.md]
+
+258. 2026-03-28 9:50 PM
+Amazing thank you! Please commit this to Github following @[nirspec_wavext_work/notes/INSTRUCTIONS.md]

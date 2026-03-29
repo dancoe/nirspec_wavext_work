@@ -177,90 +177,148 @@ def show_MOS_rate(rate_file, slits_model=None,
         
     
 def show_MOS_rate_files(rate_files, slit_models=[], save_plot=False, close_plot=False, integration=None,
-                        vmin=None, vmax=None, show_colorbar=True):
-                  #vmin=-0.003, vmax=0.022, 
+                        vmin=None, vmax=None, show_colorbar=True, nrows=None, ncols=None, 
+                        titles=None, figsize=(15, 10), show_labels=True, autocrop=True):
+    """
+    Plot MOS rate files in a grid, correctly mapped to detector coordinates.
+    """
+    if nrows is None or ncols is None:
+        ncols = 2 if len(rate_files) > 1 else 1
+        nrows = (len(rate_files) + ncols - 1) // ncols
 
-    fig, axs = plt.subplots(1, len(rate_files), figsize=(15,8), sharey=True)
-    plt.subplots_adjust(wspace=0.02)
+    fig, axs = plt.subplots(nrows, ncols, figsize=figsize, squeeze=False)
+    axs = axs.flatten()
+    plt.subplots_adjust(wspace=0.15, hspace=0.3)
 
-    cmap = 'viridis'
-    bad_color = 1, 0.7, 0.7
-    cmap = matplotlib.colormaps[cmap]
-    cmap.set_bad(bad_color, 1.)
+    cmap = matplotlib.colormaps['viridis']
+    cmap.set_bad((1, 0.7, 0.7), 1.0)
     
-    for ifile, rate_file in enumerate(rate_files):        
-        if not os.path.exists(rate_file):
+    row_y_limits = [ [np.inf, -np.inf] for _ in range(nrows) ]
+    im = None # For colorbar
+    
+    for ifile, rate_file in enumerate(rate_files):
+        ax = axs[ifile]
+        if rate_file is None or not os.path.exists(rate_file):
+            ax.set_visible(False)
             continue
             
         with fits.open(rate_file) as hdu_list:
             data = hdu_list['SCI'].data
+            header = hdu_list[0].header
+            
+            # Detect subarray positioning from FITS header
+            xstart = header.get('SUBSTRT1', 1)
+            ystart = header.get('SUBSTRT2', 1)
+            xsize = header.get('SUBSIZE1', data.shape[1])
+            ysize = header.get('SUBSIZE2', data.shape[0])
+            
+            # 0-indexed detector boundaries
+            x_base, x_top = xstart - 1, xstart - 1 + xsize
+            y_base, y_top = ystart - 1, ystart - 1 + ysize
+
             if integration == 'min':
                 data = data.min(axis=0)
-            elif integration != None:
+            elif integration is not None:
                 data = data[integration]
 
-        ax = axs[ifile]
         if vmax:
             norm = ImageNormalize(vmin=vmin, vmax=vmax, stretch=AsinhStretch())
         else:
             norm = simple_norm(data, 'asinh', min_percent=20, max_percent=98)
-        #norm = ImageNormalize(vmin=-0.003, vmax=0.022, stretch=AsinhStretch())
-        #print(norm.vmin, norm.vmax)
-        # Turn off interpolation! Or else bad pixels will appear to grow in the plot
-        im  = ax.imshow(data, origin='lower', cmap=cmap, norm=norm, interpolation='nearest')
+            
+        # aspect='auto' is critical for the 'v2' look (filling the axis height)
+        im = ax.imshow(data, origin='lower', cmap=cmap, norm=norm, interpolation='nearest', aspect='auto', 
+                       extent=[x_base, x_top, y_base, y_top])
         
-        if len(slit_models):
-            # Labels 2D extraction regions on MSA detector rate image
+        # Immediate zoom to data
+        ax.set_ylim(y_base - 10, y_top + 10)
+        ax.set_xlim(0, 2048)
+        
+        # Track limits for row-sync
+        i_row = ifile // ncols
+        row_y_limits[i_row][0] = min(row_y_limits[i_row][0], y_base - 20)
+        row_y_limits[i_row][1] = max(row_y_limits[i_row][1], y_top + 20)
+
+        # Labels and Titling
+        if titles and ifile < len(titles):
+            ax.set_title(titles[ifile], fontsize=10)
+        else:
+            ax.set_title(os.path.basename(rate_file), fontsize=8)
+
+        # Handle slit overlays and WCS
+        if ifile < len(slit_models) and slit_models[ifile] is not None:
             slit_model = slit_models[ifile]
             slit_patches = []
-            path_effects=[pe.withStroke(linewidth=3, foreground="w", alpha=0.9)]
-            fontsize = 8
-            for slit in slit_model.slits:
-                slit_patch = Rectangle((slit.xstart, slit.ystart), slit.xsize, slit.ysize)
-                slit_patches.append(slit_patch)
-                #plt.text(slit.xstart + slit.xsize, slit.ystart + slit.ysize/2, slit.source_id, color='w', va='center', fontsize=12, weight='bold')
-                #print('nrs1' in rate_file)
-                if 'nrs1' in rate_file: # Label the spectra on the left hand side for NRS1:
-                    ax.text(slit.xstart, slit.ystart + slit.ysize/2, slit.source_id, color='r', ha='right', va='center', fontsize=fontsize, path_effects=path_effects)
-                else:  # 'nrs2' # Label the spectra on the right hand side for NRS2:
-                    ax.text(slit.xstart + slit.xsize, slit.ystart + slit.ysize/2, slit.source_id, color='r', va='center', fontsize=fontsize, path_effects=path_effects)
+            path_effects = [pe.withStroke(linewidth=3, foreground="w", alpha=0.9)]
+            
+            # Draw boxes if it's a model with slits
+            if hasattr(slit_model, 'slits'):
+                for slit in slit_model.slits:
+                    patch = Rectangle((slit.xstart, slit.ystart), slit.xsize, slit.ysize)
+                    slit_patches.append(patch)
+                    if show_labels:
+                        ha = 'right' if 'nrs1' in rate_file.lower() else 'left'
+                        tx = slit.xstart if ha == 'right' else slit.xstart + slit.xsize
+                        ax.text(tx, slit.ystart + slit.ysize/2, str(slit.source_id), 
+                                color='r', ha=ha, va='center', fontsize=8, path_effects=path_effects)
+            
+            if slit_patches:
+                ax.add_collection(PatchCollection(slit_patches, ec='r', fc='None', alpha=0.5))
 
-            ax.add_collection(PatchCollection(slit_patches, ec='r', fc='None'))
-        
-        title = os.path.basename(rate_file)
-        if integration != None:
-            title = title.replace('rateints', 'rateints[%s]' % integration)
-    
-        ax.set_title(title)
-        print(title)
+            # Wavelength axis
+            if hasattr(slit_model, 'slits') and len(slit_model.slits) > 0:
+                slit = slit_model.slits[0]
+                if hasattr(slit, 'meta') and hasattr(slit.meta, 'wcs'):
+                    det_to_sky = slit.meta.wcs.get_transform('detector', 'world')
+                    y_center_local = slit.ysize / 2
+                    
+                    def forward(x):
+                        # The WCS model expects local slit coords (relative to slit.xstart)
+                        # Our plot x is absolute detector pixels (0-2048)
+                        # Slit.xstart is relative to the start of the FULL detector
+                        # So x_local = x - slit.xstart
+                        # BUT wait! slit.xstart for MOS is often ~0 because the model is for the EXTRACTED slit data.
+                        # I'll use x_base (from header) as the reliable offset.
+                        return det_to_sky(x - x_base, np.full_like(x, y_center_local))[2]
 
-    # https://stackoverflow.com/questions/18195758/set-matplotlib-colorbar-size-to-match-graph
-    if show_colorbar:
-        plt.subplots_adjust(left=0.05, right=0.85)
-        units = 'DN/s'
-        cbar_dx = 0.02
-        cbar_ax = fig.add_axes([ax.get_position().x1+cbar_dx,
-                                ax.get_position().y0, cbar_dx,
-                                ax.get_position().height])
-        cbar = fig.colorbar(im, label=units, cax=cbar_ax)
-        
-        # Add min and max to ticks on colorbar
-        cbar_ticks = cbar_ax.get_yticks()
-        cbar_ticks = np.concatenate([cbar_ticks, [norm.vmin, norm.vmax]])
-        cbar_ticks = np.compress(between(norm.vmin, cbar_ticks, norm.vmax), cbar_ticks)
-        cbar_ticks = np.sort(cbar_ticks)
-        cbar.set_ticks(cbar_ticks)
-        # print(cbar_ticks)
+                    # Sampling for interpolation
+                    x_sample = np.linspace(0, 2048, 100)
+                    try:
+                        w_sample = forward(x_sample)
+                        if np.nanmean(w_sample) < 1e-4: w_sample *= 1e6 # microns fallback
+                        
+                        # Remove NaNs for interpolation
+                        mask = ~np.isnan(w_sample)
+                        if not np.any(mask):
+                            raise ValueError("All wavelength samples are NaN")
+                            
+                        from scipy.interpolate import interp1d
+                        f_interp = interp1d(x_sample[mask], w_sample[mask], bounds_error=False, fill_value='extrapolate')
+                        
+                        sec_ax = ax.secondary_xaxis('top', functions=(f_interp, lambda w: w)) # dummy inverse
+                        sec_ax.set_xlabel('$\lambda$ ($\mu$m)', fontsize=9)
+                        sec_ax.tick_params(labelsize=8)
+                        
+                        # Mark 5.3 um limit
+                        ax.axvline(f_interp.x[np.argmin(np.abs(w_sample - 5.3))], color='r', ls='--', alpha=0.3)
+                    except Exception as e:
+                        print(f"WCS Plotting Error: {e}")
+
+    # Final Crop Alignment
+    if autocrop:
+        for ifile in range(len(rate_files)):
+            i_row = ifile // ncols
+            y_lims = row_y_limits[i_row]
+            if not np.isinf(y_lims).any():
+                axs[ifile].set_ylim(y_lims[0], y_lims[1])
+            axs[ifile].set_xlim(0, 2048)
+
+    if show_colorbar and im:
+        fig.colorbar(im, ax=axs.tolist(), label='DN/s', aspect=30, pad=0.02)
 
     if save_plot:
-        if type(save_plot) != type('a.fits'):
-            save_plot = rate_file.replace('fits', 'png')
-            save_plot = save_plot.replace('_nrs1', '')
-            save_plot = save_plot.replace('_nrs2', '')
-            if integration != None:
-                save_plot = save_plot.replace('.png', '%s.png' % integration)
-        print('SAVING', save_plot)
-        plt.savefig(save_plot, dpi=200)
+        print(f"SAVING {save_plot}")
+        plt.savefig(save_plot, dpi=200, bbox_inches='tight')
 
     if close_plot:
         plt.close()

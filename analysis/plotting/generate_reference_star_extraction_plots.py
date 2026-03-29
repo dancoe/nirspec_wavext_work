@@ -163,7 +163,7 @@ def plot_all():
                 vmax = np.percentile(combined, 99.5)
                 print(f"Using shared scale: vmin={vmin:.4f}, vmax={vmax:.4f}")
 
-        plot_path = f"plots/extraction/{label.replace(' ', '_')}_All_Gratings_NRS1_NRS2_v6.png"
+        plot_path = f"plots/extraction/{label.replace(' ', '_')}_All_Gratings_NRS1_NRS2_v8.png"
         nrows = len(sorted_gratings)
         ncols = 2
         print(f"  Generating {nrows}x{ncols} plot...")

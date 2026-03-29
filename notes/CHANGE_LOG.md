@@ -1,3 +1,13 @@
+## 2026-03-28 — MOS Visualization Pipeline Refactor
+- **Absolute Detector Mapping**: Completely refactored `show_MOS_rate_files` in `mos.py` to use dynamic extent calculation based on `SUBSTRT1/2` and `SUBSIZE1/2`. This ensures that data is correctly placed on the absolute 2048x2048 detector grid, with Y-axis labels reflecting true detector rows (e.g., ~1050–1120 for fixed slits).
+- **V2-Style Aspect Ratio Restored**: Re-implemented `aspect='auto'` within specifically tuned `set_ylim` boundaries. This restores the "filled axis" visual style of the earlier v2 diagnostic plots while maintaining perfect detector-relative cropping.
+- **Robust WCS Interpolation**: 
+  - Fixed a `ValueError` caused by NaNs in the WCS coordinate transformation for off-detector points.
+  - Implemented a masked interpolation scheme for the secondary wavelength axis.
+  - Adjusted coordinate offsets to use `x_base` from headers, ensuring accurate wavelength mapping for zoomed subarrays.
+- **Row-wise Synchronization**: Re-engineered the `autocrop` logic to synchronize vertical scales and offsets across each row (NRS1, NRS2), allowing for accurate spatial comparisons between detectors.
+- **Automated Diagnostic Plotting**: Generated `v8` reference plots for PIDs 1492, 1537, and 1538, confirming correct extraction region alignment and absolute coordinate labeling.
+
 ## 2026-03-27 (very late night) — IFU Analysis Branch
 - **New IFU Analysis Branch**: Initiated IFU-mode wavelength extension analysis following Parlanti et al. (2025) methodology, paralleling the existing Fixed Slit work.
 - **Calibration Sources Selected**: Identified 4 calibration standard star programs matching exactly those used by Parlanti et al.:

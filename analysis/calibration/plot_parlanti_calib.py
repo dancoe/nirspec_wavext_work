@@ -51,8 +51,8 @@ GRATING_CONFIGS = {
     'g235m_f170lp': {
         'label':          'G235M/F170LP',
         'short':          'G235M',
-        'color':          'darkgoldenrod',
-        'color_ext':      'goldenrod',
+        'color':          'goldenrod',
+        'color_ext':      'palegoldenrod',
         'x1d_stem':       'f170lp_g235m-f170lp_x1d.fits',
         'stage':          'stage3_ext',
         'wl_range':       (1.66, 5.50),
@@ -134,11 +134,20 @@ def apply_calib(wl_obs, flux_obs, wl_cal, k, alpha, beta):
     alpha_terp = interp_safe(wl_cal, alpha, wl_obs)
     beta_terp  = interp_safe(wl_cal, beta,  wl_obs)
 
+    # Fill NaNs in coefficients (default to 1.0 for k, 0.0 for contamination)
+    k_terp     = np.nan_to_num(k_terp, nan=np.nanmedian(k))
+    alpha_terp = np.nan_to_num(alpha_terp, nan=0.0)
+    beta_terp  = np.nan_to_num(beta_terp, nan=0.0)
+
     # Interpolate observed flux at λ/2 and λ/3
     f_obs_interp = interp1d(wl_obs, flux_obs, kind='linear',
                             bounds_error=False, fill_value=np.nan)
     flux_half  = f_obs_interp(wl_obs / 2)
     flux_third = f_obs_interp(wl_obs / 3)
+
+    # Crucial: if we don't have coverage at half/third wavelength, assume 0 contamination
+    flux_half  = np.nan_to_num(flux_half, nan=0.0)
+    flux_third = np.nan_to_num(flux_third, nan=0.0)
 
     flux_corr = (flux_obs - alpha_terp * flux_half - beta_terp * flux_third) / k_terp
     return flux_corr
@@ -183,13 +192,13 @@ def plot_coefficients():
 
             # Mask NaN and clip to plot range
             ok = np.isfinite(vo)
-            ax.plot(wl_ours[ok], vo[ok], lw=1.2, color='steelblue',
+            ax.plot(wl_ours[ok], vo[ok], lw=1.2, color=gcfg['color'],
                     alpha=0.8, label='Ours (JWST 1.20.2)')
 
             if vp is not None:
                 ok_p = np.isfinite(vp)
-                ax.plot(wl_par[ok_p], vp[ok_p], lw=1.2, color='darkorange',
-                        alpha=0.8, ls='--', label='Parlanti 2025')
+                ax.plot(wl_par[ok_p], vp[ok_p], lw=1.2, color=gcfg['color'],
+                        alpha=0.4, ls='--', label='Parlanti 2025')
 
             ax.set_ylabel(label, fontsize=11)
             ax.set_xlim(*gcfg['wl_range'])
@@ -290,12 +299,12 @@ def plot_residuals():
         for ax, title in [(ax_before, 'Before calibration correction'),
                           (ax_after,  'After calibration correction')]:
             ax.axhline(1.0, color='k', lw=1.0, ls='-', alpha=0.8)
-            ax.axhspan(0.95, 1.05, color='green', alpha=0.08, label='±5%')
+            ax.axhspan(0.95, 1.05, color='green', alpha=0.08)
             ax.set_ylabel('S_obs / S_CALSPEC', fontsize=11)
             ax.set_title(title, fontsize=12)
-            ax.legend(fontsize=9, loc='upper right', ncol=len(GRATING_CONFIGS))
+            ax.legend(fontsize=8, loc='upper right', ncol=3)
             ax.set_ylim(0.4, 1.8)
-            ax.set_xlim(all_wl_min, all_wl_max)
+            ax.set_xlim(min(all_wl_min, 0.95), max(all_wl_max, 5.6))
             ax.grid(True, alpha=0.3)
 
         ax_after.set_xlabel('Wavelength (µm)', fontsize=12)
@@ -311,35 +320,30 @@ def plot_residuals():
 # ═══════════════════════════════════════════════════════════════════════════════
 def plot_spectra_comparison():
     """Compare standard-range x1d to extended-range x1d to CALSPEC."""
-    print("\n--- Plot 3: Spectra comparison (one figure per PID) ---")
+    print("\n--- Plot 3: Spectra comparison (one figure per PID, gratings overlaid) ---")
 
     for pid in SOURCES.keys():
         name, cs_fname, pid_dir, _ = SOURCES[pid]
 
-        # 3 main panels (G140M, G235M, G395M)
-        # Each with a main subpanel and a residual subpanel below it
-        fig = plt.figure(figsize=(12, 16))
-        # 3 gratings * 2 panels each = 6 rows
-        gs = gridspec.GridSpec(6, 1, height_ratios=[3, 1, 3, 1, 3, 1], hspace=0.35)
+        # 2 main panels: Top for spectra (log), Bottom for residuals (linear)
+        fig = plt.figure(figsize=(12, 10))
+        gs = gridspec.GridSpec(2, 1, height_ratios=[3, 1], hspace=0.1)
         
-        ax_140 = fig.add_subplot(gs[0])
-        ax_140_res = fig.add_subplot(gs[1], sharex=ax_140)
-        
-        ax_235 = fig.add_subplot(gs[2])
-        ax_235_res = fig.add_subplot(gs[3], sharex=ax_235)
-
-        ax_395 = fig.add_subplot(gs[4])
-        ax_395_res = fig.add_subplot(gs[5], sharex=ax_395)
+        ax = fig.add_subplot(gs[0])
+        ax_res = fig.add_subplot(gs[1], sharex=ax)
 
         fig.suptitle(f'PID {pid} ({name}) — Observed vs CALSPEC spectra\n'
                      f'Comparing Nominal and Extended/Corrected Pipelines', fontsize=15, y=0.96)
 
-        grating_map = {'g140m_f100lp': (ax_140, ax_140_res), 
-                      'g235m_f170lp': (ax_235, ax_235_res),
-                      'g395m_f290lp': (ax_395, ax_395_res)}
+        all_wl_min, all_wl_max = 100.0, 0.0
 
-        for gkey, (ax, ax_res) in grating_map.items():
-            gcfg = GRATING_CONFIGS[gkey]
+        # Load CALSPEC once for the background
+        cs_wl, cs_fj = load_calspec(cs_fname)
+        cs_interp = interp1d(cs_wl, cs_fj, bounds_error=False, fill_value=np.nan)
+        
+        for gkey, gcfg in GRATING_CONFIGS.items():
+            if pid not in gcfg['pids']:
+                continue
             
             # Calibration for this specific grating
             try:
@@ -356,51 +360,27 @@ def plot_spectra_comparison():
                 print(f'  WARNING: missing extended x1d for {gkey}')
                 continue
 
-            cs_wl, cs_fj = load_calspec(cs_fname)
-            cs_interp = interp1d(cs_wl, cs_fj, bounds_error=False, fill_value=np.nan)
-
             wl_e, fl_e, dq_e = load_x1d(x1d_ext)
             bad_e = (dq_e > 0) | ~np.isfinite(fl_e) | (fl_e <= 0)
             fl_e[bad_e] = np.nan
 
             # Apply calibration
             fl_corr = apply_calib(wl_e, fl_e, wl_cal, k_cal, alpha_cal, beta_cal)
-
-            # CALSPEC model
-            wl_grid = np.linspace(*gcfg['wl_range'], 1000)
-            cs_grid = cs_interp(wl_grid)
             cs_at_obs = cs_interp(wl_e)
 
             # --- Top Panel: Spectra ---
             # Uncorrected (lighter)
-            ax.plot(wl_e, fl_e, lw=0.8, color=gcfg['color_ext'], alpha=0.35, 
-                    label=f'{gcfg["short"]} Ext. (uncorr.)')
+            ax.plot(wl_e, fl_e, lw=0.8, color=gcfg['color_ext'], alpha=0.3, label='_nolegend_')
             # Corrected (bolder)
-            ax.plot(wl_e, fl_corr, lw=1.2, color=gcfg['color'], alpha=0.85, 
-                    label=f'{gcfg["short"]} Ext. (corrected)')
-            # CALSPEC
-            ax.plot(wl_grid, cs_grid, lw=1.5, color='black', ls=(0, (5, 5)), 
-                    alpha=0.9, label=f'{name} CALSPEC')
+            ax.plot(wl_e, fl_corr, lw=1.2, color=gcfg['color'], alpha=0.9, 
+                    label=f'{gcfg["short"]} Corrected')
 
             if os.path.exists(x1d_std):
                 wl_s, fl_s, dq_s = load_x1d(x1d_std)
                 bad_s = (dq_s > 0) | ~np.isfinite(fl_s) | (fl_s <= 0)
                 fl_s[bad_s] = np.nan
-                ax.plot(wl_s, fl_s, lw=1.2, color='gray', alpha=0.5, ls='--', 
-                        label=f'{gcfg["short"]} Nominal Stage 3')
-
-            ax.set_title(f'NIRSpec IFU {gcfg["label"]} Region', fontsize=12, fontweight='bold')
-            ax.set_ylabel('Flux (Jy)', fontsize=11)
-            ax.set_yscale('log')
-            ax.set_xlim(*gcfg['wl_range'])
-            ax.grid(True, alpha=0.2, which='both')
-            ax.legend(fontsize=9, loc='upper right', ncol=2, frameon=True, framealpha=0.9)
-
-            # Dynamic limits based on CALSPEC
-            ok_cs = np.isfinite(cs_grid) & (cs_grid > 0)
-            if ok_cs.any():
-                cmin, cmax = cs_grid[ok_cs].min(), cs_grid[ok_cs].max()
-                ax.set_ylim(cmin / 10**0.6, cmax * 10**0.6)
+                ax.plot(wl_s, fl_s, lw=1.0, color='gray', alpha=0.4, ls='--', 
+                        label=f'{gcfg["short"]} Nominal' if gkey == 'g140m_f100lp' else '_nolegend_')
 
             # --- Bottom Panel: Residuals ---
             ratio_corr = fl_corr / cs_at_obs
@@ -415,19 +395,45 @@ def plot_spectra_comparison():
                 y_sm[ok] = median_filter(y[ok], size=11)
                 return y_sm
 
-            ax_res.plot(wl_e, smooth(ratio_uncorr), lw=1.0, color=gcfg['color_ext'], alpha=0.4, ls=':')
-            ax_res.plot(wl_e, smooth(ratio_corr), lw=1.2, color=gcfg['color'], alpha=0.9)
+            ax_res.plot(wl_e, smooth(ratio_uncorr), lw=1.0, color=gcfg['color_ext'], alpha=0.3, ls=':')
+            ax_res.plot(wl_e, smooth(ratio_corr), lw=1.2, color=gcfg['color'], alpha=1.0)
             
-            ax_res.axhline(1.0, color='black', lw=0.8, ls='-')
-            ax_res.axhspan(0.95, 1.05, color='green', alpha=0.1)
-            ax_res.set_ylabel('Ratio to CALSPEC', fontsize=10)
-            ax_res.set_xlabel('Wavelength (µm)', fontsize=11)
-            ax_res.set_ylim(0.7, 1.3)
-            ax_res.grid(True, alpha=0.2)
+            # Update global limits
+            valid_wl = wl_e[np.isfinite(fl_e)]
+            if len(valid_wl) > 0:
+                all_wl_min = min(all_wl_min, valid_wl.min())
+                all_wl_max = max(all_wl_max, valid_wl.max())
 
+        # Finalize panels
+        wl_grid = np.linspace(all_wl_min, all_wl_max, 2000)
+        cs_grid = cs_interp(wl_grid)
+        ax.plot(wl_grid, cs_grid, lw=1.5, color='black', ls=(0, (5, 5)), 
+                alpha=0.8, label='CALSPEC', zorder=0)
+
+        ax.set_ylabel('Flux (Jy)', fontsize=12)
+        ax.set_yscale('log')
+        if all_wl_max > all_wl_min:
+            ax.set_xlim(all_wl_min*0.98, all_wl_max*1.02)
+        ax.grid(True, alpha=0.15, which='both')
+        ax.legend(fontsize=9, loc='upper right', ncol=3, frameon=True)
+
+        # Dynamic limits based on CALSPEC
+        ok_cs = np.isfinite(cs_grid) & (cs_grid > 0)
+        if ok_cs.any():
+            cmin, cmax = cs_grid[ok_cs].min(), cs_grid[ok_cs].max()
+            ax.set_ylim(cmin / 5, cmax * 5)
+
+        ax_res.axhline(1.0, color='black', lw=1.0, ls='-', alpha=0.8)
+        ax_res.axhspan(0.98, 1.02, color='green', alpha=0.05)
+        ax_res.set_ylabel('Ratio', fontsize=11)
+        ax_res.set_xlabel('Wavelength (µm)', fontsize=12)
+        ax_res.set_ylim(0.75, 1.25)
+        ax_res.grid(True, alpha=0.15)
+
+        plt.tight_layout()
         plt.subplots_adjust(top=0.92)
         outpath = f'{PLOT_DIR}/fig3_spectra_PID{pid}.png'
-        plt.savefig(outpath, dpi=180, bbox_inches='tight')
+        plt.savefig(outpath, dpi=200, bbox_inches='tight')
         plt.close()
         print(f'Saved: {outpath}')
 
