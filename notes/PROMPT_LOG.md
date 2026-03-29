@@ -2,6 +2,9 @@
 
 Below please log the exact prompts I give you, numbered, with timestamps.
 
+261. 2026-03-29
+Please inspect references/Parlanti Fig5.png and PARLANTI.md. Note how they got the extended spectra to match the nominal spectra after recalibration. Then review your work in reports/REPORTS.md. Note how the recalibrated spectra (orange) don't match the nominal truth spectra (blue). Please revisit your techniques for deriving the coefficients. Try a new IFU analysis in reports/329_ifu_v2/. Inspect the resulting plots, iterate, and try to get the recalibrated spectra to match the observed. Work as long as needed to succeed.
+
 260. 2026-03-28
 Please refer to INSTRUCTIONS.md and LATEST_WORK.md. Also CAL_COMPONENTS_P330E.png. It appears the extended wavelength observations aren't scaled the same as the nominal extractions? Please revisit how these were reduced and extracted for the Parlanti IFU exercise we're doing. The goal is to get the extended wavelength G140M data to match the observed nominal G235M data, etc.
 

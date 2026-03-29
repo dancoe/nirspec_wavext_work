@@ -1,3 +1,49 @@
+## 2026-03-29 — IFU v2 Coefficient Derivation
+
+### Root Cause of IFU v1 Failure Identified
+The IFU v1 NNLS solver (`analysis/solver/solve_parlanti_ifu_v1.py`) used a regularisation
+anchor `k_anchor=2` with prior k=1.0. This biased k toward 1.0 everywhere.
+True k needed: ~1.2 at NRS2 boundary, declining to ~0.3 at 3.5 µm.
+Result: correction factor 1/k ≈ 1.2 was far too small → recalibrated 30-50% below truth.
+
+### G191-B2B Anomaly Investigated
+G191-B2B consistently gives R = S_obs/CALSPEC = 0.815 at 3.0 µm vs P330E/J1743045 ≈ 0.638.
+The ~27% excess cannot be explained by Parlanti's published α (max 5.4%).
+Root cause: pipeline photom calibration artifact for hot WDs (T~60000K).
+**Decision**: exclude G191-B2B from k derivation (accepted limitation for G140M NRS2).
+
+### IFU v2 Algorithm
+1. k(λ) = median(R_P330E, R_J1743045), where R_i = S_obs_i / f_CALSPEC_i
+   - Smoothed over 40 channels, clipped to min 0.01
+   - P330E-C3 (PID6645) excluded — stage3_ext G235M data essentially empty (R ≈ 0.008)
+2. α(λ), β(λ) loaded from Parlanti published calibration FITS files
+   (`data/parlanti_repo/calibration_files/calibration_functions_*.fits`)
+   — optics-level, pipeline-independent
+3. Correction: f_corr = (S_obs − α̃·f(λ/2) − β̃·f(λ/3)) / k
+
+### Results
+
+| Grating | k median | k range |
+|:--------|:---------|:--------|
+| G140M NRS2 | **0.567** | 0.298–1.322 |
+| G235M NRS2 | **0.768** | 0.545–1.307 |
+
+Recalibrated spectra: P330E and J1743045 match truth within ~5% across full NRS2 range.
+G191-B2B G140M overcorrected by ~20-30% (documented limitation); G235M good.
+
+### New Files
+- `analysis/solver/solve_parlanti_ifu_v2.py` — corrected solver (no regularisation)
+- `reports/329_ifu_v2/REPORT.md` — comprehensive report
+- `reports/329_ifu_v2/plot_ifu_v2_source_spectra.py` — validation plots
+- `reports/329_ifu_v2/plot_ifu_v2_coeffs_log.py` — log-scale coefficient plot
+- `reports/329_ifu_v2/ifu_v2_spectra_{P330E,G191-B2B,J1743045}.png` — validation PNGs
+- `reports/329_ifu_v2/ifu_v2_coeffs_log.png` — coefficient visualisation
+- `plots/Parlanti/cal/ifu_v2/coeffs_ifu_v2_{G140M,G235M}.csv` — coefficient tables
+- `plots/Parlanti/cal/ifu_v2/ifu_v2_{g140m,g235m}_coeffs.png` — coefficient plots
+- `reports/REPORTS.md` — updated with v2 entry
+
+---
+
 ## 2026-03-29 ~01:00 — FS v1 Coefficient Derivation (NRS2 Pipeline Fixed)
 
 ### Root Cause of FS NRS2 All-Null Pixels Identified
