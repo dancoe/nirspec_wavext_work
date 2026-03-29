@@ -3,6 +3,7 @@
 This directory contains diagnostic reports for the NIRSpec wavelength extension calibration project.
 
 ## Index of Reports
+- [329 FS v2](329_fs_v2/REPORT.md) — (2026-03-29) FS v2 coefficient derivation: same unbiased median-R algorithm as IFU v2. Comparison plots for IFU v2, FS v2, and Parlanti k(λ). Excellent correction for P330E and J1743045.
 - [329 IFU v2](329_ifu_v2/REPORT.md) — (2026-03-29) IFU v2 coefficient derivation: correct k from median R (no regularisation), + Parlanti α/β. Recalibrated spectra match truth for P330E and J1743045.
 - [329 Parlanti-comparison v1](329_parlanti-comparison_v1/REPORT.md) — (2026-03-29) Comparison of Parlanti original, FS v1, and IFU v1 coefficients.
 - [329 FS v1](329_fs_v1/REPORT.md) — (2026-03-29) Fixed Slit v1 coefficient derivation and spectral validation.
