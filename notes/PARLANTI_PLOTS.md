@@ -7,6 +7,11 @@ This document documents the logic and color schemes used for the spectral overla
 - **G235M**: Dark Goldenrod (Nominal) / Goldenrod (Extended)
 - **G395M**: Red (Nominal) / Light Coral (Extended)
 - **PRISM**: Black (Reference f(λ)) with alpha=0.3
+- **Ghost Reference (f(λ/2))**: Green (#2ecc71), Dashed
+- **Ghost Reference (f(λ/3))**: Magenta (#e056fd), Dashed
+- **Ghost Component (α·f(λ/2))**: Solid Green (#2ecc71)
+- **Ghost Component (β·f(λ/3))**: Solid Magenta (#e056fd)
+- **Model Sum**: Red Solid
 
 ### Scripts
 1. `analysis/plot_combined_gratings.py`: Generates the multicomponent log-scale plot (`FS-1492_pre-cal.png`) with robust outlier rejection, NaN/non-positive masking, and **front-layered PRISM** baseline.

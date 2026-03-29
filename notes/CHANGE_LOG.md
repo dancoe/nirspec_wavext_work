@@ -1,3 +1,8 @@
+## 2026-03-28 (late night) — Documentation & Workflow Optimization
+- **Documentation Consolidation**: Created `notes/LATEST_WORK.md` to track the most recent progress (V3 Calibration) and provide a clear roadmap for upcoming tasks (Complex Source Validation, ASDF Export, F-Flat Concatenation).
+- **Instruction Cross-Referencing**: Updated `notes/INSTRUCTIONS.md` to include high-level pointers to `LATEST_WORK.md` and `IMPLEMENTATION_PLAN.md`, streamlining the navigation between current status and long-term goals.
+- **Log Maintenance**: Appended the latest user request to `notes/PROMPT_LOG.md` (Entry 259).
+
 ## 2026-03-28 — MOS Visualization Pipeline Refactor
 - **Absolute Detector Mapping**: Completely refactored `show_MOS_rate_files` in `mos.py` to use dynamic extent calculation based on `SUBSTRT1/2` and `SUBSIZE1/2`. This ensures that data is correctly placed on the absolute 2048x2048 detector grid, with Y-axis labels reflecting true detector rows (e.g., ~1050–1120 for fixed slits).
 - **V2-Style Aspect Ratio Restored**: Re-implemented `aspect='auto'` within specifically tuned `set_ylim` boundaries. This restores the "filled axis" visual style of the earlier v2 diagnostic plots while maintaining perfect detector-relative cropping.
@@ -229,3 +234,7 @@
 - **Reference Files:** 
     - Generated `wavelengthrange_extended.asdf` using `stdatamodels`. This file extends the `wavelengthrange` for all NIRSpec gratings (0.6 - 5.6 µm range).
 - **Modified Documentation:** Updated [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md) to emphasize reference file extensions over code extrapolation.
+
+- **Spectral Ghost Decomposition**: Implemented  to visualize the contribution of (\lambda/2)$ and (\lambda/3)$ to the extended NRS2 spectrum.
+- **Wavelength Analysis**: Theoretically confirmed that reference spectra only need to cover the observed range ($\leq 5.3$ µm) because ghosts at $\lambda_{obs}$ originate from $\lambda_{obs}/n$.
+- **Model Visualization**: Added colored ghost components (Green for 2nd order, Magenta for 3rd order) and Model Sum (Red) to diagnostic plots.

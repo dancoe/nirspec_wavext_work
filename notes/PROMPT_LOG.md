@@ -257,3 +257,25 @@ Follow @[nirspec_wavext_work/notes/INSTRUCTIONS.md]
 
 258. 2026-03-28 9:50 PM
 Amazing thank you! Please commit this to Github following @[nirspec_wavext_work/notes/INSTRUCTIONS.md]
+
+259. 2026-03-28 10:07 PM
+Please refer to our latest work in @[nirspec_wavext_work/plots/Parlanti/cal/153678_v3/CAL_153678_V3.md]
+This is reflected in @[nirspec_wavext_work/notes/IMPLEMENTATION_PLAN.md]
+Also see @[nirspec_wavext_work/notes/INSTRUCTIONS.md]
+Create a new file notes/LATEST_WORK.md – keep this brief but have it actively track what we've just worked on most recently and our plan going forward. Cross reference that with @[nirspec_wavext_work/notes/INSTRUCTIONS.md]. That is in @[nirspec_wavext_work/notes/INSTRUCTIONS.md], say to refer to LATEST_WORK.md and then for more details, see @[nirspec_wavext_work/notes/IMPLEMENTATION_PLAN.md]
+
+260. 2026-03-28 10:14 PM
+So I've been thinking for the latest coefficient calculations. 
+@[nirspec_wavext_work/notes/PARLANTI.md]
+The coefficients are multiplied by the spectrum at (lambda / 2) and (lambda / 3).
+So does that mean we need a reference spectrum out to > 10 µm ??
+Are these known for our calibration reference stars from CALSPEC?
+
+For a given target, please plot (some of which you're doing already):
+* Reference spectrum
+* Reference spectrum at (lambda / 2) – green
+* Reference spectrum at (lambda / 3) – magenta
+Then also plot how these components add up to the spectrum they're trying to match. That is plot alpha * f(lambda / 2) and beta * f(lambda / 3)
+
+See also formatting in @[nirspec_wavext_work/notes/PARLANTI_PLOTS.md]and update as needed. 
+You'll also still plot G140M, G235M, G395M on the same plot.
