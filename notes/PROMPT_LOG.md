@@ -2,6 +2,11 @@
 
 Below please log the exact prompts I give you, numbered, with timestamps.
 
+262. 2026-03-29
+Please check on progress with this request and continue. You got interrupted and were up to the IFU v3 solver:
+
+Please see REPORTS.md with the latest v2 analysis. It's come to my attention that you've been reducing the data to Level 2 and using those products for the analysis. This time let's do a v3 where you reduce and combine data all the way to Level 3, including extended wavelength extractions based on the tweaks you've made WAVEXT.md. Do this for both IFU and Fixed Slit. Generate reports 329_ifu_v3, 329_fs_v3, 329_parlanti-comparison_v3. You'll show MAST Level 3 products and your own Level 3 extractions. Follow INSTRUCTIONS.md
+
 261. 2026-03-29
 Please inspect references/Parlanti Fig5.png and PARLANTI.md. Note how they got the extended spectra to match the nominal spectra after recalibration. Then review your work in reports/REPORTS.md. Note how the recalibrated spectra (orange) don't match the nominal truth spectra (blue). Please revisit your techniques for deriving the coefficients. Try a new IFU analysis in reports/329_ifu_v2/. Inspect the resulting plots, iterate, and try to get the recalibrated spectra to match the observed. Work as long as needed to succeed.
 

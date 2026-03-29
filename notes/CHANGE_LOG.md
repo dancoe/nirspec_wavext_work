@@ -1,3 +1,38 @@
+## 2026-03-29 — IFU v3, FS v3, Parlanti Comparison v3 Reports
+
+### v3 Upgrade: Level-3 Products Used Throughout
+- **IFU v3** (`analysis/solver/solve_parlanti_ifu_v3.py`): Uses Spec3Pipeline stage3_ext x1d
+  (NRS1+NRS2 cubepar extraction). Same unbiased median-R algorithm as v2.
+  Adds MAST L3 nominal vs our L3 ext comparison panels. Outputs in
+  `plots/Parlanti/cal/ifu_v3/` (coefficients, mast_vs_l3, source spectra, full spectra).
+- **FS v3** (`analysis/solver/solve_parlanti_fs_v3.py`): Uses Spec3Pipeline-generated NRS2 x1d
+  from `nrs2_spec3_ext/` (properly rectified, WCS-resampled L3 products).
+  Same algorithm as v2, same MAST L3 NRS1 vs our L3 NRS2 ext comparison.
+  Outputs in `plots/Parlanti/cal/fs_v3/`.
+
+### Reports Created
+- `reports/329_ifu_v3/REPORT_329_ifu_v3.md`: IFU v3 full report
+- `reports/329_fs_v3/REPORT_329_fs_v3.md`: FS v3 full report
+- `reports/329_parlanti-comparison_v3/REPORT_329_parlanti-comparison_v3.md`: v3 comparison
+- `reports/329_parlanti-comparison_v3/plot_coeff_comparison_v3.py`: comparison plot script
+  generating comp_kappa/alpha/beta_v3.png
+
+### v3 Coefficient Summary
+| Mode | Grating | k median | k range |
+|------|---------|----------|---------|
+| IFU v3 | G140M | 0.567 | 0.298–1.322 |
+| IFU v3 | G235M | 0.768 | 0.545–1.307 |
+| FS v3  | G140M | 0.725 | 0.334–1.820 |
+| FS v3  | G235M | 0.972 | 0.700–1.979 |
+
+IFU v3 k tracks Parlanti at ~1.1–1.3×; FS v3 k is ~1.3–2× higher than Parlanti near
+the NRS1/NRS2 boundary (mode-dependent photometric calibration difference).
+
+### REPORTS.md Updated
+Added three new index entries (v3 reports) at the top of the index.
+
+---
+
 ## 2026-03-29 — IFU v2 Coefficient Derivation
 
 ### Root Cause of IFU v1 Failure Identified

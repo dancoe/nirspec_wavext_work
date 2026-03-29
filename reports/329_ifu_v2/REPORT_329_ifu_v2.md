@@ -69,7 +69,19 @@ k starts above 1 near the NRS1/NRS2 boundary (pipeline over-corrects at the tran
 
 ---
 
-## Source Spectra Comparisons
+## 2. Full Spectrum View (All Gratings)
+We compare the recalibrated IFU spectra across the full 0.6–5.6 µm range, merging G140M and G235M extensions. This view demonstrates how the extended recalibration aligns with the nominal higher-order gratings.
+
+### P330E Full Spectrum
+![P330E Full Spectrum](ifu_v2_full_spectrum_P330E.png)
+
+### J1743045 Full Spectrum
+![J1743045 Full Spectrum](ifu_v2_full_spectrum_J1743045.png)
+
+### G191-B2B Full Spectrum
+![G191-B2B Full Spectrum](ifu_v2_full_spectrum_G191-B2B.png)
+
+## 3. NRS2 Spectral Validation (Subpanels)
 
 For each source: gray = observed NRS2 extended; blue dashed = ground-truth nominal; red = recalibrated (v2); dotted = CALSPEC model.
 

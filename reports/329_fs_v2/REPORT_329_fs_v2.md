@@ -58,7 +58,19 @@ k starts well above 1 at the NRS1/NRS2 boundary (pipeline over-corrects the thro
 
 ---
 
-## Source Spectra Comparisons
+## 2. Full Spectrum View (All Gratings)
+We compare the recalibrated spectra across the full 0.6–5.6 µm range, merging all available gratings (G140M, G235M, G395M, PRISM) and detectors (NRS1, NRS2). This view demonstrates how the extended NRS2 recalibration aligns with the nominal higher-order gratings.
+
+### P330E Full Spectrum
+![P330E Full Spectrum](fs_v2_full_spectrum_P330E.png)
+
+### J1743045 Full Spectrum
+![J1743045 Full Spectrum](fs_v2_full_spectrum_J1743045.png)
+
+### G191-B2B Full Spectrum
+![G191-B2B Full Spectrum](fs_v2_full_spectrum_G191-B2B.png)
+
+## 3. NRS2 Spectral Validation (Subpanels)
 
 For each source: gray = observed NRS2 extended; blue dashed = ground-truth nominal; red = recalibrated (FS v2); dotted = CALSPEC model.
 
