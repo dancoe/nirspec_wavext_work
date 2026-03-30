@@ -1,3 +1,36 @@
+## 2026-03-30 — IFU v6 and FS v6: All-Source Joint Solve
+
+### Motivation
+IFU v5 Section 8 showed that corrected spectra did not match the observed data in the extended NRS2 region. v6 addresses this by adding science targets as calibration constraints alongside CALSPEC standards.
+
+### New Analysis Scripts
+- `reports/v6/ifu_v6/scripts/solve_parlanti_ifu_v6.py`: IFU v6 NNLS solver. 3 CALSPEC (G140M) + 3+UGC5101 (G235M). UGC-5101 G395M nominal used as cross-grating truth for G235M extended.
+- `reports/v6/fs_v6/scripts/solve_parlanti_fs_v6.py`: FS v6 NNLS solver. 4 CALSPEC + PID 1492 cross-grating (5 total). PID 1492 DN/s NRS2 normalised to Jy via MAST overlap scale factor.
+- `reports/v6/ifu_v6/scripts/plot_ifu_v6_validation.py`: 10 IFU v6 validation plots.
+- `reports/v6/fs_v6/scripts/plot_fs_v6_validation.py`: 13 FS v6 validation plots.
+
+### New Reports
+- `reports/v6/ifu_v6/REPORT_ifu_v6.md`: IFU v6 full report with coefficient summary, per-source NRS2 validation, UGC-5101 cross-validation, full spectrum merged panels.
+- `reports/v6/fs_v6/REPORT_fs_v6.md`: FS v6 full report with coefficient summary, 4-source CALSPEC validation, PID 1492 cross-validation, full spectrum merged panels.
+- `reports/v6/ANALYSIS_PLAN.md`: v6 analysis plan (data sources, cross-grating truth method, expected results).
+- `reports/v6/DETAILED_PLAN.md`: Detailed step-by-step plan with exact commands and verification checklists.
+- `reports/v6/DETAILED_LOG.md`: Execution log with full implementation details, pitfalls, and v7 notes. Include this file in future session instructions.
+
+### Results
+| File | k median (NRS2) | α median | β median |
+|:-----|:----------------|:---------|:---------|
+| calib_v6_ifu_g140m_f100lp.fits | 0.509 | 0.0835 | 0.0044 |
+| calib_v6_ifu_g235m_f170lp.fits | 0.608 | 0.0136 | 0.0019 |
+| calib_v6_fs_g140m_f100lp.fits  | 0.726 | 0.0222 | 0.0097 |
+| calib_v6_fs_g235m_f170lp.fits  | 0.910 | 0.0311 | 0.0012 |
+
+G235M IFU k improved from ~0.47 (v4/v5) to 0.61 (v6) with UGC-5101 as 4th source. G140M IFU unchanged (no G1V IFU data available). FS G235M near-stable at 0.91 vs v5's 0.957.
+
+### Reports Index Updated
+- `reports/REPORTS.md`: Added IFU v6 and FS v6 entries at top of index.
+
+---
+
 ## 2026-03-29 — v5 IFU Science Validation + Parlanti Comparison v5 (Report Phase)
 
 ### New Scripts
@@ -24,7 +57,7 @@
 ### v5 IFU Preparation
 - **Data Audit**: Confirmed 120/120 files for 2654 and 16/16 unique files for 2186. All science validation data is on disk.
 - **Full v5 Status**: All calibrators (1536-1538, 6645) complete. 6644 FS v5 pending (101/129).
-- **Script Adaptation**: Borrowing from `330_fs_v5`, preparing `run_ifu_pipeline_ext.py` for science targets.
+- **Script Adaptation**: Borrowing from `fs_v5`, preparing `run_ifu_pipeline_ext.py` for science targets.
 - **Reporting**: Initializing `reports/v5/330_ifu_v5/` for validation results.
 - **PROMPT_LOG.md**: Added audit result: "120/120 (2654), 16/16 (2186) files verified."
 
