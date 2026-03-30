@@ -445,7 +445,7 @@ if __name__ == '__main__':
     plot_v5_coeffs_ifu_context()
 
     print('\n[3] SDSSJ0841 G140M extended ...')
-    available = plot_sdssj0841_g140m(redshift_guess=2.0)
+    available = plot_sdssj0841_g140m(redshift_guess=2.96)
     if not available:
         print('    Will try again once Stage 3 completes.')
 
