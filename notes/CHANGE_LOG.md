@@ -1,3 +1,36 @@
+## 2026-03-29 — v4 NNLS Simultaneous k, α, β Derivation (IFU + FS)
+
+### v4 Upgrade: Break Free of Parlanti Prior
+- **IFU v4** (`analysis/solver/solve_parlanti_ifu_v4.py`): NNLS simultaneous solve for
+  k, α, β at each λ from 3 CALSPEC standards (P330E G2V + G191-B2B WDA + J1743045 A8III).
+  No Parlanti published α or β assumed. 40-channel boxcar smoothing.
+  Grid: G140M linspace(1.87,3.55,400), G235M linspace(3.15,5.27,400).
+  Outputs in `plots/Parlanti/cal/ifu_v4/`.
+- **FS v4** (`analysis/solver/solve_parlanti_fs_v4.py`): Same algorithm, uses
+  `nrs2_spec3_ext` Level-3 x1d products.
+  Grid: G140M linspace(1.95,3.20,300), G235M linspace(3.30,5.25,300).
+  Outputs in `plots/Parlanti/cal/fs_v4/`.
+  NRS1 L3 products not generated for FS (non-fatal, MAST NRS1 used for comparison).
+
+### v4 Coefficient Summary
+| Mode | Grating | k med | α med | α max | β med | cond med |
+|------|---------|-------|-------|-------|-------|----------|
+| IFU v4 | G140M | 0.509 | 0.0835 | 0.2249 | 0.0044 | 288 |
+| IFU v4 | G235M | 0.466 | 0.0498 | 0.2052 | 0.0075 | 810 |
+| FS v4  | G140M | 0.701 | 0.0292 | 0.3074 | 0.0041 | 194 |
+| FS v4  | G235M | 0.723 | 0.0369 | 0.6013 | 0.0038 | 857 |
+
+Key findings: NNLS α is 2–6× Parlanti published values. G235M FS k drops from v3 0.97 to v4 0.72.
+High condition numbers (194–857 median) indicate partial k/α degeneracy — NGC2506-G31
+(G1V, PID 6644) needed as 4th source to validate.
+
+### Reports Created
+- `reports/v4/329_ifu_v4/REPORT_329_ifu_v4.md`
+- `reports/v4/329_fs_v4/REPORT_329_fs_v4.md`
+- `reports/REPORTS.md` updated with v4 entries at top of index.
+
+---
+
 ## 2026-03-29 — IFU v3, FS v3, Parlanti Comparison v3 Reports
 
 ### v3 Upgrade: Level-3 Products Used Throughout
