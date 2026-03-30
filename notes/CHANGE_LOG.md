@@ -1,3 +1,33 @@
+## 2026-03-29 — v5 IFU Science Validation + Parlanti Comparison v5 (Report Phase)
+
+### New Scripts
+- `analysis/reduction/run_ifu_science_ext.py`: Extended IFU pipeline for science targets PIDs 2654/2186. Reads rate files from `data/PID{xxx}_{target}/`, runs Stage 2 (Parlanti overrides) + Stage 3 to `stage2_ext/`, `stage3_ext/`.
+- `reports/v5/parlanti-comparison_v5/plot_coeff_comparison_v5.py`: Generates 4 plots comparing k, α, β between Parlanti (2025), FS v4, and FS v5 for G140M + G235M.
+- `reports/v5/ifu_v5/scripts/plot_ifu_v5_validation.py`: Science validation plots — UGC-5101 G235M extended, v5 coefficients overview, SDSSJ0841 G140M (pending).
+
+### New Reports
+- `reports/v5/parlanti-comparison_v5/REPORT_parlanti-comparison_v5.md`: Full comparison report. v5 k agrees with Parlanti to <5% NRS1, <10% NRS2. α returns to physical values after G1V degeneracy break. 4 comparison plots.
+- `reports/v5/ifu_v5/REPORT_ifu_v5.md`: Science validation report. UGC-5101 G235M extended to 5.5 µm (vs 3.17 µm nominal); 3.3 µm PAH emission recovered. SDSSJ0841 G140M reduction running.
+
+### Pipeline Results
+- **UGC-5101 G235M (PID 2186)**: Stage 2 (8 cal files) + Stage 3 complete. x1d: 1.661–5.500 µm, 3623 pixels, Jy. Zero NaN. Ghost-corrected spectrum shows 3.3 µm PAH + warm dust continuum to 5.5 µm.
+- **SDSSJ0841 G140M (PID 2654)**: Stage 2 ~60% done (12/20 cal files). Stage 3 + x1d pending.
+- **UGC-5101 G395M nominal (PID 2186)**: Running for cross-validation (NRS2 standard crf files generated).
+
+### Reports Index
+- `reports/REPORTS.md` updated with `ifu_v5` and `parlanti-comparison_v5` entries at top of index.
+
+---
+
+## 2026-03-29 — v5 IFU Science Validation (Reduction Phase)
+
+### v5 IFU Preparation
+- **Data Audit**: Confirmed 120/120 files for 2654 and 16/16 unique files for 2186. All science validation data is on disk.
+- **Full v5 Status**: All calibrators (1536-1538, 6645) complete. 6644 FS v5 pending (101/129).
+- **Script Adaptation**: Borrowing from `330_fs_v5`, preparing `run_ifu_pipeline_ext.py` for science targets.
+- **Reporting**: Initializing `reports/v5/330_ifu_v5/` for validation results.
+- **PROMPT_LOG.md**: Added audit result: "120/120 (2654), 16/16 (2186) files verified."
+
 ## 2026-03-29 — v4 NNLS Simultaneous k, α, β Derivation (IFU + FS)
 
 ### v4 Upgrade: Break Free of Parlanti Prior

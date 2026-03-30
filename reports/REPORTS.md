@@ -2,7 +2,13 @@
 
 This directory contains diagnostic reports for the NIRSpec wavelength extension calibration project.
 
+## 🚀 Master Analysis Roadmap
+- **[Detailed Analysis Plan (Master)](DETAILED_PLAN.md)** — The definitive guide to data download, reduction, analysis, and reporting for the full 0.6–5.6 µm extension.
+
 ## Index of Reports
+- [IFU v5 Science Validation](v5/ifu_v5/REPORT_ifu_v5.md) — (2026-03-29) Science validation of v5 extended pipeline on AGN (PID 2654: SDSSJ0749, SDSSJ0841 at z~2) and ULIRG (PID 2186: UGC-5101 at z=0.039). UGC-5101 G235M extended to 5.5 µm (vs 3.17 µm nominal); PAH 3.3 µm and L-band dust recovered. SDSSJ0841 H-α recovery in extended G140M at z~2.
+- [Parlanti Comparison v5](v5/parlanti-comparison_v5/REPORT_parlanti-comparison_v5.md) — (2026-03-29) v5 FS coefficients vs Parlanti (2025) vs degenerate v4. k(λ) agreement to <5% in NRS1; degeneracy resolved by G1V star. All coefficients (k, α, β) compared across both gratings.
+- [330 FS v5](v5/330_fs_v5/REPORT_330_fs_v5.md) — (2026-03-30) FS v5 final joint-solve coefficients from 4 stars (WD, G2V, A8III, G1V). Resolves k/alpha degeneracy: G140M k=0.959, G235M k=0.957. Contamination alpha returns to physical values (<0.01).
 - [329 FS v4](v4/329_fs_v4/REPORT_329_fs_v4.md) — (2026-03-29) FS v4 NNLS simultaneous derivation of $k$, $\alpha$, $\beta$ from 3 CALSPEC stars. G140M k=0.701, G235M k=0.723. NNLS $\alpha$ is 2–6× Parlanti published values; G235M k drops from v3 0.97 to v4 0.72.
 - [329 IFU v4](v4/329_ifu_v4/REPORT_329_ifu_v4.md) — (2026-03-29) IFU v4 NNLS simultaneous derivation of $k$, $\alpha$, $\beta$ from 3 CALSPEC stars. G140M k=0.509, G235M k=0.466. NNLS $\alpha$ is 2–5× Parlanti published values; NGC2506-G31 4th source pending to validate.
 - [Analysis Plan v4](v4/ANALYSIS_PLAN_v4.md) — (2026-03-29) Plan for full $\kappa, \alpha, \beta$ derivation for both IFU and FS.

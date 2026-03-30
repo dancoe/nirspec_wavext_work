@@ -2,6 +2,10 @@
 
 Below please log the exact prompts I give you, numbered, with timestamps.
 
+
+264. 2026-03-29 10:12 PM
+Please check the IFU data downloads for @[nirspec_wavext_work/reports/v5/DETAILED_PLAN_v5.md] Are we ready to proceed with that and @[nirspec_wavext_work/reports/v5/ANALYSIS_PLAN_v5.md]for the IFU? You can borrow scripts from 330_fs_v5. Also please commit to Github following @[nirspec_wavext_work/notes/INSTRUCTIONS.md]. And yes, we were in the process of downloading these data. They still need to be reduced and analyzed.
+
 263. 2026-03-29
 Please proceed with the v4 analysis detailed in ANALYSIS_PLAN_v4.md.
 
@@ -122,6 +126,9 @@ Please make detailed notes of the PID 1492 data in a new file notes/DATA.md
 What are all the observations, including gratings, exposure times, etc. and how will they be used?
 
 Again, let's focus first on Fixed Slit data. You mentioned enabling IFU wavext. Did you also enable the other modes? We'll prioritize FS. Then MOS, IFU, BOTS.
+
+264. v5 Analysis (IFU Science Validation): Initializing IFU calibration validation for PIDs 2654, 2186.
+265. v5 Analysis (IFU Data Audit): Confirmed 120/120 files for 2654 and 16/16 unique files for 2186. All science validation data is on disk.
 
 17. 2026-03-26 11:27PM 
 Yes please first move the analysis scripts to a subdirectory analysis/
@@ -293,3 +300,6 @@ Then also plot how these components add up to the spectrum they're trying to mat
 
 See also formatting in @[nirspec_wavext_work/notes/PARLANTI_PLOTS.md]and update as needed. 
 You'll also still plot G140M, G235M, G395M on the same plot.
+
+261. 2026-03-29 10:00 PM
+Please perform the v5 reduction and analysis of the IFU data just downloaded for programs 2654 and 2186 as described in @[nirspec_wavext_work/notes/DETAILED_PLAN_v5.md] and @[nirspec_wavext_work/notes/ANALYSIS_PLAN_v5.md], including generating the final reports for v5/ifu_v5 and also parlanti-comparison_v5. You can omit the prefixes like 329 or 330. Also follow @[nirspec_wavext_work/notes/INSTRUCTIONS.md]
