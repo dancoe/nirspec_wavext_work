@@ -24,8 +24,8 @@ modes, gratings, targets, spectral types, and prioritization for our FS and IFU 
 | 1538 | P330E          | ALL M+H, PRISM | S1600A1          | G-type G2V standard (break k/α degeneracy).|
 | 1678 | J1757132, etc. | G235M, G395M   | S1600A1          | 4 A-stars, GO-CAL program.              |
 | 6644 | NGC2506-G31    | G140M, G235M, G395M | S1600A1     | Essential cool G1V star for v7 calibration. |
-| 2186 | UGC-5101       | G235M               | IFU         | ULIRG science target (v9 validation cohort).|
-| 2654 | SDSSJ0841       | G140M               | IFU         | Quasar science target (v8 validation cohort).|
+| 2186 | UGC-5101       | G235M, G395M        | IFU         | ULIRG science target (v9 validation cohort).|
+| 2654 | SDSSJ0841       | G140M, G235M        | IFU         | Quasar science target (v8 validation cohort).|
 
 ---
 
@@ -305,7 +305,7 @@ modes, gratings, targets, spectral types, and prioritization for our FS and IFU 
 | J1743045 | 1536 | FS | ✅ v7 Jy extracted |
 | NGC2506-G31| 6644 | FS | ✅ v7 Jy extracted (G1V) |
 | IRAS-05248 | 1492 | FS | ✅ v7 Jy extracted (Hold-out Val) |
-| UGC-5101 | 2186 | IFU | 🔄 v7 reduction pending |
+| UGC-5101 | 2186 | IFU (G235M, G395M) | 🔄 v7 reduction pending |
 
 The 5 FS sources (G191-B2B, P330E, J1743045, NGC2506-G31, and 1492) are now fully reprocessed through the v7 pipeline with the extended photom reference files, providing the foundation for the v7 FS calibration.
 
