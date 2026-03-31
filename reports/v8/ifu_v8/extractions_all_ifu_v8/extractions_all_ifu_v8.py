@@ -128,12 +128,15 @@ def plot_target(target, results):
     ax2.plot(wl, results['spec_fov'] / ref_flux, label='FOV / x1d', color='gray', alpha=0.5)
     ax2.axhline(1.0, color='red', linestyle='--', alpha=0.5)
     
+    ax2.set_yscale('log')
     ax2.set_ylabel("Ratio to extract1d")
     ax2.set_xlabel("Wavelength (um)")
-    # Set y-range to focus on relevant ratios, but accommodate FOV if larger
-    valid_fov_ratio = results['spec_fov'][valid] / ref_flux[valid]
-    r_max = min(10.0, np.nanpercentile(valid_fov_ratio, 95) * 1.2 if np.any(valid) else 3.0)
-    ax2.set_ylim(0.5, max(3.0, r_max))
+    ax2.set_ylim(0.5, 2.0)
+    
+    # Custom ticks for log ratio
+    from matplotlib.ticker import ScalarFormatter
+    ax2.yaxis.set_major_formatter(ScalarFormatter())
+    ax2.set_yticks([0.5, 0.7, 1.0, 1.5, 2.0])
     ax2.grid(True, which='both', alpha=0.2)
     ax2.legend(loc='upper right', ncol=2, fontsize='x-small')
     
