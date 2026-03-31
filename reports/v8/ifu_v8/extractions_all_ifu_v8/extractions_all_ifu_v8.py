@@ -4,6 +4,7 @@ import numpy as np
 from astropy.io import fits
 import matplotlib.pyplot as plt
 from scipy.interpolate import interp1d
+from astropy.wcs import WCS
 
 # Paths
 BASE_FS = '/Users/dcoe/NIRSpec/wavext/data/FS'
@@ -20,8 +21,8 @@ TARGETS = [
     {'pid': '1536', 'name': 'J1743045', 's3d': f'{BASE_IFU}/PID1536_J1743045/stage3/f170lp_g235m-f170lp_s3d.fits'},
     {'pid': '1537', 'name': 'G191-B2B', 's3d': f'{BASE_IFU}/PID1537_G191-B2B/stage3/f170lp_g235m-f170lp_s3d.fits'},
     {'pid': '1538', 'name': 'P330E', 's3d': f'{BASE_IFU}/PID1538_P330E/stage3/f170lp_g235m-f170lp_s3d.fits'},
-    {'pid': '2186', 'name': 'UGC-5101', 's3d': f'{BASE_FS}/PID2186_UGC-5101/stage3_ext/g235m_f170lp_g235m-f170lp_s3d.fits'},
-    {'pid': '2654', 'name': 'SDSSJ0841', 's3d': f'{BASE_FS}/PID2654_SDSSJ0841/stage3_ext/g140m_f100lp_g140m-f100lp_s3d.fits'},
+    {'pid': '2186', 'name': 'UGC-5101', 's3d': f'{BASE_FS}/PID2186_UGC-5101/stage3_ext/g235m_f170lp_g235m-f170lp_s3d.fits', 'is_science': True},
+    {'pid': '2654', 'name': 'SDSSJ0841', 's3d': f'{BASE_FS}/PID2654_SDSSJ0841/stage3_ext/g140m_f100lp_g140m-f100lp_s3d.fits', 'is_science': True},
     {'pid': '6645', 'name': 'P330E-C3', 's3d': f'{BASE_IFU}/PID6645_P330E-C3/stage3/f170lp_g235m-f170lp_s3d.fits'}
 ]
 
@@ -30,25 +31,42 @@ def perform_extractions(target):
     x1d_path = s3d_path.replace('_s3d.fits', '_x1d.fits')
     
     if not os.path.exists(s3d_path) or not os.path.exists(x1d_path):
-        print(f"Skipping {target['name']} (PID {target['pid']}): missing files.")
+        # Check alternative x1d name (some association files use different names)
+        # For now, let's just use the direct replacement
+        pass
+
+    if not os.path.exists(s3d_path):
+        print(f"Skipping {target['name']} (PID {target['pid']}): s3d not found.")
         return None
 
     with fits.open(s3d_path) as hdul:
         sci = hdul['SCI'].data
         hdr = hdul['SCI'].header
+        prim_hdr = hdul[0].header
+        
+        # WCS
+        w = WCS(hdr, naxis=2)
+        ra_ref = prim_hdr.get('RA_TARG') or prim_hdr.get('RA_REF') or hdr.get('CRVAL1')
+        dec_ref = prim_hdr.get('DEC_TARG') or prim_hdr.get('DEC_REF') or hdr.get('CRVAL2')
+        pipe_x, pipe_y = w.all_world2pix(ra_ref, dec_ref, 0)
+        
         wl = np.arange(hdr['NAXIS3']) * hdr['CDELT3'] + hdr['CRVAL3']
         bunit = hdr.get('BUNIT', 'MJy/sr')
         pixar_sr = hdr.get('PIXAR_SR', 1.0)
         srctype = hdr.get('SRCTYPE', 'UNKNOWN')
         
-        # Mean image to find peak
+        # Mean image to find peak (Project choice)
         white_light = np.nanmean(sci, axis=0)
         peak_y, peak_x = np.unravel_index(np.nanargmax(white_light), white_light.shape)
         
-        # Coordinates in arcsec relative to peak
+        # Coordinates in arcsec relative to peak (Project v8)
         yy, xx = np.indices(white_light.shape)
-        dist_arcsec = np.sqrt(((xx - peak_x)*hdr['CDELT1'])**2 + \
-                            ((yy - peak_y)*hdr['CDELT2'])**2) * 3600
+        dist_arcsec_v8 = np.sqrt(((xx - peak_x)*hdr['CDELT1'])**2 + \
+                                ((yy - peak_y)*hdr['CDELT2'])**2) * 3600
+        
+        # Coordinates in arcsec relative to pipeline center
+        dist_arcsec_pipe = np.sqrt(((xx - pipe_x)*hdr['CDELT1'])**2 + \
+                                  ((yy - pipe_y)*hdr['CDELT2'])**2) * 3600
         
         # Flux conversion to Jy
         conv = 1.0
@@ -56,62 +74,71 @@ def perform_extractions(target):
             conv = 1e6 * pixar_sr
 
         # 1. extract1d (from file)
-        with fits.open(x1d_path) as h_x:
-            x1d_data = h_x['EXTRACT1D'].data
-            wl_old = x1d_data['WAVELENGTH']
-            spec_x1d = x1d_data['FLUX']
+        spec_x1d = np.zeros_like(wl)
+        wl_old = wl
+        if os.path.exists(x1d_path):
+            with fits.open(x1d_path) as h_x:
+                x1d_data = h_x['EXTRACT1D'].data
+                wl_old = x1d_data['WAVELENGTH']
+                spec_x1d = x1d_data['FLUX']
+        else:
+            print(f"Warning: {x1d_path} not found. Baseline will be zero.")
 
-        # 2. r = 0.5" (no bkg)
-        mask_05 = dist_arcsec <= 0.5
+        # 2. r = 0.5" (no bkg, peak-centered)
+        mask_05 = dist_arcsec_v8 <= 0.5
         spec_05 = np.nansum(sci[:, mask_05], axis=1) * conv
 
-        # 3. r = 0.45" (with annulus if POINT)
-        mask_045 = dist_arcsec <= 0.45
+        # 3. r = 0.45" (pipeline baseline recreation)
+        # Pipe uses RA/Dec center if POINT
+        use_centers = (pipe_x, pipe_y) if srctype == 'POINT' else (peak_x, peak_y)
+        mask_045 = dist_arcsec_pipe <= 0.45
         spec_045 = np.nansum(sci[:, mask_045], axis=1) * conv
         
         if srctype == 'POINT' or srctype == 'UNKNOWN':
-            mask_bkg = (dist_arcsec >= PIPE_BKG_IN) & (dist_arcsec <= PIPE_BKG_OUT)
+            mask_bkg = (dist_arcsec_pipe >= PIPE_BKG_IN) & (dist_arcsec_pipe <= PIPE_BKG_OUT)
             if np.any(mask_bkg):
-                # Median background per pixel
-                # sci shape (NWL, NY, NX) -> slice (NY, NX)
-                # We need average background per wavelength slice
                 masked_bkg = sci[:, mask_bkg]
-                bkg_level = np.nanmedian(masked_bkg, axis=1) # (NWL)
+                bkg_level = np.nanmedian(masked_bkg, axis=1) 
                 n_pix_aper = np.sum(mask_045)
-                # Subtract bkg scaled to aperture area
                 spec_045 -= bkg_level * n_pix_aper * conv
         
         # 4. Entire FOV
         spec_fov = np.nansum(sci, axis=(1, 2)) * conv
         
-        return {
+        results = {
             'wl': wl,
             'wl_old': wl_old,
             'spec_x1d': spec_x1d,
             'spec_05': spec_05,
             'spec_045': spec_045,
             'spec_fov': spec_fov,
-            'srctype': srctype
+            'srctype': srctype,
+            'peak_xy': (peak_x, peak_y),
+            'pipe_xy': (pipe_x, pipe_y),
+            'white_light': white_light,
+            'sci': sci
         }
+        
+        return results
 
 def plot_target(target, results):
     if results is None: return
     
+    # --- Main Spectral Plot ---
     fig, (ax1, ax2) = plt.subplots(2, 1, sharex=True, gridspec_kw={'height_ratios': [3, 1]}, figsize=(12, 10))
     
     wl = results['wl']
     ax1.plot(results['wl_old'], results['spec_x1d'], label='Pipeline extract1d', alpha=0.7, lw=2, color='black')
     ax1.plot(wl, results['spec_05'], label='v8 (r=0.5", no bkg)', alpha=0.8, color='blue')
-    ax1.plot(wl, results['spec_045'], label='r=0.45" (bkg sub if POINT)', alpha=0.8, color='cyan', linestyle='--')
+    ax1.plot(wl, results['spec_045'], label='r=0.45 (bkg sub if POINT)', alpha=0.8, color='cyan', linestyle='--')
     ax1.plot(wl, results['spec_fov'], label='Entire FOV', alpha=0.5, color='gray')
     
     ax1.set_yscale('log')
-    ax1.set_title(f"{target['name']} (PID {target['pid']}) - Extraction Baseline Comparison ({results['srctype']})")
+    ax1.set_title(f"{target['name']} (PID {target['pid']}) - Comparison ({results['srctype']})")
     ax1.set_ylabel("Flux (Jy)")
     ax1.legend(loc='upper right', fontsize='small')
     ax1.grid(True, which='both', alpha=0.2)
     
-    # Range handling (include both v8 and x1d)
     mask_gap = ((wl >= 2.19) & (wl <= 2.23)) | ((wl >= 3.65) & (wl <= 3.80))
     valid_all = (np.concatenate([results['spec_05'], results['spec_x1d']]) > 0) & \
                 np.isfinite(np.concatenate([results['spec_05'], results['spec_x1d']])) & \
@@ -123,7 +150,6 @@ def plot_target(target, results):
         y_max = np.percentile(all_fluxes[valid_all], 99) * 5.0
         ax1.set_ylim(y_min, y_max)
     
-    # Ratio relative to extract1d
     f_old = interp1d(results['wl_old'], results['spec_x1d'], bounds_error=False, fill_value=np.nan)
     ref_flux = f_old(wl)
     
@@ -136,16 +162,44 @@ def plot_target(target, results):
     ax2.set_ylabel("Ratio to extract1d")
     ax2.set_xlabel("Wavelength (um)")
     ax2.set_ylim(0.5, 2.0)
-    
-    # Custom ticks for log ratio
     from matplotlib.ticker import ScalarFormatter
     ax2.yaxis.set_major_formatter(ScalarFormatter())
     ax2.set_yticks([0.5, 0.7, 1.0, 1.5, 2.0])
     ax2.grid(True, which='both', alpha=0.2)
-    ax2.legend(loc='upper right', ncol=2, fontsize='x-small')
+    ax2.legend(loc='upper right', ncol=3, fontsize='x-small')
     
     plt.tight_layout()
     plt.savefig(f"{OUTPUT_DIR}/extraction_all_{target['pid']}.png", dpi=150)
+    plt.close()
+
+    # --- Slices Plot ---
+    fig_slice, axes = plt.subplots(1, 3, figsize=(15, 5))
+    nwl = len(wl)
+    indices = [nwl//4, nwl//2, 3*nwl//4]
+    
+    peak_x, peak_y = results['peak_xy']
+    pipe_x, pipe_y = results['pipe_xy']
+    
+    for ax, idx in zip(axes, indices):
+        slice_img = results['sci'][idx]
+        v_min, v_max = np.nanpercentile(slice_img, [5, 99])
+        im = ax.imshow(slice_img, origin='lower', cmap='inferno', vmin=v_min, vmax=v_max)
+        ax.set_title(f"λ = {wl[idx]:.2f} um")
+        
+        # Draw v8 aperture (Red)
+        circ_v8 = plt.Circle((peak_x, peak_y), 0.5 / 0.1, color='red', fill=False, label='v8 (peak)')
+        ax.add_patch(circ_v8)
+        
+        # Draw Pipeline aperture (Cyan)
+        circ_pipe = plt.Circle((pipe_x, pipe_y), 0.45 / 0.1, color='cyan', ls='--', fill=False, label='pipe (nominal)')
+        ax.add_patch(circ_pipe)
+        
+        ax.plot(peak_x, peak_y, 'r+', markersize=5)
+        ax.plot(pipe_x, pipe_y, 'cx', markersize=5)
+        
+    axes[0].legend(loc='upper left', fontsize='xx-small', frameon=True, facecolor='white', framealpha=0.8)
+    plt.tight_layout()
+    plt.savefig(f"{OUTPUT_DIR}/slices_{target['pid']}.png", dpi=150)
     plt.close()
 
 def run_all():
@@ -157,7 +211,6 @@ def run_all():
         if results:
             plot_target(target, results)
             
-            # Simple stats for report
             mask_gap = ((results['wl'] >= 2.19) & (results['wl'] >= 2.23)) | \
                        ((results['wl'] >= 3.65) & (results['wl'] <= 3.80))
             valid = np.isfinite(results['spec_05']) & (results['spec_05'] > 0) & (~mask_gap)
@@ -181,8 +234,8 @@ def run_all():
         f.write("# Total IFU Extraction Baseline Comparison\n\n")
         f.write("Comparison of 4 extraction methods across all v8 catalog datasets:\n")
         f.write("1. **extract1d**: Official pipeline output (includes aperture correction for POINT).\n")
-        f.write("2. **v8 (r=0.5\")**: Project custom fixed circular aperture, no background subtraction, no aperture correction.\n")
-        f.write("3. **r=0.45\"**: Reference fixed aperture with background annulus subtraction (1.0-1.2\") if SRCTYPE=POINT.\n")
+        f.write("2. **v8 (r=0.5\")**: Project custom fixed circular aperture, **centered on brightest pixel**, no background subtraction.\n")
+        f.write("3. **r=0.45\"**: Reference fixed aperture, **centered on nominal pointing**, with background annulus subtraction (1.0-1.2\") if SRCTYPE=POINT.\n")
         f.write("4. **Entire FOV**: Summation of the entire spatial footprint of the cube.\n\n")
         
         f.write("## Summary Statistics\n\n")
@@ -194,7 +247,11 @@ def run_all():
         
         for target in TARGETS:
             f.write(f"## {target['name']} (PID {target['pid']})\n\n")
+            f.write(f"### Spectra\n")
             f.write(f"![Comparison](extraction_all_{target['pid']}.png)\n\n")
+            f.write(f"### Slices & Apertures\n")
+            f.write(f"**Red Solid**: v8 (peak-centered, 0.5\") | **Cyan Dashed**: Pipeline (pointing-centered, 0.45\")\n\n")
+            f.write(f"![Slices](slices_{target['pid']}.png)\n\n")
             f.write("---\n\n")
 
 if __name__ == "__main__":

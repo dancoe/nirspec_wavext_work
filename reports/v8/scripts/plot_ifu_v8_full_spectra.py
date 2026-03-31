@@ -2,23 +2,46 @@
 import os
 import glob
 import numpy as np
-from astropy.io import fits
+import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
+from astropy.io import fits
+from scipy.interpolate import interp1d
 
 # Paths
-IFU_DIR = '/Users/dcoe/NIRSpec/wavext/data/IFU'
-FS_DIR = '/Users/dcoe/NIRSpec/wavext/data/FS'
-OUTPUT_DIR = '/Users/dcoe/NIRSpec/wavext/nirspec_wavext_work/reports/v8/ifu_v8'
+BASE        = '/Users/dcoe/NIRSpec/wavext'
+IFU_DIR     = f'{BASE}/data/IFU'
+FS_DIR      = f'{BASE}/data/FS'
+CALSPEC_DIR = f'{BASE}/data/CALSPEC'
+COEFFS_DIR  = f'{BASE}/results/v7'
+OUTPUT_DIR  = f'{BASE}/nirspec_wavext_work/reports/v8/ifu_v8/plots'
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 
+C_ANG_S = 2.99792458e18
+
+# v8 IFU Targets
 TARGETS = [
-    {'pid': '1536', 'name': 'J1743045', 'dir': f'{IFU_DIR}/PID1536_J1743045/stage3_ext'},
-    {'pid': '1537', 'name': 'G191-B2B', 'dir': f'{IFU_DIR}/PID1537_G191-B2B/stage3_ext'},
-    {'pid': '1538', 'name': 'P330E', 'dir': f'{IFU_DIR}/PID1538_P330E/stage3_ext'},
-    {'pid': '2186', 'name': 'UGC-5101', 'dir': f'{FS_DIR}/PID2186_UGC-5101/stage3_ext', 'science': True},
-    {'pid': '2654', 'name': 'SDSSJ0841', 'dir': f'{FS_DIR}/PID2654_SDSSJ0841/stage3_ext', 'science': True},
-    {'pid': '6645', 'name': 'P330E-C3', 'dir': f'{IFU_DIR}/PID6645_P330E-C3/stage3_ext'},
+    {'pid': '1536', 'name': 'J1743045',  'calspec': '1743045_mod_007.fits',  'dir': f'{IFU_DIR}/PID1536_J1743045/stage3_ext'},
+    {'pid': '1537', 'name': 'G191-B2B',  'calspec': 'g191b2b_mod_012.fits', 'dir': f'{IFU_DIR}/PID1537_G191-B2B/stage3_ext'},
+    {'pid': '1538', 'name': 'P330E',     'calspec': 'p330e_mod_008.fits',    'dir': f'{IFU_DIR}/PID1538_P330E/stage3_ext'},
+    {'pid': '2186', 'name': 'UGC-5101',  'calspec': None,                    'dir': f'{FS_DIR}/PID2186_UGC-5101/stage3_ext', 'science': True},
+    {'pid': '2654', 'name': 'SDSSJ0841', 'calspec': None,                    'dir': f'{FS_DIR}/PID2654_SDSSJ0841/stage3_ext', 'science': True},
+    {'pid': '6645', 'name': 'P330E-C3',  'calspec': 'p330e_mod_008.fits',    'dir': f'{IFU_DIR}/PID6645_P330E-C3/stage3_ext'},
 ]
+
+GRATING_COLORS = {
+    'G140M': 'tab:blue',
+    'G235M': 'goldenrod',
+    'G395M': 'tab:red',
+}
+
+def load_calspec_jy(fname):
+    if not fname: return None
+    with fits.open(f'{CALSPEC_DIR}/{fname}') as h:
+        d = h[1].data
+        wl_a, flam = d['WAVELENGTH'].astype(float), d['FLUX'].astype(float)
+    fnu = flam * wl_a**2 / C_ANG_S * 1e23
+    return interp1d(wl_a / 1e4, fnu, bounds_error=False, fill_value=np.nan)
 
 def extract_05_radius(s3d_file):
     try:
@@ -41,76 +64,106 @@ def extract_05_radius(s3d_file):
         print(f"Error extracting {s3d_file}: {e}")
         return None, None
 
-def plot_target(target):
+def plot_full_spectra(target):
+    name = target['name']
     pid = target['pid']
-    print(f"Plotting PID {pid}...")
+    print(f'  Plotting full spectrum for {name} (PID {pid})...')
+    f_ref = load_calspec_jy(target['calspec'])
     
-    # Gratings: G140M (NRS1/2 gap 2.17-2.28), G235M (NRS1/2 gap 3.66-3.82)
-    plt.figure(figsize=(12, 6))
-    
-    # Standard Gratings
-    gratings = ['g140m', 'g235m', 'g395m']
-    colors = {'g140m': 'blue', 'g235m': 'green', 'g395m': 'red'}
-    
-    for grating in gratings:
-        # Look for s3d or x1d files
-        files = glob.glob(f"{target['dir']}/*{grating}*x1d.fits")
-        if not files:
-            continue
-            
+    fig, ax = plt.subplots(figsize=(18, 9))
+    fig.suptitle(f'{name} — PID {pid} — IFU wavext v8', fontsize=16)
+
+    plotted_labels = set()
+    gratings = ['G140M', 'G235M', 'G395M']
+
+    for g_name in gratings:
+        files = glob.glob(f"{target['dir']}/*{g_name.lower()}*x1d.fits")
+        if not files: continue
+        
         file = files[0]
         if target.get('science'):
-            # Use 0.5" radius for science targets from s3d cube
-            s3d_files = glob.glob(f"{target['dir']}/*{grating}*s3d.fits")
+            s3d_files = glob.glob(f"{target['dir']}/*{g_name.lower()}*s3d.fits")
             if s3d_files:
-                wl, spec = extract_05_radius(s3d_files[0])
+                w, f_val = extract_05_radius(s3d_files[0])
             else:
-                # Fallback to x1d
                 with fits.open(file) as h:
-                    wl, spec = h[1].data['WAVELENGTH'], h[1].data['FLUX']
+                    w, f_val = h[1].data['WAVELENGTH'], h[1].data['FLUX']
         else:
-            # Use standard x1d for standard stars
             with fits.open(file) as h:
-                wl, spec = h[1].data['WAVELENGTH'], h[1].data['FLUX']
+                w, f_val = h[1].data['WAVELENGTH'], h[1].data['FLUX']
+        
+        if w is None: continue
 
-        if wl is None: continue
+        base_color = GRATING_COLORS.get(g_name, '0.5')
         
         # Gap aware plotting
-        if grating == 'g140m':
-            # Gap at ~2.17-2.28
-            mask1 = wl < 2.17
-            mask2 = wl > 2.28
-            plt.plot(wl[mask1], spec[mask1], color=colors[grating], label=f'{grating.upper()} (v8)')
-            plt.plot(wl[mask2], spec[mask2], color=colors[grating])
-        elif grating == 'g235m':
-            # Gap at ~3.66-3.82
-            mask1 = wl < 3.66
-            mask2 = wl > 3.82
-            plt.plot(wl[mask1], spec[mask1], color=colors[grating], label=f'{grating.upper()} (v8)')
-            plt.plot(wl[mask2], spec[mask2], color=colors[grating])
+        if g_name == 'G140M':
+            m1 = w < 2.17
+            m2 = w > 2.28
+            ax.plot(w[m1], f_val[m1], '.', markersize=1, color=base_color, alpha=0.6, zorder=2)
+            ax.plot(w[m1], f_val[m1], color=base_color, lw=0.5, alpha=0.2, zorder=2)
+            ax.plot(w[m2], f_val[m2], '.', markersize=1, color=base_color, alpha=0.6, zorder=2)
+            ax.plot(w[m2], f_val[m2], color=base_color, lw=0.5, alpha=0.2, zorder=2)
+        elif g_name == 'G235M':
+            m1 = w < 3.66
+            m2 = w > 3.82
+            ax.plot(w[m1], f_val[m1], '.', markersize=1, color=base_color, alpha=0.6, zorder=2)
+            ax.plot(w[m1], f_val[m1], color=base_color, lw=0.5, alpha=0.2, zorder=2)
+            ax.plot(w[m2], f_val[m2], '.', markersize=1, color=base_color, alpha=0.6, zorder=2)
+            ax.plot(w[m2], f_val[m2], color=base_color, lw=0.5, alpha=0.2, zorder=2)
         else:
-            plt.plot(wl, spec, color=colors[grating], label=f'{grating.upper()} (v8)')
-            
-    plt.yscale('log')
-    plt.xlabel("Wavelength (um)")
-    plt.ylabel("Flux (Jy)")
-    plt.title(f"{target['name']} – PID {pid} – IFU wavext v8")
-    plt.legend()
-    plt.grid(True, alpha=0.3)
-    plt.xlim(0.6, 5.6)
-    
-    label = "Full Spectrum"
-    if target.get('science'):
-        label += " (0.5\" radius extraction)"
-    plt.text(0.7, 0.1, label, transform=plt.gca().transAxes, fontsize=10, bbox=dict(facecolor='white', alpha=0.5))
-    
-    plt.savefig(f"{OUTPUT_DIR}/full_spectrum_v8_{pid}.png", dpi=150)
-    plt.close()
+            ax.plot(w, f_val, '.', markersize=1, color=base_color, alpha=0.6, zorder=2)
+            ax.plot(w, f_val, color=base_color, lw=0.5, alpha=0.2, zorder=2)
+        
+        # Add Label at Mid-point
+        if g_name not in plotted_labels and len(w) > 50:
+            mid_idx = len(w) // 2
+            ax.text(w[mid_idx], f_val[mid_idx] * 1.5, f"{g_name}", color=base_color, fontsize=14, ha='center', weight='bold')
+            plotted_labels.add(g_name)
 
-if __name__ == "__main__":
+    # CALSPEC Model & Ghosts
+    w_range = np.linspace(0.6, 5.6, 3000)
+    if f_ref:
+        f_truth = f_ref(w_range)
+        f_gh2   = f_ref(w_range/2)
+        f_gh3   = f_ref(w_range/3)
+    
+        ax.plot(w_range, f_truth, color='black', lw=1, ls='-', alpha=0.5, zorder=1)
+        ax.text(1.0, f_ref(1.0) * 0.7, 'CALSPEC', color='black', weight='bold', fontsize=14, ha='center', alpha=0.8)
+    
+        ax.plot(w_range, f_gh2, ',', markersize=1, color='black', alpha=0.5, zorder=1)
+        ax.text(2.2, f_ref(2.2/2) * 1.1, '2nd order (λ/2)', color='0.50', fontsize=14, 
+                alpha=0.8, weight='bold', zorder=20)
+    
+        ax.plot(w_range, f_gh3, ',', markersize=1, color='black', alpha=0.4, zorder=1)
+        ax.text(3.7, f_ref(3.7/3) * 1.1, '3rd order (λ/3)', color='0.70', fontsize=14, 
+                alpha=0.7, weight='bold', zorder=20)
+
+    ax.set_yscale('log')
+    ax.set_xlim(0.6, 5.6)
+    
+    if f_ref:
+        f_mask = f_truth[np.isfinite(f_truth) & (f_truth > 0)]
+        if len(f_mask) > 0:
+            ax.set_ylim(np.min(f_mask)*0.5, np.max(f_mask)*3.0)
+    else:
+        ax.autoscale(axis='y', tight=False)
+
+    ax.set_xlabel('Wavelength [µm]', fontsize=14)
+    ax.set_ylabel('Flux [Jy]', fontsize=14)
+    ax.grid(True, which='both', alpha=0.1)
+
+    if target.get('science'):
+        ax.text(0.02, 0.02, "0.5\" radius extraction", transform=ax.transAxes, fontsize=12, verticalalignment='bottom')
+
+    outpath = f'{OUTPUT_DIR}/full_spectrum_merged_v8_{name}.png'
+    plt.savefig(outpath, dpi=200, bbox_inches='tight')
+    plt.close()
+    print(f'    Saved: {outpath}')
+
+if __name__ == '__main__':
     for target in TARGETS:
         try:
-            plot_target(target)
+            plot_full_spectra(target)
         except Exception as e:
-            print(f"Failed PID {target['pid']}: {e}")
-    print("All plots generated.")
+            print(f"Failed {target['pid']}: {e}")

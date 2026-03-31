@@ -17,23 +17,23 @@ The following plots show the full spectral coverage across all observed gratings
 Calibration standards use default pipeline `extract_1d` products.
 
 #### P330E (PID 1538 / 6645)
-![P330E (PID 1538)](full_spectrum_v8_1538.png)
-![P330E (PID 6645)](full_spectrum_v8_6645.png)
+![P330E (PID 1538)](plots/full_spectrum_merged_v8_P330E.png)
+![P330E (PID 6645)](plots/full_spectrum_merged_v8_P330E-C3.png)
 
 #### G191-B2B (PID 1537)
-![G191-B2B (PID 1537)](full_spectrum_v8_1537.png)
+![G191-B2B (PID 1537)](plots/full_spectrum_merged_v8_G191-B2B.png)
 
 #### J1743045 (PID 1536)
-![J1743045 (PID 1536)](full_spectrum_v8_1536.png)
+![J1743045 (PID 1536)](plots/full_spectrum_merged_v8_J1743045.png)
 
 ### Science Targets (Custom 0.5" Extraction)
 Science targets use the new **0.5" radius circular aperture** centered on the brightest pixel.
 
 #### UGC-5101 (PID 2186)
-![UGC-5101 (PID 2186)](full_spectrum_v8_2186.png)
+![UGC-5101 (PID 2186)](plots/full_spectrum_merged_v8_UGC-5101.png)
 
 #### SDSSJ0841 (PID 2654)
-![SDSSJ0841 (PID 2654)](full_spectrum_v8_2654.png)
+![SDSSJ0841 (PID 2654)](plots/full_spectrum_merged_v8_SDSSJ0841.png)
 
 ## 3. Extraction Methodology Comparison
 A detailed comparison between the custom 0.5" radius circular aperture extraction and the previous default pipeline `extract_1d` (PSF-weighted) was performed for the science targets.
