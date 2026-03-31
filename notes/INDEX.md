@@ -8,6 +8,8 @@ Key documentation, logs, and planning files.
 | Last Modified | File | Summary |
 | :--- | :--- | :--- |
 | 2026-03-30 02:40:00 | [DETAILED_PLAN.md](../reports/DETAILED_PLAN.md) | **[Master]** Detailed roadmap: download, reduction, analysis, plots, and reports. |
+| 2026-03-31 02:03:54 | [IFU_EXTRACTION.md](IFU_EXTRACTION.md) | Comparison of standard pipeline vs. v8 custom extractions. |
+| 2026-03-31 01:56:44 | [NIRSPEC.md](NIRSPEC.md) | Technical details: pixel scale, FOV, gratings, wavelength ranges. |
 | 2026-03-29 00:28:55 | [INDEX.md](INDEX.md) | This project index and summary file. |
 | 2026-03-29 00:28:00 | [DATA_DOWNLOADS.md](DATA_DOWNLOADS.md) | Data acquisition strategy, scripts, and download verification. |
 | 2026-03-29 00:24:44 | [OBSERVATIONS.md](OBSERVATIONS.md) | Log of processed observations and results. |

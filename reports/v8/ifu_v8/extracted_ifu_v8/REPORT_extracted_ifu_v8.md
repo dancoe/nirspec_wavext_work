@@ -1,10 +1,13 @@
 # IFU v8 Extracted Spectra Diagnostics
 
-Detailed visualizations of the 0.5" radius circular aperture extractions for science targets.
+Comparison of the v8 0.5" fixed circular aperture vs. the default pipeline extraction.
 
 ## UGC-5101 (PID 2186)
 
-### Spectral Slices (r=0.5" aperture in red)
+### Spectral Slices and Extraction Regions
+- **Red Solid Circle**: v8 extraction (r=0.5")
+- **Cyan Dashed**: Default Pipeline (Wavelength-dependent POINT or Whole-Image EXTENDED)
+
 ![UGC-5101 Slices](slices_2186.png)
 
 ### Spectrum and Ratio Comparison
@@ -14,7 +17,10 @@ Detailed visualizations of the 0.5" radius circular aperture extractions for sci
 
 ## SDSSJ0841 (PID 2654)
 
-### Spectral Slices (r=0.5" aperture in red)
+### Spectral Slices and Extraction Regions
+- **Red Solid Circle**: v8 extraction (r=0.5")
+- **Cyan Dashed**: Default Pipeline (Wavelength-dependent POINT or Whole-Image EXTENDED)
+
 ![SDSSJ0841 Slices](slices_2654.png)
 
 ### Spectrum and Ratio Comparison

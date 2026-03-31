@@ -39,7 +39,7 @@ Science targets use the new **0.5" radius circular aperture** centered on the br
 A detailed comparison between the custom 0.5" radius circular aperture extraction and the previous default pipeline `extract_1d` (PSF-weighted) was performed for the science targets.
 
 For complete results and median flux ratios, see:
-[EXTRACTED_ifu_v8.md](EXTRACTED_ifu_v8.md)
+[REPORT_extracted_ifu_v8.md](extracted_ifu_v8/REPORT_extracted_ifu_v8.md)
 
 ### Key Extraction Findings (v8 / Previous Ratio):
 - **UGC-5101**: ~0.751 (Fixed 0.5" aperture captures ~75% of the default pipeline flux)
