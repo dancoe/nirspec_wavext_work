@@ -2,7 +2,7 @@
 
 ## 2026-03-31 Update: v8 Calibration Validation Completed
 
-See session log: [2026-03-31 session](logs/2026-03-31-0145.md)
+See session logs: [v8 Baseline](logs/2026-03-31-0145.md) · [v8 Refinements](logs/2026-03-31-0200.md)
 
 - **IFU Science Extractions**: Custom 0.5" radius circular aperture extractions completed for UGC-5101 and SDSSJ0841.
 - **Gap-Aware Visualization**: Full-spectrum plots (0.6–5.6 µm) generated for all IFU and FS targets, correctly preserving detector gaps.

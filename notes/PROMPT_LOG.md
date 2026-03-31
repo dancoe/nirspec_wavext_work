@@ -355,3 +355,33 @@ You'll also still plot G140M, G235M, G395M on the same plot.
 
 261. 2026-03-29 10:00 PM
 Please perform the v5 reduction and analysis of the IFU data just downloaded for programs 2654 and 2186 as described in @[nirspec_wavext_work/notes/DETAILED_PLAN_v5.md] and @[nirspec_wavext_work/notes/ANALYSIS_PLAN_v5.md], including generating the final reports for v5/ifu_v5 and also parlanti-comparison_v5. You can omit the prefixes like 329 or 330. Also follow @[nirspec_wavext_work/notes/INSTRUCTIONS.md]
+
+262. 2026-03-31 10:00 AM
+Thanks! For the ratio subplots, please actually plot everything as a ratio of the extract1d spectrum.
+
+263. 2026-03-31 10:30 AM
+Thanks and make those ratio yranges log scale and range from 0.5 to 2.0.
+
+264. 2026-03-31 11:00 AM
+Where's the 6645 extract1d? like on the plot I don't see it.
+
+265. 2026-03-31 11:15 AM
+Also you can remove "/ x1d" from all those legend labels.
+
+266. 2026-03-31 11:30 AM
+Thanks! Oh also please add the cube slice images including the radii drawn on them. Note for those 2 programs we were identifying the brightest pixel. But for standard extract1d, it should use the pointing RA, Dec I believe? Check @[nirspec_wavext_work/notes/IFU_EXTRACTION.md]
+
+267. 2026-03-31 11:45 AM
+Thank you! Please restructure @[nirspec_wavext_work/reports/v8/ifu_v8/extractions_all_ifu_v8/REPORT_all_extractions.md]:
+* section titles e.g., PID 1536 – J1743045 (short description of this object)
+* also add these short descriptions to the plot titles
+* Slices & Apertures
+* Spectra
+
+also tighten the y range on the spectral comparison top plots.
+
+268. 2026-03-31 12:15 PM
+Thanks please also tweak @[nirspec_wavext_work/reports/v8/fs_v8/REPORT_fs_v8.md]and REPORT_ifu_v8.md with those little tweaks: add the brief object descriptions inline after mentioning each object.
+
+269. 2026-03-31 12:45 PM
+Thank you! Please commit these and other changes to Github following @[nirspec_wavext_work/notes/INSTRUCTIONS.md]where possible.

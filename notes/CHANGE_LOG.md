@@ -1,12 +1,20 @@
 ## 2026-03-31 — v8 Calibration Validation (IFU & FS)
 
-### Science-Grade Extraction (IFU)
+### Science-Grade Extraction & Validation (IFU v8)
 - **New Script**: `reports/v8/scripts/extract_ifu_science_v8.py`
   - Implements 0.5" radius circular aperture extraction for PIDs 2186 (UGC-5101) and 2654 (SDSSJ0841).
   - Handles `MJy/sr` to `Jy` conversion via `PIXAR_SR`.
-  - Centers on peak pixel (brightest pixel) of the science targets.
-- **Comparison Report**: `reports/v8/ifu_v8/EXTRACTED_ifu_v8.md`
-  - Quantifies 0.5" aperture flux relative to pipeline default (Ratios: 0.75 for UGC-5101, 0.89 for SDSSJ0841).
+  - Centers on peak pixel (brightest pixel) for science targets; utilizes nominal pointing for `extract1d` comparisons.
+- **Enhanced Comparison Suite**: `reports/v8/ifu_v8/extractions_all_ifu_v8/extractions_all_ifu_v8.py`
+  - Performs 4 simultaneous extractions: `extract1d`, `v8 (r=0.5")`, `r=0.45"`, and `Entire FOV`.
+  - Added **Ratio Subplots**: All extractions now plotted as ratios relative to the pipeline `extract1d` product (log-scale 0.5–2.0).
+  - Added **Spatial Diagnostics**: `slices_*.png` thumbnails showing extraction apertures overlaid on spectral cube slices.
+  - Improved Legendry: Removed redundant "/ x1d" labels for clarity.
+- **Validation Reports**:
+  - `reports/v8/ifu_v8/extractions_all_ifu_v8/REPORT_all_extractions.md`: Restructured with hierarchical PID headers, target descriptions, and dedicated sections for Slices & Apertures vs. Spectra.
+  - `reports/v8/ifu_v8/REPORT_ifu_v8.md` & `reports/v8/fs_v8/REPORT_fs_v8.md`: Added brief object descriptions (e.g., Quasar, White Dwarf, ULIRG) to target headers.
+  - Tightened y-axis scaling on spectral top plots (0.7x–2.0x flux percentiles) to highlight discrepancies.
+- **PID 6645 Handling**: Specific scaling logic added to maintain visibility of the high-ratio (~140x) offset target.
 
 ### Gap-Aware Plotting
 - **Scripts**: `reports/v8/scripts/plot_ifu_v8_full_spectra.py`, `reports/v8/scripts/plot_fs_v8_full_spectra.py`

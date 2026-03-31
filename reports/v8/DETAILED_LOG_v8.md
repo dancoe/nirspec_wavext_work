@@ -11,15 +11,19 @@
         - SDSSJ0841 (2654): Ratio ~0.89
     - Documented cases in `EXTRACTED_ifu_v8.md`.
 
-2.  **IFU v8 Analysis**:
-    - Generated merged full-spectrum (0.6–5.6 µm) plots for all 6 IFU targets (1536, 1537, 1538, 2186, 2654, 6645).
-    - Preserved physical gaps at 2.2 µm and 3.7 µm by suppressing interpolation in plotting.
-    - Final report: `REPORT_ifu_v8.md`.
+2.  **IFU v8 Baseline Comparisons**:
+    - Script: `extractions_all_ifu_v8.py`.
+    - Implemented **Ratio Subplots**: Visualized all custom extractions as ratios of the pipeline `extract1d` spectrum to pinpoint flux offsets.
+        - Ratio y-axis: Log-scale [0.5, 2.0].
+    - **Spatial Diagnostic Overlays**: Added `slices_*.png` for all IFU targets.
+        - Overlaid circular extraction apertures (0.5" and 0.45") on 2D spectral cube slices.
+        - Confirmed peak-pixel vs. nominal-pointing offsets visually.
+    - Updated report hierarchy in `REPORT_all_extractions.md` with object descriptions and clear sectioning.
 
-3.  **FS v8 Analysis**:
-    - Generated merged full-spectrum plots for FS targets (1536, 1537, 1538, 6644, 1492).
-    - Consistent gap handling with IFU.
-    - Final report: `REPORT_fs_v8.md`.
+3.  **Visualization Finalization**:
+    - Tightened top-panel spectral plot scaling (percentile-based) for better clarity in the overlap and gap regions.
+    - Merged targets from PIDs 1536, 1537, 1538, 2186, 2654, 6645.
+    - Added brief target labels (e.g. ULIRG, Solar Analog, White Dwarf) inline in final reports.
 
 4.  **Documentation Updates**:
     - Updated `PARLANTI_IFU.md` with explicit details on the 0.5" aperture extraction methodologies.
