@@ -9,7 +9,18 @@ In v9, we have transitioned the entire IFU calibration validation suite to a uni
 - **Reference Comparison**: Maintained the comparison to the pipeline `extract1d` (PSF-weighted) as a baseline for documenting flux recovery and spatial concentration.
 - **Consistency**: Verified that the $r=0.5"$ extraction provides stable, reproducible flux ratios for wavelength extension processing.
 
-## 2. IFU v9 Full Spectrum Extractions
+## 2. Observations and Data (v9)
+The v9 validation suite focuses on the following subset of IFU programs and grating configurations, standardizing all extractions to a fixed 0.5" radius.
+
+| Program | Target | Description | Gratings |
+| :--- | :--- | :--- | :--- |
+| **PID 1536** | J1743045 | Quasar (Calibration Standard) | G140M, G235M |
+| **PID 1537** | G191-B2B | White Dwarf (Calibration Standard) | G140M, G235M |
+| **PID 1538** | P330E | G-type Solar Analog (Standard) | G140M, G235M |
+| **PID 2186** | UGC-5101 | ULIRG (Extended Science Target) | G235M |
+| **PID 6645** | P330E-C3 | Solar Analog (Offset Geometry) | G140M, G235M |
+
+## 3. IFU v9 Full Spectrum Extractions
 The following plots show the unified 0.5" extractions across all observed targets.
 - **G140M Gap**: 2.17 – 2.28 µm
 - **G235M Gap**: 3.66 – 3.82 µm
@@ -34,7 +45,7 @@ Comparison to the default pipeline `extract1d` and the entire IFU field-of-view 
 
 ---
 
-## 3. Spatial Diagnostics (v9)
+## 4. Spatial Diagnostics (v9)
 Documentation of the peak-pixel centering and the 0.5" aperture placement for each target.
 [See standalone Spatial Report: REPORT_ifu_slices_v9.md](REPORT_ifu_slices_v9.md)
 
@@ -46,7 +57,7 @@ Documentation of the peak-pixel centering and the 0.5" aperture placement for ea
 | 2186 | UGC-5101 | EXTENDED | 0.010100 | 0.496 |
 | 6645 | P330E-C3 | POINT | 0.020602 | 139.464 |
 
-## 4. Wavelength Extension Status
+## 5. Wavelength Extension Status
 All v9 IFU data are processed using the standardized 0.5" extraction baseline. This unified approach eliminates source-dependent aperture effects from the ghost model validation, providing a cleaner assessment of the $k, \alpha, \beta$ coefficients across the full NIRSpec range.
 
 ---
