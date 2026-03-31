@@ -25,7 +25,7 @@ TARGETS = [
     {'pid': '1536', 'name': 'J1743045',  'calspec': '1743045_mod_007.fits',  'dir': f'{IFU_DIR}/PID1536_J1743045/stage3_ext'},
     {'pid': '1537', 'name': 'G191-B2B',  'calspec': 'g191b2b_mod_012.fits', 'dir': f'{IFU_DIR}/PID1537_G191-B2B/stage3_ext'},
     {'pid': '1538', 'name': 'P330E',     'calspec': 'p330e_mod_008.fits',    'dir': f'{IFU_DIR}/PID1538_P330E/stage3_ext'},
-    {'pid': '2186', 'name': 'UGC-5101',  'calspec': None,                    'dir': f'{FS_DIR}/PID2186_UGC-5101', 'science': True},
+    {'pid': '2186', 'name': 'UGC5101',   'calspec': None,                    'dir': f'{FS_DIR}/PID2186_UGC5101', 'science': True},
     {'pid': '6645', 'name': 'P330E-C3',  'calspec': 'p330e_mod_008.fits',    'dir': f'{IFU_DIR}/PID6645_P330E-C3/stage3_ext'},
 ]
 
