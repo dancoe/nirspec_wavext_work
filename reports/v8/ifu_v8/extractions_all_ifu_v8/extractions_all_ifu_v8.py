@@ -111,21 +111,25 @@ def plot_target(target, results):
     ax1.legend(loc='upper right', fontsize='small')
     ax1.grid(True, which='both', alpha=0.2)
     
-    # Range handling (ignore gaps)
+    # Range handling (include both v8 and x1d)
     mask_gap = ((wl >= 2.19) & (wl <= 2.23)) | ((wl >= 3.65) & (wl <= 3.80))
-    valid = (results['spec_05'] > 0) & np.isfinite(results['spec_05']) & (~mask_gap)
-    if np.any(valid):
-        y_min = np.percentile(results['spec_05'][valid], 1) * 0.5
-        y_max = np.percentile(results['spec_05'][valid], 99) * 5.0
+    valid_all = (np.concatenate([results['spec_05'], results['spec_x1d']]) > 0) & \
+                np.isfinite(np.concatenate([results['spec_05'], results['spec_x1d']])) & \
+                (~np.concatenate([mask_gap, mask_gap]))
+    
+    if np.any(valid_all):
+        all_fluxes = np.concatenate([results['spec_05'], results['spec_x1d']])
+        y_min = np.percentile(all_fluxes[valid_all], 1) * 0.5
+        y_max = np.percentile(all_fluxes[valid_all], 99) * 5.0
         ax1.set_ylim(y_min, y_max)
     
     # Ratio relative to extract1d
     f_old = interp1d(results['wl_old'], results['spec_x1d'], bounds_error=False, fill_value=np.nan)
     ref_flux = f_old(wl)
     
-    ax2.plot(wl, results['spec_05'] / ref_flux, label='v8 / x1d', color='blue')
-    ax2.plot(wl, results['spec_045'] / ref_flux, label='r=0.45 / x1d', color='cyan', linestyle='--')
-    ax2.plot(wl, results['spec_fov'] / ref_flux, label='FOV / x1d', color='gray', alpha=0.5)
+    ax2.plot(wl, results['spec_05'] / ref_flux, label='v8', color='blue')
+    ax2.plot(wl, results['spec_045'] / ref_flux, label='r=0.45', color='cyan', linestyle='--')
+    ax2.plot(wl, results['spec_fov'] / ref_flux, label='FOV', color='gray', alpha=0.5)
     ax2.axhline(1.0, color='red', linestyle='--', alpha=0.5)
     
     ax2.set_yscale('log')
