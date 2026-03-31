@@ -62,14 +62,14 @@ def plot_vis(target):
     print(f"Visualizing {target['name']} (PID {target['pid']})...")
     wl, spec_v8, peak, srctype, sci, white_light, pix_scale = extract_circular(target['path'])
     
-    # Load previous x1d for NPIXELS and metadata
+    # Load previous x1d
     with fits.open(target['x1d_path']) as h:
         x1d_data = h['EXTRACT1D'].data
         wl_old = x1d_data['WAVELENGTH']
         spec_old = x1d_data['FLUX']
-        npixels = x1d_data['NPIXELS']
-        # Interpolate NPIXELS to find radius at specific wavelengths
-        f_npix = interp1d(wl_old, npixels, bounds_error=False, fill_value='extrapolate')
+
+    # Reference file radius (from jwst_nirspec_extract1d_0002.asdf)
+    PIPE_RAD_ARCSEC = 0.45
 
     # 1. Plot slices
     fig_slices, axes = plt.subplots(1, len(target['wavelengths']), figsize=(15, 6))
@@ -80,20 +80,17 @@ def plot_vis(target):
         im = ax.imshow(img, origin='lower', cmap='viridis', interpolation='nearest', alpha=0.9)
         ax.set_title(f"{target_wl:.1f} um ({srctype})")
         
-        # Draw v8 Aperture (Red)
+        # Draw v8 Aperture (Red Solid)
         circ_v8 = plt.Circle(peak, 0.5/pix_scale, color='red', fill=False, lw=1.5, alpha=0.8, label='v8 (0.5")')
         ax.add_patch(circ_v8)
         
         # Draw Pipeline Aperture (Cyan dashed)
         if srctype == 'POINT':
-            # Area = pi * r^2
-            n_val = f_npix(target_wl)
-            r_pix = np.sqrt(n_val / np.pi)
-            circ_pipe = plt.Circle(peak, r_pix, color='cyan', linestyle='--', fill=False, lw=1.5, alpha=0.9, label='Pipeline')
+            circ_pipe = plt.Circle(peak, PIPE_RAD_ARCSEC/pix_scale, color='cyan', linestyle='--', fill=False, lw=1.5, alpha=0.9, label='Pipeline (0.45")')
             ax.add_patch(circ_pipe)
         elif srctype == 'EXTENDED':
             # Highlight full frame
-            rect = plt.Rectangle((0, 0), img.shape[1]-1, img.shape[0]-1, color='cyan', linestyle='--', fill=False, lw=2, alpha=0.6, label='Pipeline (Whole Image)')
+            rect = plt.Rectangle((0, 0), img.shape[1]-1, img.shape[0]-1, color='cyan', linestyle='--', fill=False, lw=2, alpha=0.6, label='Pipeline (Full Frame)')
             ax.add_patch(rect)
         
         # Peak indicator
@@ -103,7 +100,7 @@ def plot_vis(target):
         ax.set_yticks([])
         plt.colorbar(im, ax=ax, fraction=0.046, pad=0.04)
 
-    fig_slices.suptitle(f"{target['name']} (PID {target['pid']}) - Spectral Slices\n[Red: v8 0.5\" r] [Cyan-Dashed: Default Pipeline ({srctype})]", fontsize=14)
+    fig_slices.suptitle(f"{target['name']} (PID {target['pid']}) - Spectral Slices\n[Red: v8 0.5\"] [Cyan-Dashed: Default Pipeline ({srctype})]", fontsize=14)
     plt.tight_layout(rect=[0, 0.03, 1, 0.9])
     plt.savefig(f"{OUTPUT_REPORT_DIR}/slices_{target['pid']}.png", dpi=150)
     plt.close()
@@ -155,13 +152,20 @@ def generate_report():
     report_path = f"{OUTPUT_REPORT_DIR}/REPORT_extracted_ifu_v8.md"
     with open(report_path, "w") as f:
         f.write("# IFU v8 Extracted Spectra Diagnostics\n\n")
-        f.write("Comparison of the v8 0.5\" fixed circular aperture vs. the default pipeline extraction.\n\n")
+        f.write("Detailed visualizations and comparison between the v8 custom 0.5\" fixed circular aperture vs. the default pipeline extraction.\n\n")
+        
+        f.write("## 1. Pipeline Reference Parameters\n")
+        f.write("The default pipeline extraction radii were obtained from the CRDS reference file:\n")
+        f.write("- **Reference File**: `jwst_nirspec_extract1d_0002.asdf`\n")
+        f.write("- **POINT Source Radius**: 0.45\" (Fixed across wavelength in this version)\n")
+        f.write("- **EXTENDED Source**: Sums entire spatial window (full frame)\n\n")
+        f.write("Full spectrum radii table: [pipeline_radii.csv](pipeline_radii.csv)\n\n")
         
         for target in TARGETS:
             f.write(f"## {target['name']} (PID {target['pid']})\n\n")
             f.write("### Spectral Slices and Extraction Regions\n")
             f.write("- **Red Solid Circle**: v8 extraction (r=0.5\")\n")
-            f.write("- **Cyan Dashed**: Default Pipeline (Wavelength-dependent POINT or Whole-Image EXTENDED)\n\n")
+            f.write("- **Cyan Dashed**: Default Pipeline (Fixed 0.45\" for POINT or Full-Frame for EXTENDED)\n\n")
             f.write(f"![{target['name']} Slices](slices_{target['pid']}.png)\n\n")
             f.write("### Spectrum and Ratio Comparison\n")
             f.write(f"![{target['name']} Extraction](extraction_{target['pid']}.png)\n\n")

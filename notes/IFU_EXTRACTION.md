@@ -9,7 +9,7 @@ For NIRSpec IFU data processing through the standard `calwebb_spec3` pipeline, t
 ### A. Point-Source Extraction (`SRCTYPE = POINT`)
 - **Aperture:** Uses a **circular aperture** centered on the source (based on header coordinates or `ifu_autocen` centroid).
 - **Radius:** The aperture radius is **wavelength-dependent**. It scales with wavelength to follow the changing Point Spread Function (PSF) / Airy disk across the spectral range.
-- **Reference File:** Radii are defined in an `EXTRACT1D` reference file (ASDF).
+- **Reference File:** Radii are defined in the `EXTRACT1D` reference file, specifically **`jwst_nirspec_extract1d_0002.asdf`** for IFU data in the current context.
 - **Background:** Traditionally applies a **circular background annulus** with wavelength-dependent inner and outer radii.
 - **Correction:** Applies a wavelength-dependent **aperture correction** (throughput correction) to the extracted flux to account for light lost outside the aperture, bringing the final flux to the "infinite aperture" level.
 
