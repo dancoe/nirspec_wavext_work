@@ -17,7 +17,7 @@ The v9 validation suite focuses on the following subset of IFU programs and grat
 | **PID 1536** | J1743045 | Quasar (Calibration Standard) | G140M, G235M |
 | **PID 1537** | G191-B2B | White Dwarf (Calibration Standard) | G140M, G235M |
 | **PID 1538** | P330E | G-type Solar Analog (Standard) | G140M, G235M |
-| **PID 2186** | UGC-5101 | ULIRG (Extended Science Target) | G235M, G395M |
+| **PID 2186** | UGC5101 | ULIRG (Extended Science Target) | G235M, G395M |
 | **PID 6645** | P330E-C3 | Solar Analog (Offset Geometry) | G140M, G235M |
 
 ## 3. IFU v9 Full Spectrum Extractions
@@ -40,8 +40,8 @@ Comparison to the default pipeline `extract1d` and the entire IFU field-of-view 
 #### J1743045 (PID 1536) – Quasar
 ![J1743045 (PID 1536)](plots/full_spectrum_merged_v9_J1743045.png)
 
-#### UGC-5101 (PID 2186) – ULIRG
-![UGC-5101 (PID 2186)](plots/full_spectrum_merged_v9_UGC-5101.png)
+#### UGC5101 (PID 2186) – ULIRG
+![UGC5101 (PID 2186)](plots/full_spectrum_merged_v9_UGC5101.png)
 
 ---
 
@@ -54,7 +54,7 @@ Documentation of the peak-pixel centering and the 0.5" aperture placement for ea
 | 1536 | J1743045 | POINT | 0.005655 | 1.005 |
 | 1537 | G191-B2B | POINT | 0.006409 | 1.005 |
 | 1538 | P330E | POINT | 0.020933 | 1.010 |
-| 2186 | UGC-5101 | EXTENDED | 0.010100 | 0.496 |
+| 2186 | UGC5101 | EXTENDED | 0.010100 | 0.496 |
 | 6645 | P330E-C3 | POINT | 0.020602 | 139.464 |
 
 ## 5. Wavelength Extension Status
