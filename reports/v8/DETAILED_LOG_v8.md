@@ -29,11 +29,38 @@
     - Updated `PARLANTI_IFU.md` with explicit details on the 0.5" aperture extraction methodologies.
     - Confirmed consistency between FS and IFU mode processing in v8.
 
+### 2026-03-31: Parlanti Coefficient Reporting & Diagnostics
+1.  **Coefficient Visualization Suite**:
+    - Developed `plot_v8_parlanti_coefficients.py` to generate a standardized reporting suite for the ghost contamination model.
+    - **Visualization Modes**:
+        - **This work (v8)**: Clean results from the unified v8 solver.
+        - **v8 vs. Literature Overlay**: Direct comparison using solid v8 lines and faint dashed Parlanti et al. (2025) lines.
+        - **Breakout Plots**: Separate comparison panels for each coefficient ($k$, $\tilde{\alpha}$, $\tilde{\beta}$) to allow granular inspection of offsets.
+    - **Advanced Styling**:
+        - Log-scale $y$-axis capped at 10.0 to focus on the dynamic range of the $\tilde{\alpha}$ and $\tilde{\beta}$ coefficients.
+        - Added a thin, faint black reference line at $y=1$ to highlight neutrality.
+        - Applied `fill_between` (alpha=0.08) beneath literature curves in individual plots to distinguish the reference baseline.
+        - Color-coded by variable: Violet ($k$), Orange ($\tilde{\alpha}$), Blue ($\tilde{\beta}$).
+    - **X-axis Standard**: 0.85 – 3.7 µm (G140M), 1.5 – 5.5 µm (G235M) to encompass the full spectral reach of the model.
+
+2.  **Organization & Report Integration**:
+    - Centralized all coefficient-related figures in `reports/v8/parlanti/` to serve both FS and IFU reports.
+    - Updated `REPORT_fs_v8.md` and `REPORT_ifu_v8.md` with structured sections:
+        - Unified coefficient overview.
+        - Individual variable breakout comparisons.
+        - Standalone literature reference.
+    - Applied the "This work (v8)" labeling convention across all diagnostics for clarity.
+
+3.  **Gap Handling & Detector Geometry**:
+    - Evaluated wavelength gaps in the full-spectrum merged plots.
+    - **Gap Wavelengths**: NRS1/NRS2 gaps are approximately 1.3–1.45 µm (G140M) and 2.35–2.55 µm (G235M) for centered FS targets.
+    - **Spatio-Spectral Variability**: Documented that while gap wavelengths are stable for fixed slits, they shift smoothly across IFU slices and vary by slit ID (e.g., S200A1 vs. S200A2).
+    - Preservation of gaps was maintained in v8 validation to ensure "honest" representation of raw detector coverage.
+
 ### Environment:
 - Python 3.11 / JWST 1.20.2
 - `PYTHONPATH`: `/Users/dcoe/NIRSpec/wavext/jwst_nirspec_wavext` (patched)
 - CRDS Context: `jwst_1464.pmap`
 
 ### Open Issues:
-- None for v8. Final validation plots look excellent across all grating configurations.
-- Gaps are intentional and reflect the detector physical geometry.
+- None for v8. Final validation plots and coefficient derivations look excellent across all configurations.
