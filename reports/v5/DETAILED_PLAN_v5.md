@@ -50,7 +50,7 @@ Run the solver on the 4 FS standards to decouple throughput ($k$) from ghosting 
 - **Technical Lessons:**
     - **Recursive Discovery:** `glob.glob` with `recursive=True` is now used to auto-stitch Level-3 x1d.fits files across disparate directory structures (Spec3 outputs vs. legacy download).
     - **Degeneracy:** The G1V star features allow NNLS to properly assign flux to $k(\lambda)$ (~0.96) instead of over-assigning to $\alpha(\lambda)$.
-- **Analysis Script Location:** `nirspec_wavext_work/reports/v5/330_fs_v5/scripts/`
+- **Analysis Script Location:** `nirspec_wavext_work/reports/v5/fs_v5/scripts/`
 
 ---
 
@@ -59,30 +59,36 @@ Run the solver on the 4 FS standards to decouple throughput ($k$) from ghosting 
 ### 4.1 Coefficient Comparison
 Coefficient plots generated via `plot_parlanti_calib_v5.py` and `plot_parlanti_coeffs_log_v5.py` compare:
 - **v5 Solution** vs. **Parlanti (2025)** vs. **v4 (3-star degeneracy)**.
-- **2-Panel Summary:** [v5 Multi-Grating Log Plot](330_fs_v5/plots/fs_v5_coeffs_log_2panel.png)
+- **2-Panel Summary:** [v5 Multi-Grating Log Plot](fs_v5/plots/fs_v5_coeffs_log_2panel.png)
 - Result: $\alpha$ dropped back to ~0.003–0.012 and $k$ returned to ~0.96 baseline.
 
 ### 4.2 Full-Spectrum Validation
 Residual plots compare NRS1 vs NRS2 (Extended).
 - Accuracy: Core regions match truth to within ~2–5%.
 
-### 4.3 Full Spectrum Merged (Truth Validation)
-The merged spectra across 0.6–5.6 µm should be generated for each target comparing NRS1 + Cor-NRS2 with CALSPEC to verify overall radiometric recovery.
-- [P330E Full Spectrum (v5)](330_fs_v5/plots/full_spectrum_merged_v5_P330E.png)
-- [G191-B2B Full Spectrum (v5)](330_fs_v5/plots/full_spectrum_merged_v5_G191-B2B.png)
-- [J1743045 Full Spectrum (v5)](330_fs_v5/plots/full_spectrum_merged_v5_J1743045.png)
-- [NGC2506-G31 Full Spectrum (v5)](330_fs_v5/plots/full_spectrum_merged_v5_NGC2506-G31.png)
+### 4.3 Full Spectrum Merged (Truth Validation - Standards)
+The merged spectra across 0.6–5.6 µm for the 4 FS standards comparing NRS1 + Cor-NRS2 with CALSPEC.
+- [P330E Full Spectrum (v5)](fs_v5/plots/full_spectrum_merged_v5_P330E.png)
+- [G191-B2B Full Spectrum (v5)](fs_v5/plots/full_spectrum_merged_v5_G191-B2B.png)
+- [J1743045 Full Spectrum (v5)](fs_v5/plots/full_spectrum_merged_v5_J1743045.png)
+- [NGC2506-G31 Full Spectrum (v5)](fs_v5/plots/full_spectrum_merged_v5_NGC2506-G31.png)
+
+### 4.4 Full Spectrum Merged (Science Validation - IFU)
+Merged spectra for science targets showing successful SED recovery in the extended range.
+- [UGC-5101 Full Spectrum (v5)](ifu_v5/plots/ifu_v5_full_spectrum_UGC-5101.png)
+- [SDSSJ0841 Full Spectrum (v5)](ifu_v5/plots/ifu_v5_full_spectrum_SDSSJ0841.png)
 
 ---
 
 ## 5. Reporting
 
 ### 5.1 FS v5 Report (COMPLETED)
-- **Report Link:** [330 FS v5](v5/330_fs_v5/REPORT_330_fs_v5.md)
-- **Summary Script:** [summarize_v5.py](v5/330_fs_v5/scripts/summarize_v5.py) for quick coefficient inspection.
+- **Report Link:** [FS v5](v5/fs_v5/REPORT_fs_v5.md)
+- **Summary Script:** [summarize_v5.py](v5/fs_v5/scripts/summarize_v5.py) for quick coefficient inspection.
 
-### 5.2 IFU v5 Validation Report (PENDING)
-- Create [330 IFU v5 Science Validation](v5/330_ifu_v5/REPORT_330_ifu_v5.md) once AGN H-alpha recovery is verified.
+### 5.2 IFU v5 Validation Report (IN PROGRESS)
+- **Report Link:** [IFU v5 Science Validation](v5/ifu_v5/REPORT_ifu_v5.md)
+- **Status:** H-alpha recovery verified for SDSSJ0841; L-band dust verified for UGC-5101.
 
 ---
 
@@ -92,9 +98,11 @@ The merged spectra across 0.6–5.6 µm should be generated for each target comp
 | :--- | :--- | :--- |
 | **Download** | Complete Science | (Auto-resuming background download) |
 | **Reduce** | 6644 Reduction | `python nirspec_wavext_work/analysis/reduction/run_fs_nrs1_spec3.py --pid 6644` |
-| **Solve** | v5 NNLS Joint | `python nirspec_wavext_work/reports/v5/330_fs_v5/scripts/solve_parlanti_calib_v5.py` |
-| **Plot** | Diagnostic Plots | `python nirspec_wavext_work/reports/v5/330_fs_v5/scripts/plot_parlanti_calib_v5.py` |
-| **Summary**| Inspect Coeffs | `python nirspec_wavext_work/reports/v5/330_fs_v5/scripts/summarize_v5.py` |
+| **Solve** | v5 NNLS Joint | `python nirspec_wavext_work/reports/v5/fs_v5/scripts/solve_parlanti_calib_v5.py` |
+| **Plot FS** | Diagnostic Plots | `python nirspec_wavext_work/reports/v5/fs_v5/scripts/plot_parlanti_calib_v5.py` |
+| **Plot IFU** | Validation Plots | `python nirspec_wavext_work/reports/v5/ifu_v5/scripts/plot_ifu_v5_validation.py` |
+| **Plot Full** | Merged Spectra | `python nirspec_wavext_work/reports/v5/ifu_v5/scripts/plot_ifu_full_spectra_v5.py` |
+| **Summary**| Inspect Coeffs | `python nirspec_wavext_work/reports/v5/fs_v5/scripts/summarize_v5.py` |
 
 ---
 *Created by Antigravity — v5 Execution Readiness: Phase 5/Phase 6*

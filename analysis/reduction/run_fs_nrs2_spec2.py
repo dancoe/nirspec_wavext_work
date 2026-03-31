@@ -60,6 +60,8 @@ PIDS = {
     '1536': os.path.join(BASE, 'PID1536_J1743045'),
     '1537': os.path.join(BASE, 'PID1537_G191-B2B'),
     '1538': os.path.join(BASE, 'PID1538_P330E'),
+    '1492': os.path.join(BASE, 'PID1492'),
+    '6644': os.path.join(BASE, 'PID6644_NGC2506G31'),
 }
 
 # Only process these grating/filter combinations (extended wavelength range configs)

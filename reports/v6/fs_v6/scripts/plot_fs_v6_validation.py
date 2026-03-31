@@ -225,6 +225,12 @@ def plot_calspec_validation():
             ax.plot(wl_nrs, fl_nrs,  color='silver', lw=1,   label='Observed (NRS2 ext)')
             ax.plot(wl_nrs, fl_corr, color=color,    lw=1.5, label='Corrected (v6)')
             ax.plot(wl_nrs, fl_true, 'k--',          lw=1.5, label='CALSPEC truth')
+            # Tweak y-limits to focus on observed and truth spectra
+            y_combined = np.concatenate([fl_nrs[np.isfinite(fl_nrs)], fl_true[np.isfinite(fl_true)]])
+            if len(y_combined) > 0:
+                ymax = np.nanpercentile(y_combined, 99) * 1.2
+                ax.set_ylim(-0.05 * ymax, ymax)
+
             ax.set_ylabel('Flux (Jy)')
             ax.set_title(f'{name}')
             ax.legend(fontsize=8); ax.grid(True, alpha=0.2)
@@ -307,6 +313,12 @@ def plot_pid1492_xval():
         ax.plot(wl_nrs,   fl_corr,    color='darkorange',  lw=1.5, label=f'{grating.upper()} NRS2 corrected (v6)')
         ax.plot(wl_truth, fl_truth,   'k--',               lw=1.5, label=fmap['truth_label'])
         ax.axvline(nrs2_lo, color='gray', ls=':', lw=1)
+        # Tweak y-limits to focus on observed and truth spectra
+        y_combined = np.concatenate([fl_nrs_jy[np.isfinite(fl_nrs_jy)], fl_truth[np.isfinite(fl_truth)]])
+        if len(y_combined) > 0:
+            ymax = np.nanpercentile(y_combined, 99) * 1.2
+            ax.set_ylim(-0.05 * ymax, ymax)
+
         ax.set_ylabel('Flux (Jy)')
         ax.set_xlabel('Wavelength (µm)')
         ax.set_title(f'PID 1492 — {grating.upper()} Extended vs {fmap["truth_label"]}')

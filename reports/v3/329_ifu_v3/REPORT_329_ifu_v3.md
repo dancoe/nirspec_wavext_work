@@ -80,7 +80,7 @@ k starts above 1 near the NRS1/NRS2 boundary (pipeline over-corrects at the tran
 
 ## 2. MAST Level-3 vs Our Level-3 Extended
 
-These panels show the key v3 addition: MAST L3 (steelblue, NRS1 only) alongside our stage3_ext NRS1 (cornflowerblue) and NRS2 uncorrected (orange) and corrected (red) for each source.
+These panels show the key v3 addition: MAST L3 (steelblue) alongside our Level-3 extraction on NRS1 (maroon) for comparison, and the NRS2 extension uncorrected (orange) and corrected (red). Comparing the maroon and steelblue lines on the left half of each panel validates that our pipeline correctly reproduces the nominal extraction on NRS1.
 
 ### G140M — All Sources
 ![MAST vs L3 G140M](../../plots/Parlanti/cal/ifu_v3/ifu_v3_mast_vs_l3_G140M.png)
@@ -135,7 +135,7 @@ Full 0.6–5.6 µm view merging MAST L3 nominal gratings (steelblue/mediumblue/n
 
 **G191-B2B** — G235M NRS2 corrects well. G140M NRS2 overcorrects by ~20–30% at λ > 2.5 µm. This is a known hot WD artefact (source-dependent photometric excess at the NRS2/pipeline interface), not a solver deficiency.
 
-**MAST vs L3 ext comparison** — The stage3_ext products clearly extend wavelength coverage beyond the MAST L3 products (NRS1-only), confirming the WAVEXT pipeline is working as intended. The NRS2 raw extension is brighter than expected before correction; after applying v3 k(λ), it aligns with the truth.
+**MAST vs L3 ext comparison** — The stage3_ext products clearly extend wavelength coverage beyond the MAST L3 products. Our NRS1 Level-3 extraction (maroon) matches the MAST L3 extraction (steelblue), demonstrating consistency. The NRS2 raw extension (orange) is brighter than expected; after applying v3 k(λ), the corrected extension (red) aligns with the truth.
 
 **IFU v3 vs FS v3** — IFU v3 k values are systematically lower than FS v3 k values (IFU G140M median 0.567 vs FS 0.725; IFU G235M median 0.768 vs FS 0.972). This is a genuine mode-dependent photometric calibration difference, not a pipeline bug.
 

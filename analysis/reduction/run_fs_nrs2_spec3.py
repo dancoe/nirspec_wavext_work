@@ -73,6 +73,7 @@ PIDS = {
     '1536': {'dir': os.path.join(BASE, 'PID1536_J1743045'), 'name': 'J1743045'},
     '1537': {'dir': os.path.join(BASE, 'PID1537_G191-B2B'),  'name': 'G191-B2B'},
     '1538': {'dir': os.path.join(BASE, 'PID1538_P330E'),     'name': 'P330E'},
+    '6644': {'dir': os.path.join(BASE, 'PID6644_NGC2506G31'), 'name': 'NGC2506-G31'},
 }
 
 TARGET_CONFIGS = {('G140M', 'F100LP'), ('G235M', 'F170LP')}

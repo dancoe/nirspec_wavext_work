@@ -8,7 +8,7 @@ from astropy.io import fits
 # Paths
 BASE        = '/Users/dcoe/NIRSpec/wavext'
 COEFFS_DIR  = f'{BASE}/results/v5'
-OUTPUT_DIR  = f'{BASE}/nirspec_wavext_work/reports/v5/330_fs_v5/plots'
+OUTPUT_DIR  = f'{BASE}/nirspec_wavext_work/reports/v5/fs_v5/plots'
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 
 CONFIGS = [

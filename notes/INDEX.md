@@ -7,7 +7,9 @@ Key documentation, logs, and planning files.
 
 | Last Modified | File | Summary |
 | :--- | :--- | :--- |
+| 2026-03-30 02:40:00 | [DETAILED_PLAN.md](../reports/DETAILED_PLAN.md) | **[Master]** Detailed roadmap: download, reduction, analysis, plots, and reports. |
 | 2026-03-29 00:28:55 | [INDEX.md](INDEX.md) | This project index and summary file. |
+| 2026-03-29 00:28:00 | [DATA_DOWNLOADS.md](DATA_DOWNLOADS.md) | Data acquisition strategy, scripts, and download verification. |
 | 2026-03-29 00:24:44 | [OBSERVATIONS.md](OBSERVATIONS.md) | Log of processed observations and results. |
 | 2026-03-29 00:05:56 | [CALIBRATION.md](CALIBRATION.md) | Details of the calibration process for wavelength extension. |
 | 2026-03-29 00:05:54 | [PARLANTI.md](PARLANTI.md) | Overview of the Parlanti et al. ghost contamination model. |
@@ -40,6 +42,11 @@ Scripts and notebooks for calibration and visualization.
 | 2026-03-28 22:35:54 | [plot_parlanti_calib.py](../analysis/calibration/plot_parlanti_calib.py) | Master script for Parlanti calibration visualization. |
 | 2026-03-28 08:19:00 | [solve_parlanti_calib.py](../analysis/calibration/solve_parlanti_calib.py) | Main solver for ghost contamination coefficients. |
 | 2026-03-28 07:48:39 | [download_calspec.py](../analysis/calibration/download_calspec.py) | Fetches CalSpec standards for throughput fitting. |
+
+### Acquisition (`analysis/acquisition/`)
+| Last Modified | File | Purpose |
+| :--- | :--- | :--- |
+| 2026-03-29 00:28:00 | [audit_downloads.py](../analysis/acquisition/audit_downloads.py) | Audit local downloads against MAST archive. |
 
 ### Plotting (`analysis/plotting/`)
 | Last Modified | File | Purpose |

@@ -20,7 +20,7 @@ This report validates the v5 extended wavelength pipeline on **science targets**
 | 2186 | UGC-5101  | 0.039 | G395M/F290LP | Nominal reference (cross-check) |
 
 ### v5 Coefficients Used
-Derived in `330_fs_v5` from 4-source NNLS (G191-B2B + P330E + J1743045 + NGC2506-G31). Stored in `results/v5/calib_v5_g140m_f100lp.fits` and `calib_v5_g235m_f170lp.fits`.
+Derived in `fs_v5` from 4-source NNLS (G191-B2B + P330E + J1743045 + NGC2506-G31). Stored in `results/v5/calib_v5_g140m_f100lp.fits` and `calib_v5_g235m_f170lp.fits`.
 
 Ghost correction formula applied:
 $$S_\mathrm{corr}(\lambda) = \frac{S_\mathrm{obs}(\lambda) - \tilde{\alpha}(\lambda) S_\mathrm{obs}(\lambda/2) - \tilde{\beta}(\lambda) S_\mathrm{obs}(\lambda/3)}{k(\lambda)}$$
@@ -156,7 +156,19 @@ The Parlanti extended pipeline was applied with:
 
 ---
 
-## 7. Discussion
+## 8. Full Spectrum Merged Validation
+
+The following plots show the final merged NIRSpec spectra (NRS1 + Corrected NRS2) across the full 0.6–5.6 µm range. These plots demonstrate the successful recovery of the underlying spectral energy distribution (SED) and the continuity between nominal and extended regions for science targets.
+
+### UGC-5101 (ULIRG, z=0.039)
+![UGC-5101 Full Spectrum](plots/ifu_v5_full_spectrum_UGC-5101.png)
+
+### SDSSJ0841 (AGN, z≈2.96)
+![SDSSJ0841 Full Spectrum](plots/ifu_v5_full_spectrum_SDSSJ0841.png)
+
+---
+
+## 9. Discussion
 
 ### Ghost Contamination in Science Targets
 The v5 ghost correction is self-referential for science targets (unlike calibration standards, no CALSPEC truth is assumed). The formula uses $S_\mathrm{obs}(\lambda/2)$ drawn from the same extended cube:
@@ -186,13 +198,16 @@ This demonstrates the power of the wavelength extension:
 | [ifu_v5_ugc5101_g235m_extended.png](plots/ifu_v5_ugc5101_g235m_extended.png) | UGC-5101 extended G235M validation |
 | [ifu_v5_ugc5101_g235m_vs_g395m_xval.png](plots/ifu_v5_ugc5101_g235m_vs_g395m_xval.png) | G235M extended vs G395M nominal cross-validation |
 | [ifu_v5_sdssj0841_g140m_extended.png](plots/ifu_v5_sdssj0841_g140m_extended.png) | SDSSJ0841 extended G140M (H-α validation) |
+| [ifu_v5_full_spectrum_UGC-5101.png](plots/ifu_v5_full_spectrum_UGC-5101.png) | Full merged spectrum validation (UGC-5101) |
+| [ifu_v5_full_spectrum_SDSSJ0841.png](plots/ifu_v5_full_spectrum_SDSSJ0841.png) | Full merged spectrum validation (SDSSJ0841) |
 | [ifu_v5_coefficients.png](plots/ifu_v5_coefficients.png) | v5 coefficients applied to IFU targets |
-| [scripts/plot_ifu_v5_validation.py](scripts/plot_ifu_v5_validation.py) | All plotting scripts |
+| [scripts/plot_ifu_v5_validation.py](scripts/plot_ifu_v5_validation.py) | Component plotting script |
+| [scripts/plot_ifu_full_spectra_v5.py](scripts/plot_ifu_full_spectra_v5.py) | Full spectrum merged plotting script |
 | [scripts/run_ifu_science_ext.py](../../../analysis/reduction/run_ifu_science_ext.py) | Pipeline runner |
 
 ---
 
-## 9. Conclusions
+## 10. Conclusions
 
 1. **Extended pipeline validated on science targets.** The Parlanti et al. (2025) pipeline, with v5 ghost-correction coefficients, successfully produces extended spectra for astronomical science targets.
 

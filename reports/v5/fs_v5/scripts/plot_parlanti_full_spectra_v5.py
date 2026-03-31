@@ -12,7 +12,7 @@ BASE        = '/Users/dcoe/NIRSpec/wavext'
 FS_DIR      = f'{BASE}/data'
 CALSPEC_DIR = f'{BASE}/data/CALSPEC'
 COEFFS_DIR  = f'{BASE}/results/v5'
-OUTPUT_DIR  = f'{BASE}/nirspec_wavext_work/reports/v5/330_fs_v5/plots'
+OUTPUT_DIR  = f'{BASE}/nirspec_wavext_work/reports/v5/fs_v5/plots'
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 
 C_ANG_S = 2.99792458e18

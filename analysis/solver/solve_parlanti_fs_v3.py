@@ -70,6 +70,14 @@ def _l3_path(pid, grating):
     return os.path.join(FS_DIR, f'PID{pid}_{bodies[pid]}', 'nrs2_spec3_ext', fname)
 
 
+def _l3_nrs1_path(pid, grating):
+    """Return path to the Level-3 NRS1 x1d for a given PID and grating."""
+    bodies = {'1536': 'J1743045', '1537': 'G191-B2B', '1538': 'P330E'}
+    g = grating.lower()
+    fname = f'nrs1_l3_{pid}_{g}_s1600a1_s000000001_x1d.fits'
+    return os.path.join(FS_DIR, f'PID{pid}_{bodies[pid]}', 'nrs1_spec3_nom', fname)
+
+
 # ── Source tables ──────────────────────────────────────────────────────────────
 K_SOURCES = {
     'G140M': [
@@ -382,7 +390,7 @@ def plot_mast_vs_l3(grating, wav_grid, ks, als, bts):
     fig, axes = plt.subplots(len(ALL_SOURCES), 1, figsize=(12, 4 * len(ALL_SOURCES)),
                              sharex=True)
     fig.suptitle(
-        f'FS v3 — {grating}: MAST Level-3 NRS1 vs our Level-3 ext NRS2',
+        f'FS v3 — {grating}: MAST Level-3 NRS1 vs Our Level-3 (NRS1 & NRS2 ext)',
         fontsize=13,
     )
 
@@ -403,6 +411,13 @@ def plot_mast_vs_l3(grating, wav_grid, ks, als, bts):
         if len(w_mast) > 5:
             ax.plot(w_mast, f_mast, color='steelblue', lw=1.5,
                     label=f'MAST L3 {grating} (NRS1)')
+
+        # Our L3 NRS1 (nominal range)
+        path_nrs1 = _l3_nrs1_path(pid, grating)
+        w_n1, f_n1 = load_spec(path_nrs1, f'{name} Our L3 NRS1')
+        if len(w_n1) > 5:
+            ax.plot(w_n1, f_n1, color='maroon', lw=1.2, alpha=0.9,
+                    label=f'Our L3 {grating} (NRS1 nominal)')
 
         # Our L3 NRS2 raw
         if len(w_nrs) > 5:

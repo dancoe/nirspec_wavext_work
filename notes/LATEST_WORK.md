@@ -1,5 +1,13 @@
 # Latest Work: NIRSpec Wavelength Extension
 
+## 2026-03-31 Update: v8 Calibration Validation Completed
+
+See session log: [2026-03-31 session](logs/2026-03-31-0145.md)
+
+- **IFU Science Extractions**: Custom 0.5" radius circular aperture extractions completed for UGC-5101 and SDSSJ0841.
+- **Gap-Aware Visualization**: Full-spectrum plots (0.6–5.6 µm) generated for all IFU and FS targets, correctly preserving detector gaps.
+- **Reporting**: Final v8 validation reports generated for both IFU and FS modes.
+
 ## 2026-03-29 Update: Fixed Slit v1 Coefficient Derivation
 
 See session log: [2026-03-29 session](logs/)

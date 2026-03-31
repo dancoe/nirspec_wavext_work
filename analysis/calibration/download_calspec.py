@@ -63,6 +63,15 @@ TARGETS = {
         ],
         "pids": ["1536"],
     },
+    "NGC2506-G31": {
+        "candidates": [
+            "ngc2506g31_mod_003.fits",
+            "ngc2506_g31_mod_003.fits",
+            "ngc2506g31_stis_001.fits",
+            "ngc2506_g31_stis_001.fits",
+        ],
+        "pids": ["6644"],
+    },
 }
 
 

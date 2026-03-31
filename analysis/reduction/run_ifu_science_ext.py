@@ -67,8 +67,12 @@ EXP_TYPE = 'NRS_IFU'
 SCIENCE_TARGETS = {
     ('2654', 'SDSSJ0749'): [f'{BASE_DIR}/PID2654_SDSSJ0749'],
     ('2654', 'SDSSJ0841'): [f'{BASE_DIR}/PID2654_SDSSJ0841'],
+    # For 2186, rate files live in the rate/ subdirectory; base_dir is still
+    # PID2186_UGC-5101 so that stage2_ext/stage3_ext land in the right place.
     ('2186', 'UGC5101'):   [f'{BASE_DIR}/PID2186_UGC-5101',
-                             f'{BASE_DIR}/PID2186_UGC5101'],
+                             f'{BASE_DIR}/PID2186_UGC-5101/rate',
+                             f'{BASE_DIR}/PID2186_UGC5101',
+                             f'{BASE_DIR}/PID2186_UGC5101/rate'],
 }
 
 # ── Helpers ────────────────────────────────────────────────────────────────────

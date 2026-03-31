@@ -3,6 +3,50 @@
 Below please log the exact prompts I give you, numbered, with timestamps.
 
 
+270. 2026-03-31 01:45 AM
+Thank you! I don't think we've committed to Github in a while? Please do so following @[nirspec_wavext_work/notes/INSTRUCTIONS.md] where possible.
+
+269. 2026-03-31 01:42 AM
+Oh please also update PARLANTI_IFU.md with this new extraction plan – or maybe it was in there already but ignored? Note that it was ignored until recently
+
+268. 2026-03-31 01:40 AM
+Excellent thank you yes please proceed with the radius 0.5" aperture. Compare those results to the previous extract1d spectra in a new report v8/ifu_v8/EXTRACTED_ifu_v8.md
+
+267. 2026-03-31 01:38 AM
+Please generate new v8/ analyses for both IFU and FS.
+All data should be in hand and reduced already, 
+including Stage3 photom calibration step introduced in v7.
+
+Refer to:
+REPORT_ifu_v7.md
+DETAILED_LOG_ifu_v7.md 
+REPORT_fs_v7.md
+DETAILED_LOG_fs_v7.md 
+DETAILED_PLAN_v7.md
+
+and generate:
+DETAILED_PLAN_fs_v8.md
+DETAILED_PLAN_ifu_v8.md
+
+including these new instructions:
+
+* Generate full spectrum plots as done in v7/ and in v5/fs_v5/
+
+* When there are gaps in the spectra, leave them be. Don't try to interpolate smooth over them.
+  Note the gaps at:
+  ~2.2 µm G140M
+  ~3.7 µm G235M
+
+For v8/ifu_v8/
+
+* Analyze all IFU data mentioned in the top table of OBSERVATIONS.md: 
+  1536, 1537, 1538 2186, 2654, 6645
+  assuming they all have the proper v7 photom IFU reductions
+  
+Parlanti IFU spectral extractions:
+circular aperture of radius 0.5" centered on the brightest pixel of the science targets!
+(PID 2186 and 2654)
+
 266. 2026-03-30
 Please finish your work on v6. This was my prompt: Check the v5 reports, especially ifu_v5.md Section 8. Full Spectrum Merged Validation. Note the corrected spectra do not match the observed. Please actually use these data in a new ifu_v6 run where all data are used to help calculate the coefficients regardless of whether they are calibration standards or not. Do the same for fs_v6, including all data already downloaded for Fixed Slits, including 1492. (Don't download any new data; we're low on disk space.) See DETAILED_PLAN.md for more details about how to generate things, but stick to these new ideas I've given here.
 

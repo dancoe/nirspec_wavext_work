@@ -221,7 +221,8 @@ and extracts 1D spectra.
 **Steps configured:**
 - `master_background`: skip
 - `outlier_detection`: kernel_size `3 3`
-- `cube_build`, `extract_1d`: run (default settings)
+- `cube_build`: run (default settings)
+- `extract_1d`: for science targets, use custom 0.5" circular aperture extraction on `_s3d.fits` cubes (see Section 10). Standard stars use default pipeline extractions.
 
 ---
 
@@ -296,7 +297,7 @@ Re-run Spec2Pipeline + Spec3Pipeline pointing to the modified reference files vi
 ### Step 4: Extract and compare spectra
 
 For each standard star and each grating:
-- Extract 1D spectrum from the extended cube ($S_\lambda(\lambda)$)
+- Extract 1D spectrum from the extended cube ($S_\lambda(\lambda)$) using a 0.5" radius circular aperture centered on the peak pixel (for science targets like UGC-5101 and SDSSJ0841).
 - Compare to known CALSPEC SED ($f_\lambda(\lambda)$) over the extended range
 - Compute $R(\lambda) = S_\lambda / f_\lambda$
 
@@ -383,3 +384,18 @@ show whether pipeline version 1.20.2 and CRDS context differences change the cal
   than the calibrated reference. For the Parlanti solve, a manual anchoring factor 
   $k_{raw} \approx 0.0013$ for P330E is required to bring these into physical alignment before 
   ghost subtraction. Artifacts/spikes in the raw data can reach $10^4$ or higher.
+
+---
+
+## 10. Science Target Extractions (v8 Update)
+
+As specified in Parlanti et al. (2025) and implemented for v8 validation:
+
+**Extraction Methodology for Science Targets (UGC-5101, SDSSJ0841):**
+- **Input:** Level 3 `_s3d.fits` cubes (Jy/sr or MJy/sr units).
+- **Peak Finding:** Locate the brightest pixel (peak flux) in a white-light image (mean over the spectral axis).
+- **Aperture:** 0.5" radius circular aperture centered on the peak pixel.
+- **Conversion:** Convert summed spaxel values to Jy using the `PIXAR_SR` (pixel area in steradians) header keyword and a $10^6$ factor if units are MJy/sr.
+- **Comparison:** Results are compared to the default pipeline `extract_1d` (which often uses a smaller, point-source optimized aperture) in `EXTRACTED_ifu_v8.md`.
+
+*Note: This specific extraction setting was previously overlooked but is now standard for v8 science validation.*

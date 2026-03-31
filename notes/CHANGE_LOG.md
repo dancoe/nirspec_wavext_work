@@ -1,3 +1,28 @@
+## 2026-03-31 — v8 Calibration Validation (IFU & FS)
+
+### Science-Grade Extraction (IFU)
+- **New Script**: `reports/v8/scripts/extract_ifu_science_v8.py`
+  - Implements 0.5" radius circular aperture extraction for PIDs 2186 (UGC-5101) and 2654 (SDSSJ0841).
+  - Handles `MJy/sr` to `Jy` conversion via `PIXAR_SR`.
+  - Centers on peak pixel (brightest pixel) of the science targets.
+- **Comparison Report**: `reports/v8/ifu_v8/EXTRACTED_ifu_v8.md`
+  - Quantifies 0.5" aperture flux relative to pipeline default (Ratios: 0.75 for UGC-5101, 0.89 for SDSSJ0841).
+
+### Gap-Aware Plotting
+- **Scripts**: `reports/v8/scripts/plot_ifu_v8_full_spectra.py`, `reports/v8/scripts/plot_fs_v8_full_spectra.py`
+  - Generates full 0.6–5.6 µm spectral plots without interpolation across detector gaps (~2.2 µm and ~3.7 µm).
+  - Uses unified scaling and Parlanti-style styling.
+
+### Validation Reports
+- `reports/v8/ifu_v8/REPORT_ifu_v8.md`: Final IFU v8 validation with full spectrum plots.
+- `reports/v8/fs_v8/REPORT_fs_v8.md`: Final FS v8 validation.
+- `reports/v8/DETAILED_LOG_v8.md`: Comprehensive log of v8 implementation and results.
+
+### Documentation
+- `notes/PARLANTI_IFU.md`: Updated Section 10 with science target extraction methodology.
+
+---
+
 ## 2026-03-30 — IFU v6 and FS v6: All-Source Joint Solve
 
 ### Motivation

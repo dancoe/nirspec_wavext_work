@@ -1,0 +1,37 @@
+Please generate new v8/ analyses for both IFU and FS.
+All data should be in hand and reduced already, 
+including Stage3 photom calibration step introduced in v7.
+
+Refer to:
+REPORT_ifu_v7.md
+DETAILED_LOG_ifu_v7.md 
+REPORT_fs_v7.md
+DETAILED_LOG_fs_v7.md 
+DETAILED_PLAN_v7.md
+
+and generate:
+DETAILED_PLAN_fs_v8.md
+DETAILED_PLAN_ifu_v8.md
+
+including these new instructions:
+
+* Generate full spectrum plots as done in v7/ and in v5/fs_v5/
+
+* When there are gaps in the spectra, leave them be. Don't try to interpolate smooth over them.
+  Note the gaps at:
+  ~2.2 µm G140M
+  ~3.7 µm G235M
+
+For v8/ifu_v8/
+
+* Analyze all IFU data mentioned in the top table of OBSERVATIONS.md: 
+  1536, 1537, 1538 2186, 2654, 6645
+  assuming they all have the proper v7 photom IFU reductions
+  
+Parlanti IFU spectral extractions:
+circular aperture of radius 0.5" centered on the brightest pixel of the:
+* AGN SDSSJ0841  (PID: 2654)
+* ULRIG UGC-5101 (PID: 2186)
+  
+  
+  In the top panel, we show the spectrum extracted from a circular aperture of radius 0.5" centered on the brightest pixel of the AGN SDSSJ0841 (PID: 2654), the nominal G140M/F100LP+G235M/F170LP spectrum, and the extensions of the G140M/F100LP. In the bottom panel, we show the spectrum extracted from a circular aperture of radius 0.5" centered on the brightest pixel of the ULRIG UGC-5101 (PID: 2186)

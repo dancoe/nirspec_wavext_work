@@ -80,7 +80,7 @@ FS k values are consistently higher than IFU v3 k values (FS G140M 0.725 vs IFU 
 
 ## 2. MAST Level-3 vs Our Level-3 NRS2 Extended
 
-Key v3 addition. Panels show MAST L3 NRS1 (steelblue) alongside our L3 NRS2 ext uncorrected (orange) and corrected (red). Demonstrates the Spec3Pipeline-produced NRS2 extension extending the FS spectral coverage.
+Key v3 addition. Panels show MAST L3 NRS1 (steelblue) alongside our NRS1 Level-3 extraction (maroon) for comparison, and the NRS2 extension uncorrected (orange) and corrected (red). This validates consistency between our processing and MAST for the nominal detector 1 range.
 
 ### G140M — All Sources
 ![MAST vs L3 G140M](../../plots/Parlanti/cal/fs_v3/fs_v3_mast_vs_l3_G140M.png)

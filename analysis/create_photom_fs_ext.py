@@ -1,113 +1,71 @@
 """
-Create custom FS photom reference file that extends wavelength coverage to NRS2.
+NIRSpec Wavelength Extension — Create Custom Photom Reference File
+Version: FS v7
 
-Copies jwst_nirspec_photom_0014.fits and extends the relresponse arrays
-for the G140M/F100LP and G235M/F170LP entries to cover NRS2 wavelengths,
-using relresponse = 1.0 (no change) for the extended range.
-
-This prevents the photom step from issuing NaN fill_value for NRS2 pixels
-and flagging them all as DO_NOT_USE.
+This script creates a new photom reference file with LARGER column buffers
+for wavelength etc. (500 elements instead of 150) to ensure we can extend relresponses
+all the way to the NRS2 edge.
 """
 import os
-import shutil
 import numpy as np
 from astropy.io import fits
 
-SRC = '/Users/dcoe/crds_cache/references/jwst/nirspec/jwst_nirspec_photom_0014.fits'
-DST = '/Users/dcoe/NIRSpec/wavext/nirspec_wavext_work/reference_files/jwst_nirspec_photom_fs_nrs2_ext.fits'
-os.makedirs(os.path.dirname(DST), exist_ok=True)
+BASE = '/Users/dcoe/NIRSpec/wavext'
+SRC  = '/Users/dcoe/crds_cache/references/jwst/nirspec/jwst_nirspec_photom_0014.fits'
+OUT  = os.path.join(BASE, 'nirspec_wavext_work/reference_files/jwst_nirspec_photom_fs_nrs2_ext.fits')
 
-# Extensions to add for NRS2 coverage
-# key: (filter, grating), value: max NRS2 wavelength in microns
-NRS2_EXT = {
-    ('F100LP', 'G140M'): 3.20,  # G140M NRS2 goes to ~3.16 um
-    ('F170LP', 'G235M'): 5.50,  # G235M NRS2 goes to ~5.31 um
-    # Could also do G395M NRS2:
-    # ('F290LP', 'G395M'): 6.00,
-}
+def make_extended_photom_robust():
+    print(f"Reading {SRC}")
+    with fits.open(SRC) as h:
+        data = h[1].data
+        cols = h[1].columns
+        hdr  = h[1].header
+        nrows = len(data)
+        
+        # Define new columns with larger shapes for the 1D arrays
+        new_cols = []
+        for c in cols:
+            if c.name in ['wavelength', 'relresponse', 'reluncertainty']:
+                # Change format from e.g. 150D to 500D
+                new_fmt = '500D'
+                # Initialize empty array for this column
+                arr = np.zeros((nrows, 500), dtype='float64')
+                new_cols.append(fits.Column(name=c.name, format=new_fmt, unit=c.unit, array=arr))
+            else:
+                # Keep other columns as they are
+                new_cols.append(fits.Column(name=c.name, format=c.format, unit=c.unit, array=data[c.name].copy()))
+        
+        new_hdu = fits.BinTableHDU.from_columns(new_cols, header=hdr)
+        new_data = new_hdu.data
+        
+        for i in range(nrows):
+            row = data[i]
+            filt = row['filter'].strip().upper()
+            grat = row['grating'].strip().upper()
+            ne   = int(row['nelem'])
+            
+            # Original arrays
+            wl = row['wavelength'][:ne]
+            rr = row['relresponse'][:ne]
+            ru = row['reluncertainty'][:ne]
+            
+            if grat in ['G140M', 'G235M']:
+                # Extend to 6.0 um
+                ext_wl = np.linspace(wl[-1] + 0.01, 6.0, 50)
+                wl = np.concatenate([wl, ext_wl])
+                rr = np.concatenate([rr, np.ones_like(ext_wl)])
+                ru = np.concatenate([ru, np.ones_like(ext_wl)])
+                ne = len(wl)
+            
+            # Place into new_data
+            new_data[i]['nelem'] = ne
+            new_data[i]['wavelength'][:ne] = wl
+            new_data[i]['relresponse'][:ne] = rr
+            new_data[i]['reluncertainty'][:ne] = ru
+            
+        os.makedirs(os.path.dirname(OUT), exist_ok=True)
+        fits.HDUList([h[0], new_hdu]).writeto(OUT, overwrite=True)
+        print(f"Successfully saved robustly extended file: {OUT}")
 
-# New wavelength spacing to add for NRS2 (will be appended to the existing array)
-NRS2_WSTEP = 0.02  # 20 nm steps, coarser than NRS1 is fine (relresponse = 1.0 everywhere)
-
-shutil.copy(SRC, DST)
-print(f'Copied: {os.path.basename(SRC)} → {os.path.basename(DST)}')
-
-with fits.open(DST, mode='update') as h:
-    data = h[1].data
-    nrows = len(data)
-
-    # Find the column shapes
-    wl_col_len = data.dtype['wavelength'].shape[0]
-    rel_col_len = data.dtype['relresponse'].shape[0]
-    print(f'Ref file: {nrows} rows, wavelength array length={wl_col_len}')
-
-    n_updated = 0
-    for i in range(nrows):
-        row = data[i]
-        filt = row['filter']
-        grat = row['grating']
-
-        if (filt, grat) not in NRS2_EXT:
-            continue
-
-        nrs2_max = NRS2_EXT[(filt, grat)]
-        nelem = row['nelem']
-        wl = row['wavelength'].copy()
-        rel = row['relresponse'].copy()
-
-        nrs1_max = wl[nelem - 1]  # last NRS1 wavelength
-        print(f'  Row {i}: {filt}/{grat}, nrs1_max={nrs1_max:.3f} um, nrs2_max={nrs2_max:.3f} um')
-
-        if nrs1_max >= nrs2_max:
-            print(f'    Already covers NRS2 range!')
-            continue
-
-        # Create new NRS2 wavelengths
-        nrs2_wl = np.arange(nrs1_max + NRS2_WSTEP, nrs2_max + NRS2_WSTEP, NRS2_WSTEP)
-        n_new = len(nrs2_wl)
-
-        # New combined arrays
-        new_wl = np.concatenate([wl[:nelem], nrs2_wl])
-        new_rel = np.concatenate([rel[:nelem], np.ones(n_new, dtype=rel.dtype)])
-        new_nelem = nelem + n_new
-
-        if new_nelem > wl_col_len:
-            print(f'    WARNING: need {new_nelem} elements but column only has {wl_col_len}!')
-            # Pad to fit: use coarser spacing
-            n_can_fit = wl_col_len - nelem
-            nrs2_wl = np.linspace(nrs1_max + NRS2_WSTEP, nrs2_max, n_can_fit)
-            n_new = len(nrs2_wl)
-            new_wl = np.concatenate([wl[:nelem], nrs2_wl])
-            new_rel = np.concatenate([rel[:nelem], np.ones(n_new, dtype=rel.dtype)])
-            new_nelem = nelem + n_new
-
-        # Update the arrays in-place (zero-padding at end)
-        data[i]['nelem'] = new_nelem
-        data[i]['wavelength'][:new_nelem] = new_wl[:new_nelem]
-        data[i]['wavelength'][new_nelem:] = 0.0
-        data[i]['relresponse'][:new_nelem] = new_rel[:new_nelem]
-        data[i]['relresponse'][new_nelem:] = 0.0
-
-        # Also update reluncertainty if present
-        if 'reluncertainty' in data.dtype.names:
-            data[i]['reluncertainty'][:new_nelem] = 1.0  # no uncertainty
-            data[i]['reluncertainty'][new_nelem:] = 0.0
-
-        n_updated += 1
-        print(f'    Updated: nelem {nelem} → {new_nelem}, wl=[{new_wl.min():.3f},{new_wl.max():.3f}]')
-
-    print(f'\nTotal rows updated: {n_updated}')
-    h.flush()
-
-print(f'\nSaved: {DST}')
-
-# Verify
-with fits.open(DST) as h:
-    data = h[1].data
-    for (filt, grat) in NRS2_EXT.keys():
-        mask = (data['filter'] == filt) & (data['grating'] == grat) & (data['slit'] == 'S1600A1')
-        if mask.sum() > 0:
-            row = data[mask][0]
-            nelem = row['nelem']
-            wl = row['wavelength']
-            print(f'Verify {filt}/{grat}/S1600A1: nelem={nelem}, wl=[{wl[:nelem].min():.3f},{wl[:nelem].max():.3f}]')
+if __name__ == "__main__":
+    make_extended_photom_robust()

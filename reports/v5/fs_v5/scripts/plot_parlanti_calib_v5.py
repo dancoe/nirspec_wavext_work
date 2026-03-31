@@ -22,7 +22,7 @@ CALSPEC_DIR  = f'{BASE}/data/CALSPEC'
 PARLANTI_DIR = f'{BASE}/data/parlanti_repo/calibration_files'
 V4_DIR       = f'{BASE}/results/calibration'
 V5_DIR       = f'{BASE}/results/v5'
-PLOT_DIR     = f'{BASE}/nirspec_wavext_work/reports/v5/330_fs_v5/plots'
+PLOT_DIR     = f'{BASE}/nirspec_wavext_work/reports/v5/fs_v5/plots'
 os.makedirs(PLOT_DIR, exist_ok=True)
 
 C_ANG_S = 2.99792458e18  # Å/s

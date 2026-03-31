@@ -1,11 +1,46 @@
 # NIRSpec Flux Calibration Observations
 
+**Data Offload Note:** As of March 30, 2026, most Level 1 and Level 2 data (including `rate`, `cal`, and intermediate reduction stage files) have been offloaded to **central store** (`/Volumes/wit4/...`) to save local storage. 
+*   **Local retention:** Level 3 products (`spec3_*`, `stage3*`) and final v7 Jy-calibrated products remain on the laptop for analysis.
+*   **Central store:** Organised into `FS/` and `IFU/` subdirectories.
+*   **IFU v7 note (2026-03-30):** For IFU mode, `photom_0016` has `relresponse=1.0` and `photmj=1.0` throughout — no photom extension needed (unlike FS). IFU v7 re-reductions are stage2+3 fresh runs using Parlanti reffiles for consistency. Rate files for 1536/1537/1538 re-downloaded from MAST; 2186 rate files were already local.
+
 **Source:** `data/NIRSpec_fluxcal_observations.xlsx` (v1.1, 24 Dec 2025)  
 **Generated:** 2026-03-29
 
 This document catalogs all NIRSpec spectrophotometric calibration programs relevant to the
 wavelength-extension project, based on the STScI fluxcal observation spreadsheet. It documents
 modes, gratings, targets, spectral types, and prioritization for our FS and IFU analyses.
+
+---
+
+## Detailed FS Observation Matrix
+
+| PID  | Target         | Gratings       | Slits            | Notes                                   |
+|:-----|:---------------|:---------------|:-----------------|:----------------------------------------|
+| 1492 | IRAS-05248     | G140M, G235M, G395M | S200A1, S400A1, S1600A1 | Hold-out validation AGN/Galaxy target. |
+| 1536 | J1743045       | ALL M+H, PRISM | S1600A1          | Primary standard star A8III.            |
+| 1537 | G191-B2B       | ALL M+H, PRISM | S1600A1          | Hot white dwarf standard WD-DA.8.       |
+| 1538 | P330E          | ALL M+H, PRISM | S1600A1          | G-type G2V standard (break k/α degeneracy).|
+| 1678 | J1757132, etc. | G235M, G395M   | S1600A1          | 4 A-stars, GO-CAL program.              |
+| 6644 | NGC2506-G31    | G140M, G235M, G395M | S1600A1     | Essential cool G1V star for v7 calibration. |
+
+---
+
+| PID | Target(s) | FS L1 | FS L2 | FS L3 | FS v7* | IFU L1 | IFU L2 | IFU L3 | IFU v7* | Priority |
+|:----|:----------|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---------|
+| 1536 | J1743045 | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅¹ | ★★★ |
+| 1537 | G191-B2B | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅¹ | ★★★ |
+| 1538 | P330E | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅¹ | ★★★ |
+| 1492 | IRAS-05248 | ✅ | ✅ | ✅ | ✅ | — | — | — | — | ★★★ |
+| 6644 | NGC2506-G31| ✅ | ✅ | ✅ | ✅ | — | — | — | — | ★★★★ |
+| 2186 | UGC-5101 | — | — | — | — | ✅ | ✅ | ✅ | ✅² | ★★★ |
+| 6645 | P330E | — | — | — | — | 🔄 | 🔄 | 🔄 | — | ★★★ |
+| 2654 | SDSSJ0749 | — | — | — | — | 🔄 | 🔄 | 🔄 | — | ★★★ |
+
+*\*v7 indicates IFU stage2+3 re-reduction with Parlanti reffiles using pipeline v1.20.2.*  
+*¹ Rate files re-downloaded from MAST (2026-03-30); stage2+3 queued/running.*  
+*² Stage3 re-run from existing stage2_ext cal files (rate files already local).*
 
 ---
 
@@ -263,15 +298,14 @@ modes, gratings, targets, spectral types, and prioritization for our FS and IFU 
 
 | Source | PID | Mode | Status |
 |:-------|:----|:-----|:-------|
-| G191-B2B | 1537 | FS NRS2 G140M | ✅ extracted (1 dither) |
-| G191-B2B | 1537 | FS NRS2 G235M | ✅ extracted (1 dither) |
-| P330-E | 1538 | FS NRS2 G140M | ✅ extracted (1 dither) |
-| P330-E | 1538 | FS NRS2 G235M | ✅ extracted (1 dither) |
-| J1743045 | 1536 | FS NRS2 G140M | 🔄 extracting (rate file exists) |
-| J1743045 | 1536 | FS NRS2 G235M | 🔄 extracting (rate file exists) |
+| G191-B2B | 1537 | FS | ✅ v7 Jy extracted |
+| P330E | 1538 | FS | ✅ v7 Jy extracted |
+| J1743045 | 1536 | FS | ✅ v7 Jy extracted |
+| NGC2506-G31| 6644 | FS | ✅ v7 Jy extracted (G1V) |
+| IRAS-05248 | 1492 | FS | ✅ v7 Jy extracted (Hold-out Val) |
+| UGC-5101 | 2186 | IFU | 🔄 v7 reduction pending |
 
-With these 3 sources (G191-B2B, P330-E, J1743045) we can run the FS Parlanti solver for
-G140M NRS2 and G235M NRS2, yielding FS k(λ), α̃(λ), β̃(λ) for comparison with IFU v1.
+The 5 FS sources (G191-B2B, P330E, J1743045, NGC2506-G31, and 1492) are now fully reprocessed through the v7 pipeline with the extended photom reference files, providing the foundation for the v7 FS calibration.
 
 ### Second Priority (download needed)
 
@@ -326,20 +360,3 @@ Additionally, bright AGN observed in consecutive gratings (G140M + G235M or G235
 make excellent validation targets. We should keep an eye out for any such datasets.
 
 ---
-
-## Data Status Summary
-
-| PID | Target(s) | FS Status | IFU Status | Priority |
-|:----|:----------|:----------|:-----------|:---------|
-| 1536 | J1743045 | MAST L3 ✅, NRS2 🔄 | Reduced ✅ | ★★★ |
-| 1537 | G191-B2B | MAST L3 ✅, NRS2 partial ✅ | Reduced ✅ | ★★★ |
-| 1538 | P330-E, P177D | MAST L3 ✅, NRS2 partial ✅ | Reduced ✅ | ★★★ |
-| 6645 | P330-E | —  | In queue | ★★★ |
-| 6644 | NGC2506-G31, HD18511 | Not downloaded | — | ★★★★ |
-| 1128 | J1808347 | Not downloaded | Not downloaded | ★★ |
-| 1678 | J1757132, etc. | Not downloaded | — | ★★ |
-| 4498 | P330-E | Not downloaded | Not downloaded | ★★ |
-| 6606 | P330-E | Not downloaded | Not downloaded | ★★★ |
-| 3399 | J1757132, HD163466 | — | Not downloaded | ★★ |
-| 7565 | G191-B2B | Not downloaded | — | ★★ |
-| 7615 | P330-E | Not downloaded | Not downloaded | ★★ |

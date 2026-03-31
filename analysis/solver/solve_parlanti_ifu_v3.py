@@ -370,8 +370,8 @@ def plot_mast_vs_l3(grating, wav_grid, ks, als, bts):
             # Full NRS1+NRS2 from our stage3_ext
             m_nrs1 = w_ext < nrs2_lo
             if m_nrs1.any():
-                ax.plot(w_ext[m_nrs1], f_ext[m_nrs1], color='cornflowerblue', lw=1.2,
-                        alpha=0.8, label=f'Our L3 ext {grating} NRS1')
+                ax.plot(w_ext[m_nrs1], f_ext[m_nrs1], color='maroon', lw=1.2,
+                        alpha=0.9, label=f'Our L3 ext {grating} (NRS1 portion – comparison)')
             m_nrs2 = w_ext >= nrs2_lo
             w_e, f_e = w_ext[m_nrs2], f_ext[m_nrs2]
             if len(w_e) > 10:
