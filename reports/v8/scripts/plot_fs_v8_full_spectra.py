@@ -131,10 +131,11 @@ def plot_full_spectra(pid, src):
                     
                     f_corr = (f_e - a_vals*f_c2 - b_vals*f_c3) / k_vals
                     
-                    ax.plot(w_e, f_corr, color='magenta', lw=1.5, alpha=0.9, zorder=10)
+                    ax.plot(w_e, f_corr, color='magenta', lw=0.5, alpha=0.9, zorder=10)
+                    ax.fill_between(w_e, f_e, f_corr, color='magenta', alpha=0.1, zorder=5)
                     if f"Rec {grating}" not in plotted_labels:
                         mid_e = len(w_e) // 2
-                        ax.text(w_e[mid_e], f_corr[mid_e] * 2.5, f"{grating} v8 Corr", color='magenta', fontsize=14, ha='center', weight='bold')
+                        ax.text(w_e[mid_e], f_corr[mid_e] * 2.5, f"{grating} Corr", color='magenta', fontsize=14, ha='center', weight='bold')
                         plotted_labels.add(f"Rec {grating}")
 
     # Truth L3 (MAST) if available

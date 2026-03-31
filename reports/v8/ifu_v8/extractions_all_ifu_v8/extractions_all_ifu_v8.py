@@ -18,12 +18,12 @@ PIPE_BKG_IN = 1.0
 PIPE_BKG_OUT = 1.2
 
 TARGETS = [
-    {'pid': '1536', 'name': 'J1743045', 's3d': f'{BASE_IFU}/PID1536_J1743045/stage3/f170lp_g235m-f170lp_s3d.fits'},
-    {'pid': '1537', 'name': 'G191-B2B', 's3d': f'{BASE_IFU}/PID1537_G191-B2B/stage3/f170lp_g235m-f170lp_s3d.fits'},
-    {'pid': '1538', 'name': 'P330E', 's3d': f'{BASE_IFU}/PID1538_P330E/stage3/f170lp_g235m-f170lp_s3d.fits'},
-    {'pid': '2186', 'name': 'UGC-5101', 's3d': f'{BASE_FS}/PID2186_UGC-5101/stage3_ext/g235m_f170lp_g235m-f170lp_s3d.fits', 'is_science': True},
-    {'pid': '2654', 'name': 'SDSSJ0841', 's3d': f'{BASE_FS}/PID2654_SDSSJ0841/stage3_ext/g140m_f100lp_g140m-f100lp_s3d.fits', 'is_science': True},
-    {'pid': '6645', 'name': 'P330E-C3', 's3d': f'{BASE_IFU}/PID6645_P330E-C3/stage3/f170lp_g235m-f170lp_s3d.fits'}
+    {'pid': '1536', 'name': 'J1743045', 'desc': 'Quasar', 's3d': f'{BASE_IFU}/PID1536_J1743045/stage3/f170lp_g235m-f170lp_s3d.fits'},
+    {'pid': '1537', 'name': 'G191-B2B', 'desc': 'DA White Dwarf', 's3d': f'{BASE_IFU}/PID1537_G191-B2B/stage3/f170lp_g235m-f170lp_s3d.fits'},
+    {'pid': '1538', 'name': 'P330E', 'desc': 'G-type Solar Analog', 's3d': f'{BASE_IFU}/PID1538_P330E/stage3/f170lp_g235m-f170lp_s3d.fits'},
+    {'pid': '2186', 'name': 'UGC-5101', 'desc': 'ULIRG', 's3d': f'{BASE_FS}/PID2186_UGC-5101/stage3_ext/g235m_f170lp_g235m-f170lp_s3d.fits', 'is_science': True},
+    {'pid': '2654', 'name': 'SDSSJ0841', 'desc': 'Quasar', 's3d': f'{BASE_FS}/PID2654_SDSSJ0841/stage3_ext/g140m_f100lp_g140m-f100lp_s3d.fits', 'is_science': True},
+    {'pid': '6645', 'name': 'P330E-C3', 'desc': 'Solar Analog (Offset Visit)', 's3d': f'{BASE_IFU}/PID6645_P330E-C3/stage3/f170lp_g235m-f170lp_s3d.fits'}
 ]
 
 def perform_extractions(target):
@@ -134,7 +134,7 @@ def plot_target(target, results):
     ax1.plot(wl, results['spec_fov'], label='Entire FOV', alpha=0.5, color='gray')
     
     ax1.set_yscale('log')
-    ax1.set_title(f"{target['name']} (PID {target['pid']}) - Comparison ({results['srctype']})")
+    ax1.set_title(f"PID {target['pid']} – {target['name']} ({target['desc']}) – Comparison ({results['srctype']})")
     ax1.set_ylabel("Flux (Jy)")
     ax1.legend(loc='upper right', fontsize='small')
     ax1.grid(True, which='both', alpha=0.2)
@@ -146,9 +146,13 @@ def plot_target(target, results):
     
     if np.any(valid_all):
         all_fluxes = np.concatenate([results['spec_05'], results['spec_x1d']])
-        y_min = np.percentile(all_fluxes[valid_all], 1) * 0.5
-        y_max = np.percentile(all_fluxes[valid_all], 99) * 5.0
+        y_min = np.percentile(all_fluxes[valid_all], 1) * 0.7
+        y_max = np.percentile(all_fluxes[valid_all], 99) * 2.0
         ax1.set_ylim(y_min, y_max)
+    
+    # Correction for P330E-C3 huge offset visualization
+    if target['pid'] == '6645':
+        ax1.set_ylim(1e-5, 0.1)
     
     f_old = interp1d(results['wl_old'], results['spec_x1d'], bounds_error=False, fill_value=np.nan)
     ref_flux = f_old(wl)
@@ -223,6 +227,7 @@ def run_all():
             summary_data.append({
                 'pid': target['pid'],
                 'name': target['name'],
+                'desc': target['desc'],
                 'srctype': results['srctype'],
                 'med_flux_v8': med_05,
                 'ratio_v8_to_x1d': ratio_05
@@ -246,12 +251,12 @@ def run_all():
         f.write("\n\n")
         
         for target in TARGETS:
-            f.write(f"## {target['name']} (PID {target['pid']})\n\n")
-            f.write(f"### Spectra\n")
-            f.write(f"![Comparison](extraction_all_{target['pid']}.png)\n\n")
+            f.write(f"## PID {target['pid']} – {target['name']} ({target['desc']})\n\n")
             f.write(f"### Slices & Apertures\n")
             f.write(f"**Red Solid**: v8 (peak-centered, 0.5\") | **Cyan Dashed**: Pipeline (pointing-centered, 0.45\")\n\n")
             f.write(f"![Slices](slices_{target['pid']}.png)\n\n")
+            f.write(f"### Spectra\n")
+            f.write(f"![Comparison](extraction_all_{target['pid']}.png)\n\n")
             f.write("---\n\n")
 
 if __name__ == "__main__":

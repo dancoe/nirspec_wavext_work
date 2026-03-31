@@ -43,6 +43,19 @@ def load_calspec_jy(fname):
     fnu = flam * wl_a**2 / C_ANG_S * 1e23
     return interp1d(wl_a / 1e4, fnu, bounds_error=False, fill_value=np.nan)
 
+def load_coeffs(grating):
+    fits_path = f'{COEFFS_DIR}/calib_v7_ifu_{grating.lower()}_all.fits'
+    if not os.path.exists(fits_path): return None, None, None
+    with fits.open(fits_path) as h:
+        d = h[1].data
+        wl, k, a, b = d['WAVELENGTH'], d['K'], d['ALPHA'], d['BETA']
+        k = np.where(np.isfinite(k), k, 1.0)
+        a = np.where(np.isfinite(a), a, 0.0)
+        b = np.where(np.isfinite(b), b, 0.0)
+        return interp1d(wl, k, bounds_error=False, fill_value=1.0), \
+               interp1d(wl, a, bounds_error=False, fill_value=0.0), \
+               interp1d(wl, b, bounds_error=False, fill_value=0.0)
+
 def extract_05_radius(s3d_file):
     try:
         with fits.open(s3d_file) as hdul:
@@ -73,8 +86,27 @@ def plot_full_spectra(target):
     fig, ax = plt.subplots(figsize=(18, 9))
     fig.suptitle(f'{name} — PID {pid} — IFU wavext v8', fontsize=16)
 
+    # Set base Y-axis to log early
+    ax.set_yscale('log')
+
+    # Preliminary Y-limits based on truth model
+    y_min_target, y_max_target = 1e-3, 10.0 # Wide defaults
+    if f_ref:
+        w_range_pre = np.linspace(0.6, 5.6, 1000)
+        f_truth_pre = f_ref(w_range_pre)
+        f_mask_pre = f_truth_pre[np.isfinite(f_truth_pre) & (f_truth_pre > 0)]
+        if len(f_mask_pre) > 0:
+            y_min_target = np.nanmin(f_mask_pre) * 0.5
+            y_max_target = np.nanmax(f_mask_pre) * 1.5
+            ax.set_ylim(y_min_target, y_max_target)
+
     plotted_labels = set()
     gratings = ['G140M', 'G235M', 'G395M']
+    
+    coeffs = {
+        'G140M': load_coeffs('G140M'),
+        'G235M': load_coeffs('G235M'),
+    }
 
     for g_name in gratings:
         files = glob.glob(f"{target['dir']}/*{g_name.lower()}*x1d.fits")
@@ -115,6 +147,31 @@ def plot_full_spectra(target):
             ax.plot(w, f_val, '.', markersize=1, color=base_color, alpha=0.6, zorder=2)
             ax.plot(w, f_val, color=base_color, lw=0.5, alpha=0.2, zorder=2)
         
+        # Correction logic
+        if g_name in ['G140M', 'G235M'] and f_ref:
+            ki, ai, bi = coeffs[g_name]
+            if ki is not None:
+                lo = 1.90 if g_name == 'G140M' else 3.15 
+                mask = w >= lo
+                if mask.any():
+                    w_e, f_e = w[mask], f_val[mask]
+                    f_c2, f_c3 = f_ref(w_e/2), f_ref(w_e/3)
+                    f_c2 = np.where(np.isfinite(f_c2), f_c2, 0)
+                    f_c3 = np.where(np.isfinite(f_c3), f_c3, 0)
+                    k_vals, a_vals, b_vals = ki(w_e), ai(w_e), bi(w_e)
+                    f_corr = (f_e - a_vals*f_c2 - b_vals*f_c3) / k_vals
+                    
+                    # Safety clipping to established Y-axis limits
+                    f_e_fill = np.clip(f_e, y_min_target, y_max_target * 10)
+                    f_corr_fill = np.clip(f_corr, y_min_target, y_max_target * 10)
+
+                    ax.plot(w_e, f_corr, color='magenta', lw=0.5, alpha=0.9, zorder=10)
+                    ax.fill_between(w_e, f_e_fill, f_corr_fill, color='magenta', alpha=0.1, zorder=5)
+                    if f"Rec {g_name}" not in plotted_labels:
+                        mid_e = len(w_e) // 2
+                        ax.text(w_e[mid_e], f_corr[mid_e] * 2.5, f"{g_name} Corr", color='magenta', fontsize=14, ha='center', weight='bold')
+                        plotted_labels.add(f"Rec {g_name}")
+        
         # Add Label at Mid-point
         if g_name not in plotted_labels and len(w) > 50:
             mid_idx = len(w) // 2
@@ -139,14 +196,10 @@ def plot_full_spectra(target):
         ax.text(3.7, f_ref(3.7/3) * 1.1, '3rd order (λ/3)', color='0.70', fontsize=14, 
                 alpha=0.7, weight='bold', zorder=20)
 
-    ax.set_yscale('log')
     ax.set_xlim(0.6, 5.6)
     
-    if f_ref:
-        f_mask = f_truth[np.isfinite(f_truth) & (f_truth > 0)]
-        if len(f_mask) > 0:
-            ax.set_ylim(np.min(f_mask)*0.5, np.max(f_mask)*3.0)
-    else:
+    # Auto-scale Y only if no truth was provided
+    if not f_ref:
         ax.autoscale(axis='y', tight=False)
 
     ax.set_xlabel('Wavelength [µm]', fontsize=14)

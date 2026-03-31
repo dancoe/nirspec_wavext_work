@@ -18,75 +18,75 @@ Comparison of 4 extraction methods across all v8 catalog datasets:
 | 6645 | P330E-C3 | POINT | 0.020602 | 139.464 |
 
 
-## J1743045 (PID 1536)
-
-### Spectra
-![Comparison](extraction_all_1536.png)
+## PID 1536 – J1743045 (Quasar)
 
 ### Slices & Apertures
 **Red Solid**: v8 (peak-centered, 0.5") | **Cyan Dashed**: Pipeline (pointing-centered, 0.45")
 
 ![Slices](slices_1536.png)
 
+### Spectra
+![Comparison](extraction_all_1536.png)
+
 ---
 
-## G191-B2B (PID 1537)
-
-### Spectra
-![Comparison](extraction_all_1537.png)
+## PID 1537 – G191-B2B (DA White Dwarf)
 
 ### Slices & Apertures
 **Red Solid**: v8 (peak-centered, 0.5") | **Cyan Dashed**: Pipeline (pointing-centered, 0.45")
 
 ![Slices](slices_1537.png)
 
+### Spectra
+![Comparison](extraction_all_1537.png)
+
 ---
 
-## P330E (PID 1538)
-
-### Spectra
-![Comparison](extraction_all_1538.png)
+## PID 1538 – P330E (G-type Solar Analog)
 
 ### Slices & Apertures
 **Red Solid**: v8 (peak-centered, 0.5") | **Cyan Dashed**: Pipeline (pointing-centered, 0.45")
 
 ![Slices](slices_1538.png)
 
+### Spectra
+![Comparison](extraction_all_1538.png)
+
 ---
 
-## UGC-5101 (PID 2186)
-
-### Spectra
-![Comparison](extraction_all_2186.png)
+## PID 2186 – UGC-5101 (ULIRG)
 
 ### Slices & Apertures
 **Red Solid**: v8 (peak-centered, 0.5") | **Cyan Dashed**: Pipeline (pointing-centered, 0.45")
 
 ![Slices](slices_2186.png)
 
+### Spectra
+![Comparison](extraction_all_2186.png)
+
 ---
 
-## SDSSJ0841 (PID 2654)
-
-### Spectra
-![Comparison](extraction_all_2654.png)
+## PID 2654 – SDSSJ0841 (Quasar)
 
 ### Slices & Apertures
 **Red Solid**: v8 (peak-centered, 0.5") | **Cyan Dashed**: Pipeline (pointing-centered, 0.45")
 
 ![Slices](slices_2654.png)
 
+### Spectra
+![Comparison](extraction_all_2654.png)
+
 ---
 
-## P330E-C3 (PID 6645)
-
-### Spectra
-![Comparison](extraction_all_6645.png)
+## PID 6645 – P330E-C3 (Solar Analog (Offset Visit))
 
 ### Slices & Apertures
 **Red Solid**: v8 (peak-centered, 0.5") | **Cyan Dashed**: Pipeline (pointing-centered, 0.45")
 
 ![Slices](slices_6645.png)
+
+### Spectra
+![Comparison](extraction_all_6645.png)
 
 ---
 
