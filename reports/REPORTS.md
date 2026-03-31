@@ -6,7 +6,12 @@ This directory contains diagnostic reports for the NIRSpec wavelength extension 
 - **[Detailed Analysis Plan (Master)](DETAILED_PLAN.md)** — The definitive guide to data download, reduction, analysis, and reporting for the full 0.6–5.6 µm extension.
 
 ## Index of Reports
-- [IFU v6 All-Source Joint Solve](v6/ifu_v6/REPORT_ifu_v6.md) — (2026-03-30) IFU v6 adds UGC-5101 (cross-grating G395M truth) as 4th G235M source. G235M k rises from IFU v5 ~0.47 to 0.61; G140M k unchanged (no IFU G1V available). Science targets used as calibration constraints for first time.
+- [IFU v9 Unified 0.5" Standard](v9/ifu_v9/REPORT_ifu_v9.md) — (2026-03-31) Transitioned the entire IFU calibration suite to a uniform 0.5" radius fixed circular aperture for all sources (standards and AGN). Excluded PID 2654 due to companion contamination. Establishes a standardized spatial baseline for ghost model validation.
+- [IFU v8 Parlanti Breakout Diagnostics](v8/ifu_v8/REPORT_ifu_v8.md) — (2026-03-31) Detailed characterization of the Parlanti ghost model. Adds multi-panel diagnostic overlays with literature reference curves and individual breakout plots for $k, \alpha, \beta$ coefficients.
+- [FS v8 Parlanti Breakout Diagnostics](v8/fs_v8/REPORT_fs_v8.md) — (2026-03-31) Standardized FS reporting with high-fidelity coefficient visuals and literature offsets.
+- [IFU v7 Natively Calibrated (Jy)](v7/ifu_v7/REPORT_ifu_v7.md) — (2026-03-30) Transition to full native Jy-calibration workflow using custom `photom` and Spec2Pipeline extractions.
+- [FS v7 Natively Calibrated (Jy)](v7/fs_v7/REPORT_fs_v7.md) — (2026-03-30) FS native calibration suite with leave-one-out cross-validation results in Jy.
+- [IFU v6 All-Source Joint Solve](v6/ifu_v6/REPORT_ifu_v6.md) — (2026-03-30) IFU v6 adds UGC-5101 (cross-grating G395M truth) as 4th G235M source.
 - [FS v6 All-Source Joint Solve](v6/fs_v6/REPORT_fs_v6.md) — (2026-03-30) FS v6 adds PID 1492 cross-grating as 5th source (DN/s NRS2 scaled to Jy via MAST truth overlap). G235M k=0.910; G140M k=0.726 (lower than v5 0.959 — PID 1492 normalisation may pull solution). 13 validation plots generated.
 - [IFU v5 Science Validation](v5/ifu_v5/REPORT_ifu_v5.md) — (2026-03-29) Science validation of v5 extended pipeline on AGN (PID 2654: SDSSJ0749, SDSSJ0841 at z~2) and ULIRG (PID 2186: UGC-5101 at z=0.039). UGC-5101 G235M extended to 5.5 µm (vs 3.17 µm nominal); PAH 3.3 µm and L-band dust recovered. SDSSJ0841 H-α recovery in extended G140M at z~2.
 - [Parlanti Comparison v5](v5/parlanti-comparison_v5/REPORT_parlanti-comparison_v5.md) — (2026-03-29) v5 FS coefficients vs Parlanti (2025) vs degenerate v4. k(λ) agreement to <5% in NRS1; degeneracy resolved by G1V star. All coefficients (k, α, β) compared across both gratings.
