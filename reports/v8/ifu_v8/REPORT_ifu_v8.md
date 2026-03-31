@@ -16,23 +16,24 @@ The following plots show the full spectral coverage across all observed gratings
 ### Standard Stars (Calibration Baseline)
 Calibration standards use default pipeline `extract_1d` products.
 
-#### P330E (PID 1538 / 6645)
+#### P330E (PID 1538) – G-type Solar Analog
 ![P330E (PID 1538)](plots/full_spectrum_merged_v8_P330E.png)
+#### P330E-C3 (PID 6645) – Solar Analog (Offset Visit)
 ![P330E (PID 6645)](plots/full_spectrum_merged_v8_P330E-C3.png)
 
-#### G191-B2B (PID 1537)
+#### G191-B2B (PID 1537) – DA White Dwarf
 ![G191-B2B (PID 1537)](plots/full_spectrum_merged_v8_G191-B2B.png)
 
-#### J1743045 (PID 1536)
+#### J1743045 (PID 1536) – Quasar
 ![J1743045 (PID 1536)](plots/full_spectrum_merged_v8_J1743045.png)
 
 ### Science Targets (Custom 0.5" Extraction)
 Science targets use the new **0.5" radius circular aperture** centered on the brightest pixel.
 
-#### UGC-5101 (PID 2186)
+#### UGC-5101 (PID 2186) – ULIRG
 ![UGC-5101 (PID 2186)](plots/full_spectrum_merged_v8_UGC-5101.png)
 
-#### SDSSJ0841 (PID 2654)
+#### SDSSJ0841 (PID 2654) – Quasar
 ![SDSSJ0841 (PID 2654)](plots/full_spectrum_merged_v8_SDSSJ0841.png)
 
 ## 3. Extraction Methodology Comparison

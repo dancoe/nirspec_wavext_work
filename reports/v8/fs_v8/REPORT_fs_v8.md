@@ -13,13 +13,13 @@ The following plots show the full spectral coverage (0.6 – 5.6 µm) for the pr
 ### Standard Stars
 Standard stars are used for the baseline calibration of the ghost contamination model.
 
-#### P330E (PID 1538)
+#### P330E (PID 1538) – G-type Solar Analog
 ![P330E (PID 1538)](plots/full_spectrum_merged_v8_P330E.png)
 
-#### G191-B2B (PID 1537)
+#### G191-B2B (PID 1537) – DA White Dwarf
 ![G191-B2B (PID 1537)](plots/full_spectrum_merged_v8_G191-B2B.png)
 
-#### J1743045 (PID 1536)
+#### J1743045 (PID 1536) – Quasar
 ![J1743045 (PID 1536)](plots/full_spectrum_merged_v8_J1743045.png)
 
 #### NGC2506-G31 (PID 6644)
@@ -27,7 +27,7 @@ Standard stars are used for the baseline calibration of the ghost contamination 
 ![NGC2506-G31 (PID 6644)](plots/full_spectrum_merged_v8_NGC2506-G31.png)
 
 ### Science Targets (Hold-out Validation)
-#### IRAS-05248 (PID 1492)
+#### IRAS-05248 (PID 1492) – Solar Analog (TYC 4433-1800-1)
 ![IRAS-05248 (PID 1492)](plots/full_spectrum_merged_v8_IRAS-05248.png)
 
 ---
