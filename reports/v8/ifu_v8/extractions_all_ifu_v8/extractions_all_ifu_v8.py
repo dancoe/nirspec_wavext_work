@@ -165,10 +165,16 @@ def plot_target(target, results):
     ax2.set_yscale('log')
     ax2.set_ylabel("Ratio to extract1d")
     ax2.set_xlabel("Wavelength (um)")
-    ax2.set_ylim(0.5, 2.0)
+    if target['pid'] == '6645':
+        ax2.set_ylim(0.5, 200.0)
+    else:
+        ax2.set_ylim(0.5, 2.0)
     from matplotlib.ticker import ScalarFormatter
     ax2.yaxis.set_major_formatter(ScalarFormatter())
-    ax2.set_yticks([0.5, 0.7, 1.0, 1.5, 2.0])
+    if target['pid'] == '6645':
+        ax2.set_yticks([0.5, 1, 10, 100, 200])
+    else:
+        ax2.set_yticks([0.5, 0.7, 1.0, 1.5, 2.0])
     ax2.grid(True, which='both', alpha=0.2)
     ax2.legend(loc='upper right', ncol=3, fontsize='x-small')
     
