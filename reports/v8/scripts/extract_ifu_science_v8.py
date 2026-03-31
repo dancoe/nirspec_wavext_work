@@ -82,15 +82,51 @@ def run_extraction():
 
 def plot_comparison(results):
     for pid, data in results.items():
-        plt.figure(figsize=(10, 6))
-        plt.plot(data['wl_old'], data['spec_old'], label='Previous extract1d', alpha=0.5, color='gray')
-        plt.plot(data['wl'], data['spec_v8'], label='v8 (0.5" radius)', color='blue')
-        plt.yscale('log')
-        plt.title(f"{data['name']} (PID {pid}) - Extraction Comparison")
-        plt.xlabel("Wavelength (um)")
-        plt.ylabel("Flux (Jy)")
-        plt.legend()
-        plt.grid(True, which='both', alpha=0.2)
+        fig, (ax1, ax2) = plt.subplots(2, 1, sharex=True, gridspec_kw={'height_ratios': [3, 1]}, figsize=(10, 8))
+        
+        # Plot spectra
+        ax1.plot(data['wl_old'], data['spec_old'], label='Previous extract1d', alpha=0.5, color='gray')
+        ax1.plot(data['wl'], data['spec_v8'], label='v8 (0.5" radius)', color='blue')
+        ax1.set_yscale('log')
+        ax1.set_title(f"{data['name']} (PID {pid}) - Extraction Comparison")
+        ax1.set_ylabel("Flux (Jy)")
+        ax1.legend()
+        ax1.grid(True, which='both', alpha=0.2)
+        
+        # Better y-limits: ignore gaps and very low values
+        # Gaps: 2.19-2.23, 3.65-3.80
+        mask_gap = ((data['wl'] >= 2.19) & (data['wl'] <= 2.23)) | \
+                   ((data['wl'] >= 3.65) & (data['wl'] <= 3.80))
+        valid_v8 = (data['spec_v8'] > 0) & np.isfinite(data['spec_v8']) & (~mask_gap)
+        
+        if np.any(valid_v8):
+            flux_vals = data['spec_v8'][valid_v8]
+            y_min = np.percentile(flux_vals, 1) * 0.5
+            y_max = np.percentile(flux_vals, 99) * 2.0
+            ax1.set_ylim(y_min, y_max)
+        
+        # Calculate and plot ratio
+        # Interpolate old to new wl
+        from scipy.interpolate import interp1d
+        f_old = interp1d(data['wl_old'], data['spec_old'], bounds_error=False, fill_value=np.nan)
+        spec_old_interp = f_old(data['wl'])
+        
+        ratio = data['spec_v8'] / spec_old_interp
+        ax2.plot(data['wl'], ratio, color='black', lw=1)
+        ax2.axhline(1.0, color='red', linestyle='--', alpha=0.5)
+        ax2.set_ylabel("Ratio (v8/old)")
+        ax2.set_xlabel("Wavelength (um)")
+        ax2.grid(True, which='both', alpha=0.2)
+        
+        # Set ratio y-limits
+        valid_ratio = np.isfinite(ratio) & (~mask_gap)
+        if np.any(valid_ratio):
+            r_vals = ratio[valid_ratio]
+            r_min = np.percentile(r_vals, 2) * 0.95
+            r_max = np.percentile(r_vals, 98) * 1.05
+            ax2.set_ylim(max(0, r_min), min(5, r_max))
+        
+        plt.tight_layout()
         plt.savefig(f"{OUTPUT_REPORT_DIR}/extraction_comparison_{pid}.png", dpi=150)
         plt.close()
 
@@ -106,9 +142,16 @@ def generate_report(results):
             f.write(f"![{data['name']} Comparison](extraction_comparison_{pid}.png)\n\n")
             
             # Simple summary
-            # Exclude nans for comparison
-            mask_v8 = np.isfinite(data['spec_v8']) & (data['spec_v8'] > 0)
-            mask_old = np.isfinite(data['spec_old']) & (data['spec_old'] > 0)
+            # Exclude nans and gaps for comparison
+            mask_gap_rep = ((data['wl'] >= 2.19) & (data['wl'] <= 2.23)) | \
+                           ((data['wl'] >= 3.65) & (data['wl'] <= 3.80))
+            mask_v8 = np.isfinite(data['spec_v8']) & (data['spec_v8'] > 0) & (~mask_gap_rep)
+            
+            # For mask_old, we need to handle different wavelength grid
+            mask_gap_old = ((data['wl_old'] >= 2.19) & (data['wl_old'] <= 2.23)) | \
+                           ((data['wl_old'] >= 3.65) & (data['wl_old'] <= 3.80))
+            mask_old = np.isfinite(data['spec_old']) & (data['spec_old'] > 0) & (~mask_gap_old)
+            
             med_v8 = np.nanmedian(data['spec_v8'][mask_v8]) if np.any(mask_v8) else 0
             med_old = np.nanmedian(data['spec_old'][mask_old]) if np.any(mask_old) else 1e-10
             
